@@ -1,0 +1,25 @@
+/**
+  * \page page_CCCTL_overview Constant-Capacity Containers Template Library (CCCTL)
+  *
+  * This template library provides containers with a constant capacity (determined at compile time or initialization).
+  * It additionally provides containers with a consistent memory layout across different compilers and platforms.
+  * It is the ambition of this template library to be as compliant as possible with the container types defined in the standard (C++03 and C++11).
+  * Noncompliance with the standard is explicitly stated.
+  *
+  * The containers provided by the Standard Template Library (STL) lack certain features that are mandatory/beneficial in some contexts.
+  *
+  * For safety critical systems it is often required that memory allocation from the free store (heap) does not occur after initialization.
+  * To some extend, this is achievable by using STL with custom allocators. However, it is not possible for all container types (especially not for node-based allocators, see motivation for EASTL).
+  * 
+  * The CCCTL provides containers with a constant capacity, which is either determined at compile time (denoted as static-capacity containers) or at initialization (denoted as fixed-capacity containers).
+  *
+  * Another frequent requirement is...
+  *
+  * Containers provided by the CCCTL with the same memory layout across different platforms are labeled consistent.
+  *
+  * \subpage page_CCCTL_changelog
+  *
+  *
+  *
+  *
+  */

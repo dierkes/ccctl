@@ -1,0 +1,19 @@
+/**
+  * \page page_PSFReader_changelog Changelog
+  *
+  * 2014-04-10 Version 1.1.2
+  * <ul>
+  *   <li><b>(change)</b> Versions of dependencies </li>
+  * </ul>
+  *
+  * 2014-04-10 Version 1.1.0
+  * <ul>
+  *   <li><b>(change)</b> Pin to connect to RoadRepresentation instance is now an output pin </li>
+  * </ul>
+  *
+  * 2014-04-04 Version 1.0.0
+  * <ul>
+  *   <li><b>(new)</b> Initial tag</li>
+  * </ul>
+  * 
+  */
