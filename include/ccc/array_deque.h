@@ -45,14 +45,14 @@ struct ArrayDeque
 
     typedef ArrayDeque<T, SizeType, Capacity, UseRawMemOps> container_type; // necessary for random access iterator
 
-    template <class T>
+    template <class T_>
     struct RandomAccessIterator
     {
-        typedef T value_type;
+        typedef T_ value_type;
         typedef value_type* pointer;
         typedef value_type& reference;
         typedef std::ptrdiff_t difference_type;
-        typedef RandomAccessIterator<T> iterator_type;
+        typedef RandomAccessIterator<T_> iterator_type;
         typedef std::bidirectional_iterator_tag iterator_category;
 
         container_type* m_Container;
