@@ -29,7 +29,7 @@
 
 #if defined(__GNUG__) // equivalent to (__GNUC__ && __cplusplus)
 
-#if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 7)
+#if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 7) && (__cplusplus >= 201103L)
 
 #undef CCC_NOEXCEPT
 #define CCC_NOEXCEPT noexcept
