@@ -49,7 +49,7 @@ struct ArrayStack
 
     value_type m_Array[Capacity];
     static const size_type m_Begin = 0; // points at the first element
-    size_type m_End; // points at the element
+    size_type m_End; // points at the element behind the last valid element
 
     pointer data(size_type Index)
     {
@@ -165,6 +165,15 @@ struct ArrayStack
         return *(end() - 1);
     }
 
+    void clear() CCC_NOEXCEPT
+    {
+        for (iterator it = begin(); it != end(); ++it)
+        {
+            *it = value_type();
+        }
+        m_End = size_type();
+    }
+
     /**
      * According to the standard, the push and pop methods have no return values.
      * Further, the methods may throw exceptions (e.g., std::bad_alloc if an allocation fails).
@@ -172,7 +181,7 @@ struct ArrayStack
      * We ...
      */
 
-    bool push_front(const_reference Value) CCC_NOEXCEPT
+    void push_front(const_reference Value)
     {
         if (size() < Capacity)
         {
@@ -186,27 +195,61 @@ struct ArrayStack
             }
             m_End = m_End + 1;
             m_Array[m_Begin] = Value;
-            return true;
         }
         else
         {
-            return false;
+            throw std::bad_alloc();
         }
     }
 
-    bool push_back(const_reference Value) CCC_NOEXCEPT
+    void push_back(const_reference Value)
     {
         if (size() < Capacity)
         {
             m_Array[m_End] = Value; // ToDo: Must type be trivially copyable?
             m_End = m_End + 1;
-            return true;
         }
         else
-            return false;
+        {
+            throw std::bad_alloc();
+        }
     }
 
-    bool pop_front() CCC_NOEXCEPT
+    void emplace_front()
+    {
+        if (size() < Capacity)
+        {
+            if (UseRawMemOps)
+            {
+                std::memmove(data(1), data(0), size() * sizeof(value_type));
+            }
+            else
+            {
+                std::copy_backward(begin(), end(), end() + 1);
+            }
+            m_End = m_End + 1;
+            m_Array[m_Begin] = value_type();
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    void emplace_back()
+    {
+        if (size() < Capacity)
+        {
+            m_Array[m_End] = value_type(); // ToDo: might not be necessary, since there should be a valid element
+            m_End = m_End + 1;
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    void pop_front()
     {
         if (not empty())
         {
@@ -221,23 +264,17 @@ struct ArrayStack
                 std::copy(begin() + 1, end(), begin());
             }
             m_End = m_End - 1;
-            return true;
         }
-        else
-            return false;
     }
 
-    bool pop_back() CCC_NOEXCEPT
+    void pop_back()
     {
         if (not empty())
         {
             // ToDo: Do we have to destroy the element?
             m_Array[m_End - 1] = value_type(); // destroy element by overwriting
             m_End = m_End - 1;
-            return true;
         }
-        else
-            return false;
     }
 
     iterator insert(size_type Position, const_reference Value)
@@ -267,9 +304,29 @@ struct ArrayStack
         }
         else
         {
-            return end();
-//            return iterator(0);
-//            throw std::bad_alloc();
+            throw std::bad_alloc();
+        }
+    }
+
+    iterator emplace(iterator Position)
+    {
+        if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
+        {
+            if (UseRawMemOps)
+            {
+                std::memmove(Position + 1, Position, (end() - Position) * sizeof(value_type));
+            }
+            else
+            {
+                std::copy_backward(Position, end(), end() + 1);
+            }
+            m_End = m_End + 1;
+            *Position = value_type();
+            return Position;
+        }
+        else
+        {
+            throw std::bad_alloc();
         }
     }
 

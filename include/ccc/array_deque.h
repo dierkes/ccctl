@@ -53,10 +53,20 @@ struct ArrayDeque
         typedef value_type& reference;
         typedef std::ptrdiff_t difference_type;
         typedef RandomAccessIterator<T_> iterator_type;
-        typedef std::bidirectional_iterator_tag iterator_category;
+        typedef std::random_access_iterator_tag iterator_category;
 
         container_type* m_Container;
         size_type m_PhysicalIndex;
+
+        RandomAccessIterator()
+                : m_Container(), m_PhysicalIndex()
+        {
+        }
+
+        explicit RandomAccessIterator(container_type* Container, size_type PhysicalIndex)
+                : m_Container(Container), m_PhysicalIndex(PhysicalIndex)
+        {
+        }
 
         reference operator*() const
         {
@@ -105,17 +115,17 @@ struct ArrayDeque
             return (m_Container != rhs.m_Container) or (m_PhysicalIndex != rhs.m_PhysicalIndex);
         }
 
-        // bidirectional iterator requirements:
+        // random access iterator requirements:
 
         iterator_type& operator+=(const difference_type& rhs)
         {
             if (0 > rhs)
             {
-                m_PhysicalIndex = (-rhs > m_PhysicalIndex) ? (Capacity + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
+                m_PhysicalIndex = (-rhs > static_cast<difference_type>(m_PhysicalIndex)) ? (Capacity + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
             }
             else
             {
-                m_PhysicalIndex = (Capacity - m_PhysicalIndex < rhs) ? (rhs - (Capacity - m_PhysicalIndex) - 1) : (m_PhysicalIndex + rhs);
+                m_PhysicalIndex = (static_cast<difference_type>(Capacity - m_PhysicalIndex) < rhs) ? (rhs - (Capacity - m_PhysicalIndex) - 1) : (m_PhysicalIndex + rhs);
             }
             return *this;
         }
@@ -138,18 +148,6 @@ struct ArrayDeque
             return Result += -rhs;
         }
 
-        /**
-         * Note: This is not a member function. Possible alternative: template for operator+(lhs, rhs)
-         *
-         * template <class IntegerType, class IteratorType>
-         * IteratorType operator+(IntegerType lhs, IteratorType rhs)
-         * {
-         *     return rhs += lhs;
-         * }
-         *
-         * Has possibly side effects.
-         *
-         */
         friend iterator_type operator+(difference_type lhs, const iterator_type& rhs)
         {
             iterator_type Result = rhs;
@@ -158,16 +156,13 @@ struct ArrayDeque
 
         difference_type operator-(const iterator_type& rhs) // const // must function be const for short version of operator<?
         {
-//            return ((m_Container->m_Begin <= m_Container->m_End) or (m_Container->m_Begin <= m_PhysicalIndex and m_Container->m_Begin <= rhs.m_PhysicalIndex)
-//                    or (m_Container->m_End >= m_PhysicalIndex and m_Container->m_End >= rhs.m_PhysicalIndex)) ?
-//                    (m_PhysicalIndex - rhs.m_PhysicalIndex) : (m_Container->m_Begin <= m_PhysicalIndex and rhs.m_PhysicalIndex <= m_Container->m_End);
             if (m_Container->m_Begin <= m_PhysicalIndex and rhs.m_PhysicalIndex <= m_Container->m_End)
             {
                 return (Capacity + 1 - m_PhysicalIndex) + rhs.m_PhysicalIndex;
             }
             else if (m_Container->m_Begin <= rhs.m_PhysicalIndex and m_PhysicalIndex <= m_Container->m_End)
             {
-                return -((Capacity + 1 - rhs.m_PhysicalIndex) + m_PhysicalIndex);
+                return -(static_cast<difference_type>((Capacity + 1 - rhs.m_PhysicalIndex) + m_PhysicalIndex));
             }
             else
             {
@@ -178,18 +173,152 @@ struct ArrayDeque
 
         bool operator<(const iterator_type& rhs)
         {
-//            return ((m_Container->m_Begin <= m_Container->m_End) or (m_Container->m_Begin <= m_PhysicalIndex and m_Container->m_Begin <= rhs.m_PhysicalIndex)
-//                    or (m_Container->m_End >= m_PhysicalIndex and m_Container->m_End >= rhs.m_PhysicalIndex)) ?
-//                    (m_PhysicalIndex < rhs.m_PhysicalIndex) : (m_Container->m_Begin <= m_PhysicalIndex and rhs.m_PhysicalIndex <= m_Container->m_End);
+            return 0 < rhs - *this;
+        }
+    };
+
+    template <class T_>
+    struct RandomAccessConstIterator
+    {
+        typedef T_ value_type;
+        typedef const value_type* pointer;
+        typedef const value_type& reference;
+        typedef std::ptrdiff_t difference_type;
+        typedef RandomAccessConstIterator<T_> iterator_type;
+        typedef std::random_access_iterator_tag iterator_category;
+
+        container_type* m_Container;
+        size_type m_PhysicalIndex;
+
+        RandomAccessConstIterator()
+                : m_Container(), m_PhysicalIndex()
+        {
+        }
+
+        explicit RandomAccessConstIterator(const container_type* Container, size_type PhysicalIndex)
+                : m_Container(Container), m_PhysicalIndex(PhysicalIndex)
+        {
+        }
+
+        RandomAccessConstIterator(const RandomAccessIterator<T_>& NonConst)
+                : m_Container(NonConst.m_Container), m_PhysicalIndex(NonConst.m_PhysicalIndex)
+        {
+        }
+
+        reference operator*() const
+        {
+            return m_Container->m_Array[m_PhysicalIndex];
+        }
+
+        pointer operator->() const
+        {
+            return ccc::addressof<pointer>(m_Container->m_Array[m_PhysicalIndex]);
+        }
+
+        iterator_type& operator++()
+        {
+            m_PhysicalIndex = (Capacity == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
+            return *this;
+        }
+
+        iterator_type operator++(int)
+        {
+            iterator_type tmp = *this;
+            m_PhysicalIndex = (Capacity == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
+            return tmp;
+        }
+
+        iterator_type&
+        operator--()
+        {
+            m_PhysicalIndex = (0 == m_PhysicalIndex) ? Capacity : (m_PhysicalIndex - 1);
+            return *this;
+        }
+
+        iterator_type operator--(int)
+        {
+            iterator_type tmp = *this;
+            m_PhysicalIndex = (0 == m_PhysicalIndex) ? Capacity : (m_PhysicalIndex - 1);
+            return tmp;
+        }
+
+        bool operator==(const iterator_type& rhs) const
+        {
+            return (m_Container == rhs.m_Container) and (m_PhysicalIndex == rhs.m_PhysicalIndex);
+        }
+
+        bool operator!=(const iterator_type& rhs) const
+        {
+            return (m_Container != rhs.m_Container) or (m_PhysicalIndex != rhs.m_PhysicalIndex);
+        }
+
+        // random access iterator requirements:
+
+        iterator_type& operator+=(const difference_type& rhs)
+        {
+            if (0 > rhs)
+            {
+                m_PhysicalIndex = (-rhs > static_cast<difference_type>(m_PhysicalIndex)) ? (Capacity + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
+            }
+            else
+            {
+                m_PhysicalIndex = (static_cast<difference_type>(Capacity - m_PhysicalIndex) < rhs) ? (rhs - (Capacity - m_PhysicalIndex) - 1) : (m_PhysicalIndex + rhs);
+            }
+            return *this;
+        }
+
+        iterator_type& operator-=(const difference_type& rhs)
+        {
+            *this += -rhs;
+            return *this;
+        }
+
+        iterator_type operator+(const difference_type& rhs)
+        {
+            iterator_type Result = *this;
+            return Result += rhs;
+        }
+
+        iterator_type operator-(const difference_type& rhs)
+        {
+            iterator_type Result = *this;
+            return Result += -rhs;
+        }
+
+        friend iterator_type operator+(difference_type lhs, const iterator_type& rhs)
+        {
+            iterator_type Result = rhs;
+            return Result += lhs;
+        }
+
+        difference_type operator-(const iterator_type& rhs) // const // must function be const for short version of operator<?
+        {
+            if (m_Container->m_Begin <= m_PhysicalIndex and rhs.m_PhysicalIndex <= m_Container->m_End)
+            {
+                return (Capacity + 1 - m_PhysicalIndex) + rhs.m_PhysicalIndex;
+            }
+            else if (m_Container->m_Begin <= rhs.m_PhysicalIndex and m_PhysicalIndex <= m_Container->m_End)
+            {
+                return -(static_cast<difference_type>((Capacity + 1 - rhs.m_PhysicalIndex) + m_PhysicalIndex));
+            }
+            else
+            {
+                return m_PhysicalIndex - rhs.m_PhysicalIndex;
+            }
+
+        }
+
+        bool operator<(const iterator_type& rhs)
+        {
             return 0 < rhs - *this;
         }
     };
 
     typedef RandomAccessIterator<value_type> iterator;
-    typedef RandomAccessIterator<const value_type> const_iterator;
+    typedef RandomAccessConstIterator<value_type> const_iterator;
 
-    typedef std::reverse_iterator<iterator> reverse_iterator; // ToDo: what does this mean in case of a pointer, in general it's a class derivation
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator; // ToDo: see above
+    typedef std::reverse_iterator<iterator> reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     value_type m_Array[Capacity + 1]; // well, we might get rid of the extra element, but for the sake of simplicity let's keep it for now
     size_type m_Begin; // points at the first element
@@ -205,82 +334,14 @@ struct ArrayDeque
         return ccc::addressof(m_Array[PhysicalIndex]);
     }
 
-    iterator begin() CCC_NOEXCEPT
-    {
-        iterator Result;
-        Result.m_Container = this;
-        Result.m_PhysicalIndex = m_Begin;
-        return Result;
-    }
-
-    const_iterator begin() const CCC_NOEXCEPT
-    {
-        const_iterator Result;
-        Result.m_Container = this;
-        Result.m_PhysicalIndex = m_Begin;
-        return Result;
-    }
-
-    iterator end() CCC_NOEXCEPT
-    {
-        iterator Result;
-        Result.m_Container = this;
-        Result.m_PhysicalIndex = m_End;
-        return Result;
-    }
-
-    const_iterator end() const CCC_NOEXCEPT
-    {
-        const_iterator Result;
-        Result.m_Container = this;
-        Result.m_PhysicalIndex = m_End;
-        return Result;
-    }
-
-    reverse_iterator rbegin() CCC_NOEXCEPT
-    {
-        return reverse_iterator(end());
-    }
-
-    const_reverse_iterator rbegin() const CCC_NOEXCEPT
-    {
-        return const_reverse_iterator(end());
-    }
-
-    reverse_iterator rend() CCC_NOEXCEPT
-    {
-        return reverse_iterator(begin());
-    }
-
-    const_reverse_iterator rend() const CCC_NOEXCEPT
-    {
-        return const_reverse_iterator(begin());
-    }
-
-//    CCC_CONSTEXPR
-    size_type size() const CCC_NOEXCEPT
-    {
-        return (m_End < m_Begin) ? (m_End - m_Begin + Capacity + 1) : (m_End - m_Begin);
-    }
-
-    CCC_CONSTEXPR
-    size_type max_size() const CCC_NOEXCEPT
-    {
-        return Capacity;
-    }
-
-//    CCC_CONSTEXPR
-    bool empty() const CCC_NOEXCEPT
-    {
-        return m_Begin == m_End;
-    }
+    // Element access:
 
     reference operator[](size_type LogicalIndex)
     {
         return m_Array[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
     }
 
-//    CCC_CONSTEXPR
+    CCC_CONSTEXPR
     const_reference operator[](size_type LogicalIndex) const CCC_NOEXCEPT
     {
         return m_Array[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
@@ -295,7 +356,7 @@ struct ArrayDeque
         return m_Array[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
     }
 
-//    CCC_CONSTEXPR
+    CCC_CONSTEXPR
     const_reference at(size_type LogicalIndex) const // ToDo
     {
         return LogicalIndex < size() ?
@@ -322,59 +383,148 @@ struct ArrayDeque
         return *(end() - 1);
     }
 
-    /**
-     * According to the standard, the push and pop methods have no return values.
-     * Further, the methods may throw exceptions (e.g., std::bad_alloc if an allocation fails).
-     *
-     * We ...
-     */
+    // Iterators:
 
-    bool push_front(const_reference Value) CCC_NOEXCEPT
+    iterator begin() CCC_NOEXCEPT
+    {
+        return iterator(this, m_Begin);
+    }
+
+    const_iterator begin() const CCC_NOEXCEPT
+    {
+        return const_iterator(this, m_Begin);
+    }
+
+    iterator end() CCC_NOEXCEPT
+    {
+        return iterator(this, m_End);
+    }
+
+    const_iterator end() const CCC_NOEXCEPT
+    {
+        return const_iterator(this, m_End);
+    }
+
+    reverse_iterator rbegin() CCC_NOEXCEPT
+    {
+        return reverse_iterator(end());
+    }
+
+    const_reverse_iterator rbegin() const CCC_NOEXCEPT
+    {
+        return const_reverse_iterator(end());
+    }
+
+    reverse_iterator rend() CCC_NOEXCEPT
+    {
+        return reverse_iterator(begin());
+    }
+
+    const_reverse_iterator rend() const CCC_NOEXCEPT
+    {
+        return const_reverse_iterator(begin());
+    }
+
+    // Capacity:
+
+    bool empty() const CCC_NOEXCEPT
+    {
+        return m_Begin == m_End;
+    }
+
+    size_type size() const CCC_NOEXCEPT
+    {
+        return (m_End < m_Begin) ? (m_End - m_Begin + Capacity + 1) : (m_End - m_Begin);
+    }
+
+    CCC_CONSTEXPR
+    size_type max_size() const CCC_NOEXCEPT
+    {
+        return Capacity;
+    }
+
+    // Modifiers:
+
+    void clear() CCC_NOEXCEPT
+    {
+        for (iterator it = begin(); it != end(); ++it)
+        {
+            *it = value_type();
+        }
+        m_Begin = size_type();
+        m_End = size_type();
+    }
+
+    void push_front(const_reference Value)
     {
         if (size() < Capacity)
         {
             m_Begin = (0 == m_Begin) ? Capacity : (m_Begin - 1);
             m_Array[m_Begin] = Value; // ToDo: Must type be trivially copyable?
-            return true;
         }
         else
-            return false;
+        {
+            throw std::bad_alloc();
+        }
     }
 
-    bool push_back(const_reference Value) CCC_NOEXCEPT
+    void push_back(const_reference Value)
     {
         if (size() < Capacity)
         {
             m_Array[m_End] = Value; // ToDo: Must type be trivially copyable?
             m_End = (Capacity == m_End) ? 0 : (m_End + 1);
-            return true;
         }
         else
-            return false;
+        {
+            throw std::bad_alloc();
+        }
     }
 
-    bool pop_front() CCC_NOEXCEPT
+    void emplace_front()
+    {
+        if (size() < Capacity)
+        {
+            m_Begin = (0 == m_Begin) ? Capacity : (m_Begin - 1);
+            m_Array[m_Begin] = value_type(); // ToDo: Must type be trivially copyable?
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    void emplace_back()
+    {
+        if (size() < Capacity)
+        {
+            m_Array[m_End] = value_type(); // ToDo: Must type be trivially copyable?
+            m_End = (Capacity == m_End) ? 0 : (m_End + 1);
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    void pop_front()
     {
         if (not empty())
         {
             // ToDo: Do we have to destroy the element?
+            front() = value_type(); // destroy element
             m_Begin = (Capacity == m_Begin) ? 0 : (m_Begin + 1);
-            return true;
         }
-        else
-            return false;
     }
 
-    bool pop_back() CCC_NOEXCEPT
+    void pop_back()
     {
         if (not empty())
         {
             // ToDo: Do we have to destroy the element?
+            back() = value_type(); // destroy element
             m_End = (0 == m_End) ? Capacity : (m_End - 1);
-            return true;
         }
-        else
-            return false;
     }
 
     iterator insert(size_type Position, const_reference Value)
@@ -419,9 +569,48 @@ struct ArrayDeque
         }
         else
         {
-            return end();
-//            return iterator(0);
-//            throw std::bad_alloc();
+            throw std::bad_alloc();
+        }
+    }
+
+    iterator emplace(iterator Position)
+    {
+        if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
+        {
+            if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
+            {
+                if (UseRawMemOps)
+                {
+                    // ccc::addressof(*(begin() - 1)) should not be necessary, since ccc::addressof should return a pointer of type value_type*
+                    std::memmove(ccc::addressof(*begin()) - 1, ccc::addressof(*begin()), (Position - begin()) * sizeof(value_type));
+                }
+                else
+                {
+                    std::copy(begin(), Position, begin() - 1);
+                }
+                m_Begin = (0 == m_Begin) ? Capacity : (m_Begin - 1);
+                *(Position - 1) = value_type();
+                return (Position - 1);
+            }
+            else // == Position is in range [PhysicalBegin, LogicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
+                 // or Position is in range [LogicalBegin, LogicalEnd], if PhysicalBegin <= LogicalBegin < LogicalEnd <= PhysicalEnd
+            {
+                if (UseRawMemOps)
+                {
+                    std::memmove(ccc::addressof(*Position) + 1, ccc::addressof(*Position), (end() - Position) * sizeof(value_type));
+                }
+                else
+                {
+                    std::copy_backward(Position, end(), end() + 1);
+                }
+                m_End = (Capacity == m_End) ? 0 : (m_End + 1);
+                *Position = value_type();
+                return Position;
+            }
+        }
+        else
+        {
+            throw std::bad_alloc();
         }
     }
 
