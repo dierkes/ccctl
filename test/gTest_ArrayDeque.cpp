@@ -15,7 +15,7 @@
 #include <ciso646>
 
 #include <gtest/gtest.h>
-#include <ccc/array_deque.h>.h>
+#include <ccc/array_deque.h>
 
 TEST(ArrayDeque, basic)
 {
