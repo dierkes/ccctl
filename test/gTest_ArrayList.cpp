@@ -15,8 +15,8 @@
 #include <ciso646>
 
 #include <gtest/gtest.h>
-#include <ccc/array_list.h>
 #include <ccc/iterator.h>
+#include <ccc/pod_list.h>
 
 #include <list>
 #include <iostream>
@@ -25,9 +25,9 @@
 #include <iostream>
 
 template <class T, class Alloc, class SizeType, SizeType Capacity>
-bool operator==(ccc::ArrayList<T, SizeType, Capacity>& lhs, std::list<T, Alloc>& rhs)
+bool operator==(ccc::PODList<T, SizeType, Capacity>& lhs, std::list<T, Alloc>& rhs)
 {
-    typedef ccc::ArrayList<T, SizeType, Capacity> tLHS;
+    typedef ccc::PODList<T, SizeType, Capacity> tLHS;
     typedef std::list<T, Alloc> tRHS;
     bool bSuccess = false;
     if (lhs.size() == rhs.size())
@@ -53,9 +53,9 @@ std::vector<T>& operator<<(std::vector<T>& v, const T& o)
 }
 
 template <class T, class SizeType, SizeType Capacity>
-bool operator==(ccc::ArrayList<T, SizeType, Capacity>& lhs, std::vector<T>& rhs)
+bool operator==(ccc::PODList<T, SizeType, Capacity>& lhs, std::vector<T>& rhs)
 {
-    typedef ccc::ArrayList<T, SizeType, Capacity> tLHS;
+    typedef ccc::PODList<T, SizeType, Capacity> tLHS;
     typedef const std::vector<T> tRHS;
     bool bSuccess = false;
     if (lhs.size() == rhs.size())
@@ -91,13 +91,13 @@ private:
     double m_y;
 };
 
-TEST(ArrayList, initialization)
+TEST(PODList, initialization)
 {
     typedef int value_type;
     typedef unsigned int size_type;
     const size_type Capacity = 7;
 
-    typedef ccc::ArrayList<int, size_type, Capacity> ListOfInts;
+    typedef ccc::PODList<int, size_type, Capacity> ListOfInts;
 
     ListOfInts A = ListOfInts();
     EXPECT_EQ(0, A.size());
@@ -118,7 +118,7 @@ TEST(ArrayList, initialization)
     EXPECT_EQ(0, B.m_Deallocated.size());
     EXPECT_NO_THROW(B.emplace(B.end()));
 
-    typedef ccc::ArrayList<tPOD, size_type, Capacity> ListOfPODs;
+    typedef ccc::PODList<tPOD, size_type, Capacity> ListOfPODs;
 
     ListOfPODs C = ListOfPODs();
     EXPECT_EQ(0, C.size());
@@ -136,7 +136,7 @@ TEST(ArrayList, initialization)
 //    EXPECT_NO_THROW(D.emplace_back());
 //    EXPECT_NO_THROW(D.emplace(D.end()));
 
-    typedef ccc::ArrayList<cNoPOD, size_type, Capacity> ListOfNonPODs;
+    typedef ccc::PODList<cNoPOD, size_type, Capacity> ListOfNonPODs;
 
     ListOfNonPODs E = ListOfNonPODs();
     EXPECT_EQ(0, E.size());
@@ -164,14 +164,14 @@ TEST(ArrayList, initialization)
 //    EXPECT_NO_THROW(F.emplace(F.end()));
 }
 
-TEST(ArrayList, basic)
+TEST(PODList, basic)
 {
 //    std::cout << "feddisch" << std::endl;
     typedef int value_type;
     typedef unsigned int size_type;
     const size_type Capacity = 7;
     typedef std::vector<value_type> CmpList;
-    typedef ccc::ArrayList<value_type, size_type, Capacity> MyList;
+    typedef ccc::PODList<value_type, size_type, Capacity> MyList;
     MyList A = MyList();
     std::list<value_type> C = std::list<value_type>();
     value_type array[Capacity] = { 5 };

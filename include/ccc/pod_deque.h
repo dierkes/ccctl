@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef CCC_ARRAY_DEQUE_H_
-#define CCC_ARRAY_DEQUE_H_
+#ifndef CCC_POD_DEQUE_H_
+#define CCC_POD_DEQUE_H_
 
 #include <ciso646>
 #include <cstddef>
@@ -33,7 +33,7 @@ namespace ccc
  * Noncompliance: No swap method, ...
  */
 template <class T, class SizeType, SizeType Capacity, bool UseRawMemOps = ccc::is_trivially_copyable_guaranteed<T>::value>
-struct ArrayDeque
+struct PODDeque
 {
     typedef T value_type;
     typedef value_type* pointer;
@@ -43,7 +43,7 @@ struct ArrayDeque
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef ArrayDeque<T, SizeType, Capacity, UseRawMemOps> container_type; // necessary for random access iterator
+    typedef PODDeque<T, SizeType, Capacity, UseRawMemOps> container_type; // necessary for random access iterator
 
     template <class T_>
     struct RandomAccessIterator
@@ -651,4 +651,4 @@ struct ArrayDeque
 
 }
 
-#endif /* CCC_ARRAY_DEQUE_H_ */
+#endif /* CCC_POD_DEQUE_H_ */

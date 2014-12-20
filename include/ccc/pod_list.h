@@ -8,18 +8,18 @@
  *
  */
 
-#ifndef CCC_ARRAY_LIST_H_
-#define CCC_ARRAY_LIST_H_
+#ifndef CCC_POD_LIST_H_
+#define CCC_POD_LIST_H_
 
 #include <ccc/compat.h>
-#include <ccc/array_stack.h>
 #include <ccc/iterator.h>
+#include <ccc/pod_stack.h>
 
 namespace ccc
 {
 
 template <class T, class SizeType, SizeType Capacity>
-struct ArrayList
+struct PODList
 {
     typedef T value_type;
     typedef value_type* pointer;
@@ -29,7 +29,7 @@ struct ArrayList
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef ArrayList<T, SizeType, Capacity> container_type; // necessary for iterator
+    typedef PODList<T, SizeType, Capacity> container_type; // necessary for iterator
 
     typedef size_type node_index_type;
 
@@ -44,7 +44,7 @@ struct ArrayList
     size_type m_Size;
     node_type m_Nodes[Capacity + 1];
     value_type m_Values[Capacity];
-    ArrayStack<node_index_type, size_type, Capacity + 1> m_Deallocated;
+    PODStack<node_index_type, size_type, Capacity + 1> m_Deallocated;
     static const node_index_type m_Anchor = 0;
 
     template <class T_>
@@ -471,4 +471,4 @@ struct ArrayList
 
 }
 
-#endif /* CCC_ARRAY_LIST_H_ */
+#endif /* CCC_POD_LIST_H_ */

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef CCC_ARRAY_STACK_H_
-#define CCC_ARRAY_STACK_H_
+#ifndef CCC_POD_STACK_H_
+#define CCC_POD_STACK_H_
 
 #include <ciso646>
 #include <cstddef>
@@ -32,7 +32,7 @@ namespace ccc
  * Noncompliance: No swap method, ...
  */
 template <class T, class SizeType, SizeType Capacity, bool UseRawMemOps = ccc::is_trivially_copyable_guaranteed<T>::value>
-struct ArrayStack
+struct PODStack
 {
     typedef T value_type;
     typedef value_type* pointer;
@@ -361,4 +361,4 @@ struct ArrayStack
 
 }
 
-#endif /* CCC_ARRAY_STACK_H_ */
+#endif /* CCC_POD_STACK_H_ */

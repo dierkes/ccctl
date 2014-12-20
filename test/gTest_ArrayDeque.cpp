@@ -12,11 +12,10 @@
  *
  */
 
+#include <ccc/pod_deque.h>
 #include <ciso646>
 
 #include <gtest/gtest.h>
-#include <ccc/array_deque.h>
-
 #include <deque>
 #include <iostream>
 #include <vector>
@@ -44,9 +43,9 @@
 //}
 
 template <class T, class Alloc, class SizeType, SizeType Capacity, bool UseRawMemOps>
-bool operator==(ccc::ArrayDeque<T, SizeType, Capacity, UseRawMemOps>& lhs, std::deque<T, Alloc>& rhs)
+bool operator==(ccc::PODDeque<T, SizeType, Capacity, UseRawMemOps>& lhs, std::deque<T, Alloc>& rhs)
 {
-    typedef ccc::ArrayDeque<T, SizeType, Capacity, UseRawMemOps> tLHS;
+    typedef ccc::PODDeque<T, SizeType, Capacity, UseRawMemOps> tLHS;
     typedef std::deque<T, Alloc> tRHS;
     bool bSuccess = false;
     if (lhs.size() == rhs.size())
@@ -72,9 +71,9 @@ std::vector<T>& operator<<(std::vector<T>& v, const T& o)
 }
 
 template <class T, class SizeType, SizeType Capacity, bool UseRawMemOps>
-bool operator==(ccc::ArrayDeque<T, SizeType, Capacity, UseRawMemOps>& lhs, std::vector<T>& rhs)
+bool operator==(ccc::PODDeque<T, SizeType, Capacity, UseRawMemOps>& lhs, std::vector<T>& rhs)
 {
-    typedef ccc::ArrayDeque<T, SizeType, Capacity, UseRawMemOps> tLHS;
+    typedef ccc::PODDeque<T, SizeType, Capacity, UseRawMemOps> tLHS;
     typedef const std::vector<T> tRHS;
     bool bSuccess = false;
     if (lhs.size() == rhs.size())
@@ -92,13 +91,13 @@ bool operator==(ccc::ArrayDeque<T, SizeType, Capacity, UseRawMemOps>& lhs, std::
     return bSuccess;
 }
 
-TEST(ArrayDeque, basic)
+TEST(PODDeque, basic)
 {
     typedef int value_type;
     typedef unsigned int size_type;
     const size_type Capacity = 7;
     typedef std::vector<value_type> CmpList;
-    typedef ccc::ArrayDeque<value_type, size_type, Capacity, false> MyDeque;
+    typedef ccc::PODDeque<value_type, size_type, Capacity, false> MyDeque;
     MyDeque A = MyDeque();
     std::deque<value_type> C = std::deque<value_type>();
 //    value_type array[Capacity] = {5};

@@ -12,17 +12,17 @@
  *
  */
 
+#include <ccc/pod_stack.h>
 #include <ciso646>
 
 #include <gtest/gtest.h>
-#include <ccc/array_stack.h>
 
-TEST(ArrayStack, basic)
+TEST(PODStack, basic)
 {
     typedef int value_type;
     typedef unsigned int size_type;
     const size_type Capacity = 7;
-    ccc::ArrayStack<value_type, size_type, Capacity, false> A = ccc::ArrayStack<value_type, size_type, Capacity, false>();
+    ccc::PODStack<value_type, size_type, Capacity, false> A = ccc::PODStack<value_type, size_type, Capacity, false>();
     EXPECT_EQ(Capacity, A.max_size());
     EXPECT_EQ(0, A.size());
     EXPECT_NO_THROW(A.push_back(5)); // (5)
