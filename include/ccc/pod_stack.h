@@ -47,9 +47,9 @@ struct PODStack
     typedef std::reverse_iterator<iterator> reverse_iterator; // ToDo: what does this mean in case of a pointer, in general it's a class derivation
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator; // ToDo: see above
 
-    value_type m_Array[Capacity];
     static const size_type m_Begin = 0; // points at the first element
     size_type m_End; // points at the element behind the last valid element
+    value_type m_Array[Capacity];
 
     pointer data(size_type Index)
     {

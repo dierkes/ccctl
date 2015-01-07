@@ -320,9 +320,9 @@ struct PODDeque
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    value_type m_Array[Capacity + 1]; // well, we might get rid of the extra element, but for the sake of simplicity let's keep it for now
     size_type m_Begin; // points at the first element
     size_type m_End; // points at the element
+    value_type m_Array[Capacity + 1]; // well, we might get rid of the extra element, but for the sake of simplicity let's keep it for now
 
     pointer data(size_type PhysicalIndex)
     {
