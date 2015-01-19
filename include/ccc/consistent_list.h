@@ -22,12 +22,14 @@ struct ConsistentList: public PODList<T, SizeType, Capacity>
     ConsistentList()
     {
         this->m_Size = 0;
-        this->m_Deallocated = PODStack<node_index_type, size_type, Capacity + 1>();
+        this->m_Deallocated = PODStack<typename PODList<T, SizeType, Capacity>::node_index_type, typename PODList<T, SizeType, Capacity>::size_type, Capacity + 1>();
+        this->m_Nodes[this->m_Anchor] = typename PODList<T, SizeType, Capacity>::node_type();
     }
 
     ~ConsistentList()
     {
         // destroy all (valid) elements?
+        this->clear();
     }
 };
 
