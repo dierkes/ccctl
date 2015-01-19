@@ -15,25 +15,35 @@
 #include <ccc/consistent_deque.h>
 
 #include "gTest_Container.h"
+#include "gTest_SequenceContainer.h"
 
 #include <type_traits>
+#include <vector>
 
-typedef ccc::ConsistentDeque<char, std::size_t, 10> DequeOfChars;
-typedef ccc::ConsistentDeque<ccc::tPOD, std::size_t, 10> DequeOfPODs;
-typedef ccc::ConsistentDeque<ccc::cNoPOD, std::size_t, 10> DequeOfNonPODs;
-
-template<> std::size_t StaticContainerTest<DequeOfChars>::m_Capacity = 10;
-template<> std::size_t StaticContainerTest<DequeOfPODs>::m_Capacity = 10;
-template<> std::size_t StaticContainerTest<DequeOfNonPODs>::m_Capacity = 10;
+typedef ccc::ConsistentDeque<int, std::size_t, 10> ContainerOfInts;
+typedef ccc::ConsistentDeque<tPOD, std::size_t, 10> ContainerOfPODs;
+typedef ccc::ConsistentDeque<cNoPOD, std::size_t, 10> ContainerOfNonPODs;
 
 #if (__cplusplus >= 201103L)
 TEST(ConsistentDeque, TypeTraits_Cpp11)
 {
-    EXPECT_FALSE(std::is_pod<DequeOfChars>::value);
-    EXPECT_TRUE(std::is_standard_layout<DequeOfChars>::value);
+    EXPECT_TRUE(std::is_pod<ContainerOfInts>::value);
+    EXPECT_TRUE(std::is_pod<ContainerOfPODs>::value);
 }
 #endif
 
-typedef ::testing::Types<DequeOfChars, DequeOfPODs, DequeOfNonPODs> DequeImplementations;
-INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, RegularContainerTest, DequeImplementations);
-INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, StaticContainerTest, DequeImplementations);
+template<> std::size_t TestOfStaticContainer<ContainerOfInts>::m_Capacity = 10;
+template<> std::size_t TestOfStaticContainer<ContainerOfPODs>::m_Capacity = 10;
+template<> std::size_t TestOfStaticContainer<ContainerOfNonPODs>::m_Capacity = 10;
+
+typedef ::testing::Types<ContainerOfInts, ContainerOfPODs, ContainerOfNonPODs> ContainerImplementations;
+INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, TestOfContainer, ContainerImplementations);
+INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, TestOfPODContainer, ContainerImplementations);
+INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, TestOfStaticContainer, ContainerImplementations);
+
+typedef reftest<ccc::ConsistentDeque<int, std::size_t, 10>, std::vector<int> > RefContainerOfInts;
+typedef reftest<ccc::ConsistentDeque<tPOD, std::size_t, 10>, std::vector<tPOD> > RefContainerOfPODs;
+typedef reftest<ccc::ConsistentDeque<cNoPOD, std::size_t, 10>, std::vector<cNoPOD> > RefContainersOfNonPODs;
+
+typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs, RefContainersOfNonPODs> RefContainerImplementations;
+INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, TestOfSequenceContainer, RefContainerImplementations);

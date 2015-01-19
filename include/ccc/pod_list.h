@@ -13,7 +13,7 @@
 
 #include <ccc/compat.h>
 #include <ccc/iterator.h>
-#include <ccc/pod_stack.h>
+#include <ccc/pod_vector.h>
 
 namespace ccc
 {
@@ -44,7 +44,7 @@ struct PODList
     size_type m_Size;
     node_type m_Nodes[Capacity + 1];
     value_type m_Values[Capacity];
-    PODStack<node_index_type, size_type, Capacity + 1> m_Deallocated;
+    PODVector<node_index_type, size_type, Capacity + 1> m_Deallocated;
     static const node_index_type m_Anchor = 0;
 
     template <class T_>

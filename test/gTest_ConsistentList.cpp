@@ -19,12 +19,12 @@
 #include <type_traits>
 
 typedef ccc::ConsistentList<char, std::size_t, 10> ListOfChars;
-typedef ccc::ConsistentList<ccc::tPOD, std::size_t, 10> ListOfPODs;
-typedef ccc::ConsistentList<ccc::cNoPOD, std::size_t, 10> ListOfNonPODs;
+typedef ccc::ConsistentList<tPOD, std::size_t, 10> ListOfPODs;
+typedef ccc::ConsistentList<cNoPOD, std::size_t, 10> ListOfNonPODs;
 
-template<> std::size_t StaticContainerTest<ListOfChars>::m_Capacity = 10;
-template<> std::size_t StaticContainerTest<ListOfPODs>::m_Capacity = 10;
-template<> std::size_t StaticContainerTest<ListOfNonPODs>::m_Capacity = 10;
+template<> std::size_t TestOfStaticContainer<ListOfChars>::m_Capacity = 10;
+template<> std::size_t TestOfStaticContainer<ListOfPODs>::m_Capacity = 10;
+template<> std::size_t TestOfStaticContainer<ListOfNonPODs>::m_Capacity = 10;
 
 #if (__cplusplus >= 201103L)
 TEST(ConsistentList, TypeTraits_Cpp11)
@@ -35,14 +35,14 @@ TEST(ConsistentList, TypeTraits_Cpp11)
 #endif
 
 typedef ::testing::Types<ListOfChars, ListOfPODs, ListOfNonPODs> ListImplementations;
-INSTANTIATE_TYPED_TEST_CASE_P(ConsistentList, RegularContainerTest, ListImplementations);
-INSTANTIATE_TYPED_TEST_CASE_P(ConsistentList, StaticContainerTest, ListImplementations);
+INSTANTIATE_TYPED_TEST_CASE_P(ConsistentList, TestOfRegularContainer, ListImplementations);
+INSTANTIATE_TYPED_TEST_CASE_P(ConsistentList, TestOfStaticContainer, ListImplementations);
 
 //typedef ::testing::Types<reftest<> >
 
 //INSTANTIATE_TYPED_TEST_CASE_P(ConsistentList, StaticContainerTest, ListImplementations);
 
-typedef ccc::ConsistentList<ccc::cThrowWhenConstructed, std::size_t, 10> ListOfThrowers;
+typedef ccc::ConsistentList<cThrowWhenConstructed, std::size_t, 10> ListOfThrowers;
 
 TEST(ConsistentList, ElementInitialization)
 {

@@ -25,8 +25,3 @@ TEST(StaticList, TypeTraits_Cpp11)
 }
 #endif
 
-TEST(StaticList, Initialization)
-{
-    ccc::Test_DefaultInitialization<ListOfInts>();
-    ccc::Test_ValueInitialization<ListOfInts>();
-}

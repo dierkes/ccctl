@@ -32,7 +32,7 @@ namespace ccc
  * Noncompliance: No swap method, ...
  */
 template <class T, class SizeType, SizeType Capacity, bool UseRawMemOps = ccc::is_trivially_copyable_guaranteed<T>::value>
-struct PODStack
+struct PODVector
 {
     typedef T value_type;
     typedef value_type* pointer;
@@ -181,26 +181,27 @@ struct PODStack
      * We ...
      */
 
-    void push_front(const_reference Value)
-    {
-        if (size() < Capacity)
-        {
-            if (UseRawMemOps)
-            {
-                std::memmove(data(1), data(0), size() * sizeof(value_type));
-            }
-            else
-            {
-                std::copy_backward(begin(), end(), end() + 1);
-            }
-            m_End = m_End + 1;
-            m_Array[m_Begin] = Value;
-        }
-        else
-        {
-            throw std::bad_alloc();
-        }
-    }
+//     A vector, as defined by the standard, does not have the methods push_front and pop_front.
+//    void push_front(const_reference Value)
+//    {
+//        if (size() < Capacity)
+//        {
+//            if (UseRawMemOps)
+//            {
+//                std::memmove(data(1), data(0), size() * sizeof(value_type));
+//            }
+//            else
+//            {
+//                std::copy_backward(begin(), end(), end() + 1);
+//            }
+//            m_End = m_End + 1;
+//            m_Array[m_Begin] = Value;
+//        }
+//        else
+//        {
+//            throw std::bad_alloc();
+//        }
+//    }
 
     void push_back(const_reference Value)
     {
@@ -215,26 +216,26 @@ struct PODStack
         }
     }
 
-    void emplace_front()
-    {
-        if (size() < Capacity)
-        {
-            if (UseRawMemOps)
-            {
-                std::memmove(data(1), data(0), size() * sizeof(value_type));
-            }
-            else
-            {
-                std::copy_backward(begin(), end(), end() + 1);
-            }
-            m_End = m_End + 1;
-            m_Array[m_Begin] = value_type();
-        }
-        else
-        {
-            throw std::bad_alloc();
-        }
-    }
+//    void emplace_front()
+//    {
+//        if (size() < Capacity)
+//        {
+//            if (UseRawMemOps)
+//            {
+//                std::memmove(data(1), data(0), size() * sizeof(value_type));
+//            }
+//            else
+//            {
+//                std::copy_backward(begin(), end(), end() + 1);
+//            }
+//            m_End = m_End + 1;
+//            m_Array[m_Begin] = value_type();
+//        }
+//        else
+//        {
+//            throw std::bad_alloc();
+//        }
+//    }
 
     void emplace_back()
     {
@@ -249,23 +250,23 @@ struct PODStack
         }
     }
 
-    void pop_front()
-    {
-        if (not empty())
-        {
-            // ToDo: Do we have to destroy the element?
-            m_Array[m_Begin] = value_type(); // destroy element by overwriting
-            if (UseRawMemOps)
-            {
-                std::memmove(data(0), data(1), (size() - 1) * sizeof(value_type));
-            }
-            else
-            {
-                std::copy(begin() + 1, end(), begin());
-            }
-            m_End = m_End - 1;
-        }
-    }
+//    void pop_front()
+//    {
+//        if (not empty())
+//        {
+//            // ToDo: Do we have to destroy the element?
+//            m_Array[m_Begin] = value_type(); // destroy element by overwriting
+//            if (UseRawMemOps)
+//            {
+//                std::memmove(data(0), data(1), (size() - 1) * sizeof(value_type));
+//            }
+//            else
+//            {
+//                std::copy(begin() + 1, end(), begin());
+//            }
+//            m_End = m_End - 1;
+//        }
+//    }
 
     void pop_back()
     {

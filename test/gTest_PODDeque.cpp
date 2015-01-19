@@ -13,142 +13,52 @@
  */
 
 #include <ccc/pod_deque.h>
-#include <ciso646>
 
-#include <gtest/gtest.h>
+#include "gTest_Container.h"
+#include "gTest_SequenceContainer.h"
+
+#include <type_traits>
 #include <deque>
-#include <iostream>
-#include <vector>
 
-// a lot of problems because of const
-//template <class T, class Alloc, class SizeType, SizeType Capacity, bool UseRawMemOps>
-//bool operator==(const ccc::ArrayDeque<T, SizeType, Capacity, UseRawMemOps>& lhs, const std::deque<T, Alloc>& rhs)
-//{
-//    typedef const ccc::ArrayDeque<T, SizeType, Capacity, UseRawMemOps> tLHS;
-//    typedef std::deque<T, Alloc> tRHS;
-//    bool bSuccess = false;
-//    if (lhs.size() == rhs.size())
-//    {
-//        bSuccess = true;
-//        tLHS::const_iterator itlhs = lhs.begin();
-//        tRHS::const_iterator itrhs = rhs.begin();
-//        while (itlhs != lhs.end())
-//        {
-//            bSuccess &= *itlhs == *itrhs;
-//            ++itlhs;
-//            ++itrhs;
-//        }
-//    }
-//    return bSuccess;
-//}
+typedef ccc::PODDeque<int, std::size_t, 10> ContainerOfInts;
+typedef ccc::PODDeque<tPOD, std::size_t, 10> ContainerOfPODs;
+typedef ccc::PODDeque<cNoPOD, std::size_t, 10> ContainerOfNonPODs;
 
-template <class T, class Alloc, class SizeType, SizeType Capacity, bool UseRawMemOps>
-bool operator==(ccc::PODDeque<T, SizeType, Capacity, UseRawMemOps>& lhs, std::deque<T, Alloc>& rhs)
+#if (__cplusplus >= 201103L)
+TEST(PODDeque, TypeTraits_Cpp11)
 {
-    typedef ccc::PODDeque<T, SizeType, Capacity, UseRawMemOps> tLHS;
-    typedef std::deque<T, Alloc> tRHS;
-    bool bSuccess = false;
-    if (lhs.size() == rhs.size())
-    {
-        bSuccess = true;
-        typename tLHS::iterator itlhs = lhs.begin();
-        typename tRHS::iterator itrhs = rhs.begin();
-        while (itlhs != lhs.end())
-        {
-            bSuccess &= *itlhs == *itrhs;
-            ++itlhs;
-            ++itrhs;
-        }
-    }
-    return bSuccess;
+    EXPECT_TRUE(std::is_pod<ContainerOfInts>::value);
+    EXPECT_TRUE(std::is_pod<ContainerOfPODs>::value);
 }
+#endif
 
-template <class T>
-std::vector<T>& operator<<(std::vector<T>& v, const T& o)
-{
-  v.push_back(o);
-  return v;
-}
+template<> std::size_t TestOfStaticContainer<ContainerOfInts>::m_Capacity = 10;
+template<> std::size_t TestOfStaticContainer<ContainerOfPODs>::m_Capacity = 10;
+template<> std::size_t TestOfStaticContainer<ContainerOfNonPODs>::m_Capacity = 10;
 
-template <class T, class SizeType, SizeType Capacity, bool UseRawMemOps>
-bool operator==(ccc::PODDeque<T, SizeType, Capacity, UseRawMemOps>& lhs, std::vector<T>& rhs)
-{
-    typedef ccc::PODDeque<T, SizeType, Capacity, UseRawMemOps> tLHS;
-    typedef const std::vector<T> tRHS;
-    bool bSuccess = false;
-    if (lhs.size() == rhs.size())
-    {
-        bSuccess = true;
-        typename tLHS::iterator itlhs = lhs.begin();
-        typename tRHS::iterator itrhs = rhs.begin();
-        while (itlhs != lhs.end())
-        {
-            bSuccess &= *itlhs == *itrhs;
-            ++itlhs;
-            ++itrhs;
-        }
-    }
-    return bSuccess;
-}
+typedef ::testing::Types<ContainerOfInts, ContainerOfPODs, ContainerOfNonPODs> ContainerImplementations;
+INSTANTIATE_TYPED_TEST_CASE_P(PODDeque, TestOfContainer, ContainerImplementations);
+INSTANTIATE_TYPED_TEST_CASE_P(PODDeque, TestOfPODContainer, ContainerImplementations);
+INSTANTIATE_TYPED_TEST_CASE_P(PODDeque, TestOfStaticContainer, ContainerImplementations);
 
-TEST(PODDeque, basic)
+typedef reftest<ccc::PODDeque<int, std::size_t, 10>, std::deque<int> > RefContainerOfInts;
+typedef reftest<ccc::PODDeque<tPOD, std::size_t, 10>, std::deque<tPOD> > RefContainerOfPODs;
+typedef reftest<ccc::PODDeque<cNoPOD, std::size_t, 10>, std::deque<cNoPOD> > RefContainersOfNonPODs;
+
+typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs, RefContainersOfNonPODs> RefContainerImplementations;
+INSTANTIATE_TYPED_TEST_CASE_P(PODDeque, TestOfSequenceContainer, RefContainerImplementations);
+
+TEST(PODDeque, asdf)
 {
-    typedef int value_type;
-    typedef unsigned int size_type;
-    const size_type Capacity = 7;
-    typedef std::vector<value_type> CmpList;
-    typedef ccc::PODDeque<value_type, size_type, Capacity, false> MyDeque;
-    MyDeque A = MyDeque();
-    std::deque<value_type> C = std::deque<value_type>();
-//    value_type array[Capacity] = {5};
-    std::vector<value_type> V = std::vector<value_type>(0);
-    V << 1; V.clear();
-    EXPECT_EQ(Capacity, A.max_size());
-    EXPECT_EQ(static_cast<size_type>(0), A.size());
-    EXPECT_NO_THROW(A.push_back(5)); // (5)
-    C.push_back(5);
-    EXPECT_TRUE(A == C);
-    EXPECT_TRUE(A == (V << 5)); V.clear();
-    EXPECT_EQ(5, A.front());
-    EXPECT_EQ(5, A.back());
-    EXPECT_NO_THROW(A.pop_front());
-    EXPECT_EQ(static_cast<size_type>(0), A.size());
-    EXPECT_EQ(value_type(), A[0]); // value should be default initialized
-    EXPECT_NO_THROW(A.push_front(3));
-    EXPECT_TRUE(A == (V << 3)); V.clear();
-    EXPECT_NO_THROW(A.push_back(123));
-    EXPECT_TRUE(A == (V << 3 << 123)); V.clear();
-    EXPECT_NO_THROW(A.push_front(234));
-    EXPECT_TRUE(A == (V << 234 << 3 << 123)); V.clear();
-    EXPECT_EQ(234, A.front());
-    EXPECT_EQ(123, A.back());
-    A.insert(A.begin(), 2);
-    EXPECT_TRUE(A == (V << 2 << 234 << 3 << 123)); V.clear();
-    A.insert(A.end(), 45);
-    EXPECT_TRUE(A == (V << 2 << 234 << 3 << 123 << 45)); V.clear();
-    A.insert(A.begin() + 1, 13);
-    EXPECT_TRUE(A == (V << 2 << 13 << 234 << 3 << 123 << 45)); V.clear();
-    A.insert(A.end() - 2, 15);
-    EXPECT_TRUE(A == (V << 2 << 13 << 234 << 3 << 15 << 123 << 45)); V.clear();
-    EXPECT_THROW(A.push_back(678), std::bad_alloc);
-    EXPECT_THROW(A.push_front(678), std::bad_alloc);
-    EXPECT_TRUE(A == (V << 2 << 13 << 234 << 3 << 15 << 123 << 45)); V.clear();
-    A.erase(A.begin());
-    EXPECT_TRUE(A == (V << 13 << 234 << 3 << 15 << 123 << 45)); V.clear();
-    A.erase(A.begin() + 1);
-    EXPECT_TRUE(A == (V << 13 << 3 << 15 << 123 << 45)); V.clear();
-    A.erase(A.end() - 2);
-    EXPECT_TRUE(A == (V << 13 << 3 << 15 << 45)); V.clear();
-    EXPECT_NO_THROW(A.emplace_front());
-    EXPECT_TRUE(A == (V << value_type() << 13 << 3 << 15 << 45)); V.clear();
-    EXPECT_NO_THROW(A.emplace_back());
-    EXPECT_TRUE(A == (V << value_type() << 13 << 3 << 15 << 45 << value_type())); V.clear();
-    MyDeque::iterator itEmplaced = A.emplace(A.begin() + 2);
-    EXPECT_TRUE(A == (V << value_type() << 13 << value_type() << 3 << 15 << 45 << value_type())); V.clear();
-    *itEmplaced = 5;
-    EXPECT_TRUE(A == (V << value_type() << 13 << 5 << 3 << 15 << 45 << value_type())); V.clear();
-    EXPECT_THROW(A.emplace_front(), std::bad_alloc);
-    EXPECT_THROW(A.emplace_back(), std::bad_alloc);
-    EXPECT_THROW(A.emplace(A.begin()), std::bad_alloc);
-//    EXPECT_TRUE(false);
+    ccc::PODDeque<int, unsigned int, 10, true> c = ccc::PODDeque<int, unsigned int, 10, true>();
+    std::deque<int> d;
+    EXPECT_TRUE(c.empty() and d.empty());
+    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
+    c.insert(c.end(), 1);
+    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
+    c.insert(c.end(), 2);
+    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
+    c.insert(c.end(), 3);
+    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
+    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
 }

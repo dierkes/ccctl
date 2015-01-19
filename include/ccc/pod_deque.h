@@ -63,7 +63,7 @@ struct PODDeque
         {
         }
 
-        explicit RandomAccessIterator(container_type* Container, size_type PhysicalIndex)
+        RandomAccessIterator(container_type* Container, size_type PhysicalIndex)
                 : m_Container(Container), m_PhysicalIndex(PhysicalIndex)
         {
         }
@@ -187,7 +187,7 @@ struct PODDeque
         typedef RandomAccessConstIterator<T_> iterator_type;
         typedef std::random_access_iterator_tag iterator_category;
 
-        container_type* m_Container;
+        const container_type* m_Container;
         size_type m_PhysicalIndex;
 
         RandomAccessConstIterator()
@@ -195,7 +195,7 @@ struct PODDeque
         {
         }
 
-        explicit RandomAccessConstIterator(const container_type* Container, size_type PhysicalIndex)
+        RandomAccessConstIterator(const container_type* Container, size_type PhysicalIndex)
                 : m_Container(Container), m_PhysicalIndex(PhysicalIndex)
         {
         }
