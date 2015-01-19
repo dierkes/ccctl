@@ -13,6 +13,7 @@
  */
 
 #include <ciso646>
+#include <type_traits>
 
 #include <gtest/gtest.h>
 #include <ccc/iterator.h>
@@ -23,6 +24,8 @@
 #include <vector>
 
 #include <iostream>
+
+#include "gTest_Container.h"
 
 template <class T, class Alloc, class SizeType, SizeType Capacity>
 bool operator==(ccc::PODList<T, SizeType, Capacity>& lhs, std::list<T, Alloc>& rhs)
@@ -73,32 +76,31 @@ bool operator==(ccc::PODList<T, SizeType, Capacity>& lhs, std::vector<T>& rhs)
     return bSuccess;
 }
 
-struct tPOD
-{
-    int x;
-    double y;
-};
+typedef int value_type;
+typedef unsigned int size_type;
+const size_type Capacity = 7;
 
-class cNoPOD
+typedef ccc::PODList<int, size_type, Capacity> ListOfInts;
+typedef ccc::PODList<ccc::tPOD, size_type, Capacity> ListOfPODs;
+typedef ccc::PODList<ccc::cNoPOD, size_type, Capacity> ListOfNonPODs;
+
+TEST(PODList, TypeTraits)
 {
-public:
-    cNoPOD()
-            : m_x(1), m_y(1.0)
-    {
-    }
-private:
-    int m_x;
-    double m_y;
-};
+}
+
+#if (__cplusplus >= 201103L)
+TEST(PODList, TypeTraits_Cpp11)
+{
+    EXPECT_TRUE(std::is_pod<ccc::tPOD>::value);
+    EXPECT_FALSE(std::is_pod<ccc::cNoPOD>::value);
+    EXPECT_TRUE(std::is_pod<ListOfInts>::value);
+    EXPECT_TRUE(std::is_pod<ListOfPODs>::value);
+    EXPECT_FALSE(std::is_pod<ListOfNonPODs>::value);
+}
+#endif
 
 TEST(PODList, initialization)
 {
-    typedef int value_type;
-    typedef unsigned int size_type;
-    const size_type Capacity = 7;
-
-    typedef ccc::PODList<int, size_type, Capacity> ListOfInts;
-
     ListOfInts A = ListOfInts();
     EXPECT_EQ(0, A.size());
     EXPECT_EQ(0, A.m_Nodes[0].m_Prev);
@@ -118,8 +120,6 @@ TEST(PODList, initialization)
     EXPECT_EQ(0, B.m_Deallocated.size());
     EXPECT_NO_THROW(B.emplace(B.end()));
 
-    typedef ccc::PODList<tPOD, size_type, Capacity> ListOfPODs;
-
     ListOfPODs C = ListOfPODs();
     EXPECT_EQ(0, C.size());
     EXPECT_EQ(0, C.m_Nodes[0].m_Prev);
@@ -127,16 +127,14 @@ TEST(PODList, initialization)
     EXPECT_EQ(0, C.m_Deallocated.size());
     EXPECT_NO_THROW(C.emplace(C.end()));
 
-    ListOfPODs D;
-    EXPECT_EQ(0, D.size());
-    EXPECT_EQ(0, D.m_Nodes[0].m_Prev);
-    EXPECT_EQ(0, D.m_Nodes[0].m_Next);
-    EXPECT_EQ(0, D.m_Deallocated.size());
-    EXPECT_EQ(D.begin(), D.end());
+//    ListOfPODs D;
+//    EXPECT_EQ(0, D.size());
+//    EXPECT_EQ(0, D.m_Nodes[0].m_Prev);
+//    EXPECT_EQ(0, D.m_Nodes[0].m_Next);
+//    EXPECT_EQ(0, D.m_Deallocated.size());
+//    EXPECT_EQ(D.begin(), D.end());
 //    EXPECT_NO_THROW(D.emplace_back());
 //    EXPECT_NO_THROW(D.emplace(D.end()));
-
-    typedef ccc::PODList<cNoPOD, size_type, Capacity> ListOfNonPODs;
 
     ListOfNonPODs E = ListOfNonPODs();
     EXPECT_EQ(0, E.size());
@@ -150,26 +148,32 @@ TEST(PODList, initialization)
 //    EXPECT_EQ(1, E.m_Nodes[0].m_Next);
 //    EXPECT_EQ(0, E.m_Deallocated.size());
 
-    ListOfNonPODs F;
-    EXPECT_EQ(0, F.size());
-    EXPECT_EQ(0, F.m_Nodes[0].m_Prev);
-    EXPECT_EQ(0, F.m_Nodes[0].m_Next);
-    EXPECT_EQ(0, F.m_Deallocated.size());
-    F.clear();
-    EXPECT_EQ(0, F.size());
-    EXPECT_EQ(0, F.m_Nodes[0].m_Prev);
-    EXPECT_EQ(0, F.m_Nodes[0].m_Next);
-    EXPECT_EQ(0, F.m_Deallocated.size());
-    EXPECT_NO_THROW(F.emplace_back());
+//    ListOfNonPODs F;
+//    EXPECT_EQ(0, F.size());
+//    EXPECT_EQ(0, F.m_Nodes[0].m_Prev);
+//    EXPECT_EQ(0, F.m_Nodes[0].m_Next);
+//    EXPECT_EQ(0, F.m_Deallocated.size());
+//    F.clear();
+//    EXPECT_EQ(0, F.size());
+//    EXPECT_EQ(0, F.m_Nodes[0].m_Prev);
+//    EXPECT_EQ(0, F.m_Nodes[0].m_Next);
+//    EXPECT_EQ(0, F.m_Deallocated.size());
+//    EXPECT_NO_THROW(F.emplace_back());
 //    EXPECT_NO_THROW(F.emplace(F.end()));
+
+    ccc::Test_ValueInitialization<ListOfInts>();
+    ccc::Test_ValueInitialization<ListOfPODs>();
+    ccc::Test_ValueInitialization<ListOfNonPODs>();
+    ccc::Test_DefaultInitialization<ListOfInts>();
+    ccc::Test_DefaultInitialization<ListOfPODs>();
+    ccc::Test_DefaultInitialization<ListOfNonPODs>();
 }
+
+typedef ::testing::Types<ListOfInts, ListOfPODs> ListImplementations;
+INSTANTIATE_TYPED_TEST_CASE_P(PODList, BaseContainerTest, ListImplementations);
 
 TEST(PODList, basic)
 {
-//    std::cout << "feddisch" << std::endl;
-    typedef int value_type;
-    typedef unsigned int size_type;
-    const size_type Capacity = 7;
     typedef std::vector<value_type> CmpList;
     typedef ccc::PODList<value_type, size_type, Capacity> MyList;
     MyList A = MyList();
