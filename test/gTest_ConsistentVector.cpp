@@ -28,7 +28,7 @@ typedef ccc::ConsistentVector<cNoPOD, std::size_t, 10> VectorOfNonPODs;
 #if (__cplusplus >= 201103L)
 TEST(ConsistentVector, TypeTraits_Cpp11)
 {
-    EXPECT_FALSE(std::is_pod<VectorOfChars>::value);
+    EXPECT_TRUE(std::is_standard_layout<VectorOfChars>::value);
     EXPECT_TRUE(std::is_standard_layout<VectorOfChars>::value);
 }
 #endif

@@ -13,6 +13,7 @@
  */
 
 #include <ccc/pod_deque.h>
+#include <ccc/array.h>
 
 #include "gTest_Container.h"
 #include "gTest_SequenceContainer.h"
@@ -47,18 +48,3 @@ typedef reftest<ccc::PODDeque<cNoPOD, std::size_t, 10>, std::deque<cNoPOD> > Ref
 
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs, RefContainersOfNonPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(PODDeque, TestOfSequenceContainer, RefContainerImplementations);
-
-TEST(PODDeque, asdf)
-{
-    ccc::PODDeque<int, unsigned int, 10, true> c = ccc::PODDeque<int, unsigned int, 10, true>();
-    std::deque<int> d;
-    EXPECT_TRUE(c.empty() and d.empty());
-    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
-    c.insert(c.end(), 1);
-    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
-    c.insert(c.end(), 2);
-    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
-    c.insert(c.end(), 3);
-    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
-    std::cout << PrintContent(c) << ", begin: " << c.begin().m_PhysicalIndex << ", end: " << c.end().m_PhysicalIndex << std::endl;
-}

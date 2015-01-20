@@ -27,8 +27,8 @@ typedef ccc::ConsistentDeque<cNoPOD, std::size_t, 10> ContainerOfNonPODs;
 #if (__cplusplus >= 201103L)
 TEST(ConsistentDeque, TypeTraits_Cpp11)
 {
-    EXPECT_TRUE(std::is_pod<ContainerOfInts>::value);
-    EXPECT_TRUE(std::is_pod<ContainerOfPODs>::value);
+    EXPECT_TRUE(std::is_standard_layout<ContainerOfInts>::value);
+    EXPECT_TRUE(std::is_standard_layout<ContainerOfPODs>::value);
 }
 #endif
 

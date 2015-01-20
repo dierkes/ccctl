@@ -29,7 +29,7 @@ template<> std::size_t TestOfStaticContainer<ListOfNonPODs>::m_Capacity = 10;
 #if (__cplusplus >= 201103L)
 TEST(ConsistentList, TypeTraits_Cpp11)
 {
-    EXPECT_FALSE(std::is_pod<ListOfChars>::value);
+    EXPECT_TRUE(std::is_standard_layout<ListOfChars>::value);
     EXPECT_TRUE(std::is_standard_layout<ListOfChars>::value);
 }
 #endif

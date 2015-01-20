@@ -16,6 +16,7 @@
 #include <cstring>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 
 //#include <utility> // to test adding missing operators automatically
 #include <ccc/compat.h>
@@ -117,8 +118,16 @@ struct PODDeque
 
         // random access iterator requirements:
 
-        iterator_type& operator+=(const difference_type& rhs)
+        iterator_type& operator+=(difference_type rhs)
         {
+            if (0 > rhs)
+            {
+                rhs = (rhs % (Capacity + 1)) - (Capacity + 1);
+            }
+            else
+            {
+                rhs = rhs % (Capacity + 1);
+            }
             if (0 > rhs)
             {
                 m_PhysicalIndex = (-rhs > static_cast<difference_type>(m_PhysicalIndex)) ? (Capacity + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
@@ -156,19 +165,23 @@ struct PODDeque
 
         difference_type operator-(const iterator_type& rhs) // const // must function be const for short version of operator<?
         {
-            if (m_Container->m_Begin <= m_PhysicalIndex and rhs.m_PhysicalIndex <= m_Container->m_End)
+            bool NegativeResult;
+            if (m_Container->m_End < m_Container->m_Begin)
             {
-                return (Capacity + 1 - m_PhysicalIndex) + rhs.m_PhysicalIndex;
-            }
-            else if (m_Container->m_Begin <= rhs.m_PhysicalIndex and m_PhysicalIndex <= m_Container->m_End)
-            {
-                return -(static_cast<difference_type>((Capacity + 1 - rhs.m_PhysicalIndex) + m_PhysicalIndex));
+                NegativeResult = ((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin) % (Capacity + 1)) < ((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin) % (Capacity + 1));
             }
             else
             {
-                return m_PhysicalIndex - rhs.m_PhysicalIndex;
+                NegativeResult = this->m_PhysicalIndex < rhs.m_PhysicalIndex;
             }
-
+            if (NegativeResult)
+            {
+                return ((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex) % (Capacity + 1)) - (Capacity + 1);
+            }
+            else
+            {
+                return (static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex) % (Capacity + 1);
+            }
         }
 
         bool operator<(const iterator_type& rhs)
@@ -254,8 +267,16 @@ struct PODDeque
 
         // random access iterator requirements:
 
-        iterator_type& operator+=(const difference_type& rhs)
+        iterator_type& operator+=(difference_type rhs)
         {
+            if (0 > rhs)
+            {
+                rhs = (rhs % (Capacity + 1)) - (Capacity + 1);
+            }
+            else
+            {
+                rhs = rhs % (Capacity + 1);
+            }
             if (0 > rhs)
             {
                 m_PhysicalIndex = (-rhs > static_cast<difference_type>(m_PhysicalIndex)) ? (Capacity + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
@@ -293,19 +314,23 @@ struct PODDeque
 
         difference_type operator-(const iterator_type& rhs) // const // must function be const for short version of operator<?
         {
-            if (m_Container->m_Begin <= m_PhysicalIndex and rhs.m_PhysicalIndex <= m_Container->m_End)
+            bool NegativeResult;
+            if (m_Container->m_End < m_Container->m_Begin)
             {
-                return (Capacity + 1 - m_PhysicalIndex) + rhs.m_PhysicalIndex;
-            }
-            else if (m_Container->m_Begin <= rhs.m_PhysicalIndex and m_PhysicalIndex <= m_Container->m_End)
-            {
-                return -(static_cast<difference_type>((Capacity + 1 - rhs.m_PhysicalIndex) + m_PhysicalIndex));
+                NegativeResult = ((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin) % (Capacity + 1)) < ((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin) % (Capacity + 1));
             }
             else
             {
-                return m_PhysicalIndex - rhs.m_PhysicalIndex;
+                NegativeResult = this->m_PhysicalIndex < rhs.m_PhysicalIndex;
             }
-
+            if (NegativeResult)
+            {
+                return ((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex) % (Capacity + 1)) - (Capacity + 1);
+            }
+            else
+            {
+                return (static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex) % (Capacity + 1);
+            }
         }
 
         bool operator<(const iterator_type& rhs)
