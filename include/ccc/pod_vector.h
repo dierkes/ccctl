@@ -25,7 +25,7 @@ namespace ccc
 {
 
 /**
- * @brief Consistent, static-capacity stack.
+ * @brief Consistent, static-capacity vector.
  *
  * Constant time: inserting and erasing elements at the end; accessing random elements.
  * Linear time: inserting and erasing elements elsewhere.
