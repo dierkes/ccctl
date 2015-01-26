@@ -20,6 +20,7 @@
 #include <ccc/compat.h>
 #include <ccc/memory.h>
 #include <ccc/type_traits.h>
+#include <ccc/alignment.h>
 
 namespace ccc
 {
@@ -31,7 +32,7 @@ namespace ccc
  * Linear time: inserting and erasing elements elsewhere.
  * Noncompliance: No swap method, ...
  */
-template <class T, class SizeType, SizeType Capacity, bool UseRawMemOps = ccc::is_trivially_copyable_guaranteed<T>::value>
+template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = ccc::is_trivially_copyable_guaranteed<T>::value>
 struct PODVector
 {
     typedef T value_type;
@@ -47,9 +48,13 @@ struct PODVector
     typedef std::reverse_iterator<iterator> reverse_iterator; // ToDo: what does this mean in case of a pointer, in general it's a class derivation
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator; // ToDo: see above
 
-    static const size_type m_Begin = 0; // points at the first element
-    size_type m_End; // points at the element behind the last valid element
-    value_type m_Array[Capacity];
+#if (__cplusplus >= 201103L)
+    alignas(8) size_type m_End;
+    alignas(8) value_type m_Array[Capacity];
+#else
+    PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
+    PaddedArray<value_type, Capacity, Alignment> m_Array;
+#endif
 
     pointer data(size_type Index)
     {
@@ -63,12 +68,12 @@ struct PODVector
 
     iterator begin() CCC_NOEXCEPT
     {
-        return iterator(data(m_Begin));
+        return iterator(data(0));
     }
 
     const_iterator begin() const CCC_NOEXCEPT
     {
-        return const_iterator(data(m_Begin));
+        return const_iterator(data(0));
     }
 
     iterator end() CCC_NOEXCEPT
@@ -104,7 +109,7 @@ struct PODVector
     CCC_CONSTEXPR
     size_type size() const CCC_NOEXCEPT
     {
-        return m_End - m_Begin;
+        return m_End - 0;
     }
 
     CCC_CONSTEXPR
@@ -116,7 +121,7 @@ struct PODVector
     CCC_CONSTEXPR
     bool empty() const CCC_NOEXCEPT
     {
-        return m_Begin == m_End;
+        return 0 == m_End;
     }
 
     reference operator[](size_type Index)
