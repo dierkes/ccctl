@@ -50,4 +50,3 @@ typedef reftest<ccc::ConsistentList<cNoPOD, std::size_t, 10>, std::list<cNoPOD> 
 
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs, RefContainersOfNonPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(ConsistentList, TestOfSequenceContainer, RefContainerImplementations);
-

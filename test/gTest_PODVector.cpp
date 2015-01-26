@@ -47,3 +47,11 @@ typedef reftest<ccc::PODVector<tPOD, std::size_t, 10>, std::vector<tPOD> > RefCo
 
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(PODVector, TestOfSequenceContainer, RefContainerImplementations);
+
+TEST(PODVector, ConsistentSize)
+{
+    EXPECT_EQ(16, sizeof(ccc::PODVector<char, std::size_t, 1>));
+    EXPECT_EQ(16, sizeof(ccc::PODVector<char, std::size_t, 2>));
+    EXPECT_EQ(16, sizeof(ccc::PODVector<char, std::size_t, 4>));
+    EXPECT_EQ(16, sizeof(ccc::PODVector<char, std::size_t, 8>));
+}
