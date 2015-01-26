@@ -16,15 +16,15 @@
 namespace ccc
 {
 
-template <typename T, std::size_t Alignment, std::size_t PaddedBytes = Alignment - (sizeof(T) % Alignment)>
+template <typename T, std::size_t Alignment, std::size_t Size = sizeof(T), std::size_t PaddedBytes = Alignment - (Size % Alignment)>
 struct Padded
 {
     T Value;
     char Padding[PaddedBytes];
 };
 
-template <typename T, std::size_t Alignment>
-struct Padded<T, Alignment, Alignment>
+template <typename T, std::size_t Alignment, std::size_t Size>
+struct Padded<T, Alignment, Size, Alignment>
 {
     T Value;
 };
