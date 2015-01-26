@@ -49,8 +49,8 @@ struct PODVector
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator; // ToDo: see above
 
 #if (__cplusplus >= 201103L)
-    alignas(8) size_type m_End;
-    alignas(8) value_type m_Array[Capacity];
+    alignas(Alignment) size_type m_End;
+    alignas(Alignment) value_type m_Array[Capacity];
 #else
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
     PaddedArray<value_type, Capacity, Alignment> m_Array;
