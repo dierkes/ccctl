@@ -107,4 +107,13 @@ std::string PrintContent(ContainerType c)
     return ss.str();
 }
 
+template <>
+int random_object<int>();
+
+template <>
+tPOD random_object<tPOD>();
+
+template <>
+cNoPOD random_object<cNoPOD>();
+
 #endif /* CCC_GTEST_OBJECTS_H_ */

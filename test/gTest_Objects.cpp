@@ -28,6 +28,7 @@ tPOD random_object<tPOD>()
     tPOD Object;
     Object.x = Value;
     Object.y = static_cast<double>(Value);
+    return Object;
 }
 
 
