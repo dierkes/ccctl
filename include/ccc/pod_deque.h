@@ -164,7 +164,7 @@ struct PODDeque
             return Result += lhs;
         }
 
-        difference_type operator-(const iterator_type& rhs) // const // must function be const for short version of operator<?
+        difference_type operator-(const iterator_type& rhs) const// const // must function be const for short version of operator<?
         {
             bool NegativeResult;
             if (m_Container->m_End < m_Container->m_Begin)
