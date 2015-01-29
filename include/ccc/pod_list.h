@@ -18,7 +18,7 @@
 namespace ccc
 {
 
-template <class T, class SizeType, SizeType Capacity>
+template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8>
 struct PODList
 {
     typedef T value_type;
@@ -41,10 +41,17 @@ struct PODList
 
     typedef ListNode node_type;
 
-    size_type m_Size;
-    node_type m_Nodes[Capacity + 1];
-    value_type m_Values[Capacity];
-    PODVector<node_index_type, size_type, Capacity + 1> m_Deallocated;
+#if (__cplusplus >= 201103L)
+    alignas(Alignment) size_type m_Size;
+    alignas(Alignment) node_type m_Nodes[Capacity + 1];
+    alignas(Alignment) value_type m_Values[Capacity];
+    PODVector<node_index_type, size_type, Capacity + 1, Alignment> m_Deallocated;
+#else
+    PaddedValue<size_type, Alignment> m_Size;
+    PaddedArray<node_type, Capacity + 1, Alignment> m_Nodes;
+    PaddedArray<value_type, Capacity, Alignment> m_Values;
+    PODVector<node_index_type, size_type, Capacity + 1, Alignment> m_Deallocated;
+#endif
     static const node_index_type m_Anchor = 0;
 
     template <class T_>
@@ -292,14 +299,14 @@ struct PODList
         {
             Allocated = m_Size + 1;
         }
-        ++m_Size;
+        m_Size = m_Size + 1;
         return Allocated;
     }
 
     void _private_deallocate_node(node_index_type Node)
     {
         m_Deallocated.push_back(Node);
-        --m_Size;
+        m_Size = m_Size - 1;
     }
 
     void clear() CCC_NOEXCEPT

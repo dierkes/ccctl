@@ -16,9 +16,9 @@
 namespace ccc
 {
 
-template<class T, class SizeType, SizeType Capacity, bool UseRawMemOps =
+template<class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps =
         ccc::is_trivially_copyable_guaranteed<T>::value>
-struct ConsistentDeque: public PODDeque<T, SizeType, Capacity, UseRawMemOps>
+struct ConsistentDeque: public PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps>
 {
     ConsistentDeque()
     {

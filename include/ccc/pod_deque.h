@@ -22,6 +22,7 @@
 #include <ccc/compat.h>
 #include <ccc/memory.h>
 #include <ccc/type_traits.h>
+#include <ccc/alignment.h>
 
 namespace ccc
 {
@@ -33,7 +34,7 @@ namespace ccc
  * Linear time: Inserting and erasing elements elsewhere.
  * Noncompliance: No swap method, ...
  */
-template <class T, class SizeType, SizeType Capacity, bool UseRawMemOps = ccc::is_trivially_copyable_guaranteed<T>::value>
+template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = ccc::is_trivially_copyable_guaranteed<T>::value>
 struct PODDeque
 {
     typedef T value_type;
@@ -44,7 +45,7 @@ struct PODDeque
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PODDeque<T, SizeType, Capacity, UseRawMemOps> container_type; // necessary for random access iterator
+    typedef PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps> container_type; // necessary for random access iterator
 
     template <class T_>
     struct RandomAccessIterator
@@ -345,9 +346,15 @@ struct PODDeque
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    size_type m_Begin; // points at the first element
-    size_type m_End; // points at the element
-    value_type m_Array[Capacity + 1]; // well, we might get rid of the extra element, but for the sake of simplicity let's keep it for now
+#if (__cplusplus >= 201103L)
+    alignas(Alignment) size_type m_Begin; // points at the first element
+    alignas(Alignment) size_type m_End; // points at the element
+    alignas(Alignment) value_type m_Array[Capacity + 1]; // well, we might get rid of the extra element, but for the sake of simplicity let's keep it for now
+#else
+    PaddedValue<size_type, Alignment> m_Begin;
+    PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
+    PaddedArray<value_type, Capacity + 1, Alignment> m_Array;
+#endif
 
     pointer data(size_type PhysicalIndex)
     {
