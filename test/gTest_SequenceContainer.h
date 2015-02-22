@@ -23,8 +23,6 @@ struct reftest
     typedef ContainerFactory<Reference> reference_factory;
 };
 
-
-
 template<typename T>
 class TestOfSequenceContainer: public ::testing::Test
 {
@@ -64,7 +62,8 @@ protected:
     {
         for (std::size_t n = 0; n < N; ++n)
         {
-            typename T::container::value_type o = random_object<typename T::container::value_type>();
+            typename T::container::value_type o =
+                    random_object<typename T::container::value_type>();
             c.insert(c.end(), o);
             r.insert(r.end(), o);
         }
@@ -74,7 +73,8 @@ protected:
     {
         for (std::size_t n = 0; n < N; ++n)
         {
-            typename T::container::value_type o = random_object<typename T::container::value_type>();
+            typename T::container::value_type o =
+                    random_object<typename T::container::value_type>();
             c.insert(c.begin(), o);
             r.insert(r.begin(), o);
         }
@@ -109,24 +109,32 @@ TYPED_TEST_P(TestOfSequenceContainer, InsertErase){
 typename TypeParam::container c = ContainerFactory<typename TypeParam::container>::Create();
 typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference>::Create();
 //EXPECT_EQ(c, r);
-EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
-EXPECT_NO_THROW(this->insert_end_N(c, r, 1));
-EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
-EXPECT_NO_THROW(this->insert_end_N(c, r, 1));
-EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
-EXPECT_NO_THROW(this->insert_end_N(c, r, 3));
-EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
-EXPECT_NO_THROW(this->insert_begin_N(c, r, 3));
-EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
-EXPECT_NO_THROW(this->erase_end_N(c, r, 3));
-EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
-EXPECT_NO_THROW(this->erase_begin_N(c, r, 5));
-EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
-EXPECT_TRUE(c.empty());
-EXPECT_TRUE(r.empty());
+{
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->insert_end_N(c, r, 1));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->insert_end_N(c, r, 1));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->insert_end_N(c, r, 3));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->insert_begin_N(c, r, 3));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->erase_end_N(c, r, 3));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->erase_begin_N(c, r, 5));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_TRUE(c.empty());
+    EXPECT_TRUE(r.empty());
+}
+{
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->insert_begin_N(c, r, 1));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_EQ(r.front(), c.front());
+    EXPECT_EQ(r.back(), c.back());
+}
 }
 
 REGISTER_TYPED_TEST_CASE_P(TestOfSequenceContainer, InsertErase);
-
 
 #endif /* CCC_GTEST_SEQUENCECONTAINER_H_ */

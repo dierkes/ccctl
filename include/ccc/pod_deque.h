@@ -47,6 +47,41 @@ struct PODDeque
 
     typedef PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps> container_type; // necessary for random access iterator
 
+    /**
+     * Assumption: divisor is a positive number
+     */
+    static size_type modulo(difference_type dividend, size_type divisor)
+    {
+        if (0 > (-1%2) and 0 > dividend)
+        {
+            return (dividend % static_cast<difference_type>(divisor)) + divisor;
+        }
+        else
+        {
+            return (dividend % static_cast<difference_type>(divisor));
+        }
+    }
+//    template <bool NegativeModulo = (0 > (-1%2))>
+//    struct modulo {};
+//
+//    template <bool NegativeModulo>
+//    struct modulo<true>
+//    {
+//        size_type operator()(difference_type dividend, size_type divisor)
+//        {
+//            return (dividend % divisor) + divisor;
+//        }
+//    };
+//
+//    template <bool NegativeModulo>
+//    struct modulo<false>
+//    {
+//        size_type operator()(difference_type dividend, size_type divisor)
+//        {
+//            return (dividend % divisor);
+//        }
+//    };
+
     template <class T_>
     struct RandomAccessIterator
     {
@@ -123,11 +158,11 @@ struct PODDeque
         {
             if (0 > rhs)
             {
-                rhs = (rhs % (Capacity + 1)) - (Capacity + 1);
+                rhs = modulo(rhs, (Capacity + 1)) - (Capacity + 1);
             }
             else
             {
-                rhs = rhs % (Capacity + 1);
+                rhs = modulo(rhs, (Capacity + 1));
             }
             if (0 > rhs)
             {
@@ -169,7 +204,7 @@ struct PODDeque
             bool NegativeResult;
             if (m_Container->m_End < m_Container->m_Begin)
             {
-                NegativeResult = ((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin) % (Capacity + 1)) < ((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin) % (Capacity + 1));
+                NegativeResult = modulo((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin), (Capacity + 1)) < modulo((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin), (Capacity + 1));
             }
             else
             {
@@ -177,11 +212,11 @@ struct PODDeque
             }
             if (NegativeResult)
             {
-                return ((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex) % (Capacity + 1)) - (Capacity + 1);
+                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (Capacity + 1)) - (Capacity + 1);
             }
             else
             {
-                return (static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex) % (Capacity + 1);
+                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (Capacity + 1));
             }
         }
 
@@ -272,11 +307,11 @@ struct PODDeque
         {
             if (0 > rhs)
             {
-                rhs = (rhs % (Capacity + 1)) - (Capacity + 1);
+                rhs = modulo(rhs, (Capacity + 1)) - (Capacity + 1);
             }
             else
             {
-                rhs = rhs % (Capacity + 1);
+                rhs = modulo(rhs, (Capacity + 1));
             }
             if (0 > rhs)
             {
@@ -318,7 +353,7 @@ struct PODDeque
             bool NegativeResult;
             if (m_Container->m_End < m_Container->m_Begin)
             {
-                NegativeResult = ((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin) % (Capacity + 1)) < ((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin) % (Capacity + 1));
+                NegativeResult = modulo((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin), (Capacity + 1)) < modulo((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin), (Capacity + 1));
             }
             else
             {
@@ -326,11 +361,11 @@ struct PODDeque
             }
             if (NegativeResult)
             {
-                return ((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex) % (Capacity + 1)) - (Capacity + 1);
+                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (Capacity + 1)) - (Capacity + 1);
             }
             else
             {
-                return (static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex) % (Capacity + 1);
+                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (Capacity + 1));
             }
         }
 

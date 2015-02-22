@@ -47,3 +47,17 @@ typedef reftest<ccc::PODDeque<tPOD, std::size_t, 10>, std::deque<tPOD> > RefCont
 
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(PODDeque, TestOfSequenceContainer, RefContainerImplementations);
+
+TEST(PODDeque, ModuloOperation)
+{
+    typedef ccc::PODDeque<int, std::size_t, 10> C_size_t;
+    EXPECT_EQ(9, C_size_t::modulo(-1, 10));
+    EXPECT_EQ(1, C_size_t::modulo(1, 10));
+    EXPECT_EQ(9, C_size_t::modulo(-11, 10));
+    EXPECT_EQ(1, C_size_t::modulo(11, 10));
+    typedef ccc::PODDeque<int, unsigned char, 10> C_uint8_t;
+    EXPECT_EQ(9, C_uint8_t::modulo(-1, 10));
+    EXPECT_EQ(1, C_uint8_t::modulo(1, 10));
+    EXPECT_EQ(9, C_uint8_t::modulo(-11, 10));
+    EXPECT_EQ(1, C_uint8_t::modulo(11, 10));
+}
