@@ -391,6 +391,8 @@ struct PODDeque
     PaddedArray<value_type, Capacity + 1, Alignment> m_Array;
 #endif
 
+    // Private methods:
+
     pointer data(size_type PhysicalIndex)
     {
         return ccc::addressof(m_Array[PhysicalIndex]);
@@ -399,6 +401,27 @@ struct PODDeque
     const_pointer data(size_type PhysicalIndex) const CCC_NOEXCEPT
     {
         return ccc::addressof(m_Array[PhysicalIndex]);
+    }
+
+    // Assign:
+
+    void assign(size_type Count, const value_type& Value)
+    {
+        clear();
+        for (size_type i = 0; i < Count; ++i)
+        {
+            push_back(Value);
+        }
+    }
+
+    template <typename IteratorType>
+    void assign(IteratorType First, IteratorType Last)
+    {
+        clear();
+        for (; First != Last; ++First)
+        {
+            push_back(*First);
+        }
     }
 
     // Element access:

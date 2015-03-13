@@ -207,6 +207,29 @@ struct PODList
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
+    // Assign:
+
+    void assign(size_type Count, const value_type& Value)
+    {
+        clear();
+        for (size_type i = 0; i < Count; ++i)
+        {
+            push_back(Value);
+        }
+    }
+
+    template <typename IteratorType>
+    void assign(IteratorType First, IteratorType Last)
+    {
+        clear();
+        for (; First != Last; ++First)
+        {
+            push_back(*First);
+        }
+    }
+
+    // Iterators:
+
     iterator begin() CCC_NOEXCEPT
     {
         return iterator(this, m_Nodes[m_Anchor].m_Next);

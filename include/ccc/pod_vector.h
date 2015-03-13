@@ -56,7 +56,7 @@ struct PODVector
     PaddedArray<value_type, Capacity, Alignment> m_Array;
 #endif
 
-    pointer data(size_type Index)
+    pointer data(size_type Index) CCC_NOEXCEPT
     {
         return ccc::addressof(m_Array[Index]);
     }
@@ -65,6 +65,39 @@ struct PODVector
     {
         return ccc::addressof(m_Array[Index]);
     }
+
+    pointer data() CCC_NOEXCEPT
+    {
+        return data(0);
+    }
+
+    const_pointer data() const CCC_NOEXCEPT
+    {
+        return data(0);
+    }
+
+    // Assign:
+
+    void assign(size_type Count, const value_type& Value)
+    {
+        clear();
+        for (size_type i = 0; i < Count; ++i)
+        {
+            push_back(Value);
+        }
+    }
+
+    template <typename IteratorType>
+    void assign(IteratorType First, IteratorType Last)
+    {
+        clear();
+        for (; First != Last; ++First)
+        {
+            push_back(*First);
+        }
+    }
+
+    // Iterators:
 
     iterator begin() CCC_NOEXCEPT
     {

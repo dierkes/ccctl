@@ -106,10 +106,9 @@ protected:
 TYPED_TEST_CASE_P(TestOfSequenceContainer);
 
 TYPED_TEST_P(TestOfSequenceContainer, InsertErase){
-typename TypeParam::container c = ContainerFactory<typename TypeParam::container>::Create();
-typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference>::Create();
-//EXPECT_EQ(c, r);
 {
+    typename TypeParam::container c = ContainerFactory<typename TypeParam::container>::Create();
+    typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference>::Create();
     EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
     EXPECT_NO_THROW(this->insert_end_N(c, r, 1));
     EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
@@ -127,11 +126,30 @@ typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference
     EXPECT_TRUE(r.empty());
 }
 {
+    typename TypeParam::container c = ContainerFactory<typename TypeParam::container>::Create();
+    typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference>::Create();
     EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
     EXPECT_NO_THROW(this->insert_begin_N(c, r, 1));
     EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
     EXPECT_EQ(r.front(), c.front());
     EXPECT_EQ(r.back(), c.back());
+}
+{
+    typename TypeParam::container c = ContainerFactory<typename TypeParam::container>::Create();
+    typename TypeParam::container d = ContainerFactory<typename TypeParam::container>::Create();
+    typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference>::Create();
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->insert_begin_N(c, r, 7));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(d.assign(r.begin(), r.end()));
+    EXPECT_TRUE(this->ContainersAreEqual(d, r)) << PrintContent(d) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->erase_end_N(c, r, 3));
+    EXPECT_NO_THROW(d = c);
+    EXPECT_TRUE(this->ContainersAreEqual(d, r)) << PrintContent(d) << std::endl << PrintContent(r);
+    typename TypeParam::container::value_type v = random_object<typename TypeParam::container::value_type>();
+    EXPECT_NO_THROW(d.assign(static_cast<std::size_t>(4), v));
+    EXPECT_NO_THROW(r.assign(static_cast<std::size_t>(4), v));
+    EXPECT_TRUE(this->ContainersAreEqual(d, r)) << PrintContent(d) << std::endl << PrintContent(r);
 }
 }
 
