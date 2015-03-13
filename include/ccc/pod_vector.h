@@ -32,7 +32,7 @@ namespace ccc
  * Linear time: inserting and erasing elements elsewhere.
  * Noncompliance: No swap method, ...
  */
-template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = ccc::is_trivially_copyable_guaranteed<T>::value>
+template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = false>
 struct PODVector
 {
     typedef T value_type;
