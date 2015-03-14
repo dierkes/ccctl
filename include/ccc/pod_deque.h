@@ -408,20 +408,18 @@ struct PODDeque
     void assign(size_type Count, const value_type& Value)
     {
         clear();
-        for (size_type i = 0; i < Count; ++i)
-        {
-            push_back(Value);
-        }
+        std::fill(begin(), begin() + Count, Value);
+        iterator NewEnd = end() + Count;
+        m_End = NewEnd.m_PhysicalIndex;
     }
 
     template <typename IteratorType>
     void assign(IteratorType First, IteratorType Last)
     {
         clear();
-        for (; First != Last; ++First)
-        {
-            push_back(*First);
-        }
+        std::copy(First, Last, begin());
+        iterator NewEnd = end() + std::distance(First, Last);
+        m_End = NewEnd.m_PhysicalIndex;
     }
 
     // Element access:
@@ -663,6 +661,48 @@ struct PODDeque
         }
     }
 
+    template <typename IteratorType>
+    iterator insert(iterator Position, IteratorType First, IteratorType Last)
+    {
+        difference_type Count = std::distance(First, Last);
+        if (Count == 0)
+        {
+            return Position;
+        }
+        else if (Count <= max_size() - size())
+        {
+                std::copy_backward(Position, end(), end() + Count);
+                std::copy(First, Last, Position);
+                iterator NewEnd = end() + Count;
+                m_End = NewEnd.m_PhysicalIndex;
+                return Position;
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    iterator insert(iterator Position, size_type Count, const value_type& Value)
+    {
+        if (Count == 0)
+        {
+            return Position;
+        }
+        else if (Count <= max_size() - size())
+        {
+                std::copy_backward(Position, end(), end() + Count);
+                std::fill(Position, Position + Count, Value);
+                iterator NewEnd = end() + Count;
+                m_End = NewEnd.m_PhysicalIndex;
+                return Position;
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
     iterator emplace(iterator Position)
     {
         if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
@@ -735,6 +775,24 @@ struct PODDeque
             m_End = (0 == m_End) ? Capacity : (m_End - 1);
             return Position;
         }
+    }
+
+//    iterator erase(iterator First, iterator Last)
+//    {
+//        while (First != Last)
+//        {
+//            First = erase(First);
+//            --Last;
+//        }
+//        return First;
+//    }
+
+    iterator erase(iterator First, iterator Last)
+    {
+        std::copy(Last, end(), First);
+        iterator NewEnd = end() - std::distance(First, Last);
+        m_End = NewEnd.m_PhysicalIndex;
+        return First;
     }
 
 };

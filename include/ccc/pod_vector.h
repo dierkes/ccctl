@@ -81,20 +81,16 @@ struct PODVector
     void assign(size_type Count, const value_type& Value)
     {
         clear();
-        for (size_type i = 0; i < Count; ++i)
-        {
-            push_back(Value);
-        }
+        std::fill(begin(), begin() + Count, Value);
+        m_End = m_End + Count;
     }
 
     template <typename IteratorType>
     void assign(IteratorType First, IteratorType Last)
     {
         clear();
-        for (; First != Last; ++First)
-        {
-            push_back(*First);
-        }
+        std::copy(First, Last, begin());
+        m_End = m_End + std::distance(First, Last);
     }
 
     // Iterators:
@@ -347,6 +343,52 @@ struct PODVector
         }
     }
 
+    template <typename IteratorType>
+    iterator insert(iterator Position, IteratorType First, IteratorType Last)
+    {
+        difference_type Count = std::distance(First, Last);
+        if (Count <= Capacity - size())
+        {
+            if (UseRawMemOps)
+            {
+                std::memmove(Position + Count, Position, (end() - Position) * sizeof(value_type));
+            }
+            else
+            {
+                std::copy_backward(Position, end(), end() + Count);
+            }
+            std::copy(First, Last, Position);
+            m_End = m_End + Count;
+            return Position;
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    iterator insert(iterator Position, size_type Count, const value_type& Value)
+    {
+        if (Count <= Capacity - size())
+        {
+            if (UseRawMemOps)
+            {
+                std::memmove(Position + Count, Position, (end() - Position) * sizeof(value_type));
+            }
+            else
+            {
+                std::copy_backward(Position, end(), end() + Count);
+            }
+            std::fill(Position, Position + Count, Value);
+            m_End = m_End + Count;
+            return Position;
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
     iterator emplace(iterator Position)
     {
         if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
@@ -394,6 +436,20 @@ struct PODVector
         {
             return end();
         }
+    }
+
+    iterator erase(iterator First, iterator Last)
+    {
+        if (UseRawMemOps)
+        {
+            std::memmove(First, Last, std::distance(Last, end()) * sizeof(value_type));
+        }
+        else
+        {
+            std::copy(Last, end(), First);
+        }
+        m_End = m_End - std::distance(First, Last);
+        return First;
     }
 
 };

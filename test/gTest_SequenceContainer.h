@@ -11,6 +11,8 @@
 #include <exception>
 #include <ciso646>
 
+#include <ccc/iterator.h>
+
 #include <gtest/gtest.h>
 #include "gTest_Objects.h"
 
@@ -150,6 +152,26 @@ TYPED_TEST_P(TestOfSequenceContainer, InsertErase){
     EXPECT_NO_THROW(d.assign(static_cast<std::size_t>(4), v));
     EXPECT_NO_THROW(r.assign(static_cast<std::size_t>(4), v));
     EXPECT_TRUE(this->ContainersAreEqual(d, r)) << PrintContent(d) << std::endl << PrintContent(r);
+}
+{
+    typename TypeParam::container c = ContainerFactory<typename TypeParam::container>::Create();
+    typename TypeParam::container d = ContainerFactory<typename TypeParam::container>::Create();
+    typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference>::Create();
+    typename TypeParam::reference s = ContainerFactory<typename TypeParam::reference>::Create();
+    typename TypeParam::container::value_type v = random_object<typename TypeParam::container::value_type>();
+    EXPECT_NO_THROW(c.insert(c.begin(), static_cast<std::size_t>(4), v));
+    EXPECT_NO_THROW(r.insert(r.begin(), static_cast<std::size_t>(4), v));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(this->insert_end_N(d, s, 5));
+    EXPECT_NO_THROW(c.insert(c.end(), s.begin(), s.end()));
+    EXPECT_NO_THROW(r.insert(r.end(), s.begin(), s.end()));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(c.erase(c.begin(), ccc::next(c.begin(), 5)));
+    EXPECT_NO_THROW(r.erase(r.begin(), ccc::next(r.begin(), 5)));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
+    EXPECT_NO_THROW(c.insert(c.end(), s.begin(), s.end()));
+    EXPECT_NO_THROW(r.insert(r.end(), s.begin(), s.end()));
+    EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
 }
 }
 

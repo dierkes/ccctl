@@ -460,6 +460,50 @@ struct PODList
         }
     }
 
+    template <typename IteratorType>
+    iterator insert(iterator Position, IteratorType First, IteratorType Last)
+    {
+        if (First == Last)
+        {
+            return Position;
+        }
+        else if (std::distance(First, Last) <= Capacity - size())
+        {
+            iterator Result = insert(Position, *First);
+            ++First;
+            for (; First != Last; ++First)
+            {
+                insert(Position, *First);
+            }
+            return Result;
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    iterator insert(iterator Position, size_type Count, const value_type& Value)
+    {
+        if (Count == 0)
+        {
+            return Position;
+        }
+        else if (Count <= max_size() - size())
+        {
+            iterator Result = insert(Position, Value);
+            for (size_type i = 1; i < Count; ++i)
+            {
+                insert(Position, Value);
+            }
+            return Result;
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
     iterator emplace(iterator Position)
     {
         if (size() < Capacity)
@@ -495,6 +539,15 @@ struct PODList
         m_Values[Erase - 1] = value_type(); // destroy element (ToDo: necessary?)
         _private_deallocate_node(Erase);
         return iterator(this, Behind);
+    }
+
+    iterator erase(iterator First, iterator Last)
+    {
+        while (First != Last)
+        {
+            First = erase(First);
+        }
+        return First;
     }
 
 };

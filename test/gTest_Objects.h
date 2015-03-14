@@ -11,6 +11,8 @@
 #include <cstdlib>
 #include <exception>
 #include <sstream>
+#include <set>
+#include <iostream>
 
 template <typename T>
 T random_object()
@@ -95,11 +97,11 @@ public:
 };
 
 template <typename ContainerType>
-std::string PrintContent(ContainerType c)
+std::string PrintContent(const ContainerType& c)
 {
     std::stringstream ss;
     ss << "[";
-    for (typename ContainerType::iterator it = c.begin(); it != c.end(); ++it)
+    for (typename ContainerType::const_iterator it = c.begin(); it != c.end(); ++it)
     {
         ss << *it << ",";
     }
@@ -115,5 +117,62 @@ tPOD random_object<tPOD>();
 
 template <>
 cNoPOD random_object<cNoPOD>();
+
+template<bool Verbose = false>
+class cUniqueID
+{
+public:
+    static std::size_t NextID;
+    static std::set<std::size_t> CurrentIDs;
+
+    std::size_t m_ID;
+
+    cUniqueID()
+    {
+        m_ID = NextID++;
+        CurrentIDs.insert(m_ID);
+        if (Verbose)
+        {
+            std::cout << "Default constructor of " << m_ID << std::endl;
+        }
+    }
+
+    cUniqueID(const cUniqueID& Other)
+    {
+        m_ID = NextID++;
+        CurrentIDs.insert(m_ID);
+        if (Verbose)
+        {
+            std::cout << "Copy constructor of " << m_ID << " from " << Other.m_ID << std::endl;
+        }
+    }
+
+    cUniqueID& operator=(const cUniqueID& Other)
+    {
+//        m_ID = NextID++;
+//        CurrentIDs.insert(m_ID);
+        if (Verbose)
+        {
+            std::cout << "Assignment of " << Other.m_ID << " to " << m_ID << std::endl;
+        }
+        return *this;
+    }
+
+    ~cUniqueID()
+    {
+        CurrentIDs.erase(m_ID);
+        if (Verbose)
+        {
+            std::cout << "Destructor of " << m_ID  << std::endl;
+        }
+    }
+
+    friend std::ostream& operator<<(std::ostream& out, const cUniqueID& obj) // output
+    {
+        out <<  obj.m_ID;
+        return out;
+    }
+
+};
 
 #endif /* CCC_GTEST_OBJECTS_H_ */
