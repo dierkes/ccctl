@@ -52,21 +52,19 @@ struct PODVector
 
 #if (__cplusplus >= 201103L)
     alignas(Alignment) size_type m_End;
-    alignas(Alignment) value_type m_Array[Capacity];
 #else
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
-//    PaddedArray<value_type, Capacity, Alignment> m_Array;
-    StaticInitializedStorage<value_type, SizeType, Capacity, Alignment> m_Array;
 #endif
+    StaticInitializedStorage<value_type, SizeType, Capacity, Alignment> m_Storage;
 
     pointer data(size_type Index) CCC_NOEXCEPT
     {
-        return ccc::addressof(m_Array[Index]);
+        return ccc::addressof(m_Storage[Index]);
     }
 
     const_pointer data(size_type Index) const CCC_NOEXCEPT
     {
-        return ccc::addressof(m_Array[Index]);
+        return ccc::addressof(m_Storage[Index]);
     }
 
     pointer data() CCC_NOEXCEPT
@@ -85,7 +83,7 @@ struct PODVector
     {
         clear();
 //        std::fill(begin(), begin() + Count, Value);
-        m_Array.construct_and_assign(0, Count, Value);
+        m_Storage.construct_and_assign(0, Count, Value);
         m_End = m_End + Count;
     }
 
@@ -94,7 +92,7 @@ struct PODVector
     {
         clear();
 //        std::copy(First, Last, begin());
-        m_Array.construct_and_assign(0, First, Last);
+        m_Storage.construct_and_assign(0, First, Last);
         m_End = m_End + std::distance(First, Last);
     }
 
@@ -160,28 +158,28 @@ struct PODVector
 
     reference operator[](size_type Index)
     {
-        return m_Array[Index];
+        return m_Storage[Index];
     }
 
     CCC_CONSTEXPR
     const_reference operator[](size_type Index) const CCC_NOEXCEPT
     {
-        return m_Array[Index];
+        return m_Storage[Index];
     }
 
     reference at(size_type Index)
     {
         if (Index >= size())
         {
-            throw std::out_of_range("ConsistentArray::at"), m_Array[0];
+            throw std::out_of_range("ConsistentArray::at"), m_Storage[0];
         }
-        return m_Array[Index];
+        return m_Storage[Index];
     }
 
     CCC_CONSTEXPR
     const_reference at(size_type Index) const
     {
-        return Index < size() ? m_Array[Index] : (throw std::out_of_range("ConsistentArray::at"), m_Array[0]);
+        return Index < size() ? m_Storage[Index] : (throw std::out_of_range("ConsistentArray::at"), m_Storage[0]);
     }
 
     reference front()
@@ -206,7 +204,7 @@ struct PODVector
 
     void clear() CCC_NOEXCEPT
     {
-        m_Array.destroy(begin(), end());
+        m_Storage.destroy(begin(), end());
         m_End = size_type();
     }
 
@@ -243,7 +241,7 @@ struct PODVector
     {
         if (size() < Capacity)
         {
-            m_Array.construct_and_assign(m_End, Value);
+            m_Storage.construct_and_assign(m_End, Value);
             m_End = m_End + 1;
         }
         else
@@ -277,7 +275,7 @@ struct PODVector
     {
         if (size() < Capacity)
         {
-            m_Array.construct_default(m_End);
+            m_Storage.construct_default(m_End);
             m_End = m_End + 1;
         }
         else
@@ -310,14 +308,14 @@ struct PODVector
         {
             // ToDo: Do we have to destroy the element?
 //            m_Array[m_End - 1] = value_type(); // destroy element by overwriting
-            m_Array.destroy(m_End - 1);
+            m_Storage.destroy(m_End - 1);
             m_End = m_End - 1;
         }
     }
 
     iterator insert(size_type Position, const_reference Value)
     {
-        return insert(iterator(ccc::addressof(m_Array[Position])), Value);
+        return insert(iterator(ccc::addressof(m_Storage[Position])), Value);
     }
 
     /**
@@ -331,7 +329,7 @@ struct PODVector
             // Do we need to construct the element to which we shift the other ones?
             // Well, the object at Position is already constructed, so probably yes. Then the
             // behavior is well defined, as all elements are constructed
-            m_Array.construct_default(m_End);
+            m_Storage.construct_default(m_End);
             if (UseRawMemOps)
             {
                 std::memmove(Position + 1, Position, (end() - Position) * sizeof(value_type));
@@ -356,7 +354,7 @@ struct PODVector
         difference_type Count = std::distance(First, Last);
         if (Count <= Capacity - size())
         {
-            m_Array.construct_default(m_End, Count);
+            m_Storage.construct_default(m_End, Count);
             if (UseRawMemOps)
             {
                 std::memmove(Position + Count, Position, (end() - Position) * sizeof(value_type));
@@ -379,7 +377,7 @@ struct PODVector
     {
         if (Count <= Capacity - size())
         {
-            m_Array.construct_default(m_End, Count);
+            m_Storage.construct_default(m_End, Count);
             if (UseRawMemOps)
             {
                 std::memmove(Position + Count, Position, (end() - Position) * sizeof(value_type));
@@ -403,7 +401,7 @@ struct PODVector
     {
         if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
         {
-            m_Array.construct_default(m_End);
+            m_Storage.construct_default(m_End);
             if (UseRawMemOps)
             {
                 std::memmove(Position + 1, Position, (end() - Position) * sizeof(value_type));
@@ -441,7 +439,7 @@ struct PODVector
                 std::copy(Position + 1, end(), Position);
             }
             m_End = m_End - 1;
-            m_Array.destroy(m_End);
+            m_Storage.destroy(m_End);
             return Position;
         }
         else
@@ -461,7 +459,7 @@ struct PODVector
             std::copy(Last, end(), First);
         }
         m_End = m_End - std::distance(First, Last);
-        m_Array.destroy(end(), end() + std::distance(First, Last));
+        m_Storage.destroy(end(), end() + std::distance(First, Last));
         return First;
     }
 
