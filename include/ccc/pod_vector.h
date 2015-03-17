@@ -34,7 +34,7 @@ namespace ccc
  * Linear time: inserting and erasing elements elsewhere.
  * Noncompliance: No swap method, ...
  */
-template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = false>
+template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = false, bool StaticStorage = true>
 struct PODVector
 {
     typedef T value_type;
@@ -50,12 +50,14 @@ struct PODVector
     typedef std::reverse_iterator<iterator> reverse_iterator; // ToDo: what does this mean in case of a pointer, in general it's a class derivation
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator; // ToDo: see above
 
+    typedef typename StorageType<T, SizeType, Capacity, Alignment, StaticStorage, true>::type storage_type;
+
 #if (__cplusplus >= 201103L)
     alignas(Alignment) size_type m_End;
 #else
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
 #endif
-    StaticInitializedStorage<value_type, SizeType, Capacity, Alignment> m_Storage;
+    storage_type m_Storage;
 
     pointer data(size_type Index) CCC_NOEXCEPT
     {

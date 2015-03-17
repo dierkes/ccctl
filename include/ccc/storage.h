@@ -408,6 +408,36 @@ struct FixedUninitializedStorage
     }
 };
 
+template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment, bool StaticStorage, bool InitializedStorage>
+struct StorageType
+{
+    typedef void type;
+};
+
+template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment>
+struct StorageType<T, SizeType, Capacity, Alignment, true, true>
+{
+    typedef StaticInitializedStorage<T, SizeType, Capacity, Alignment> type;
+};
+
+template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment>
+struct StorageType<T, SizeType, Capacity, Alignment, true, false>
+{
+    typedef StaticUninitializedStorage<T, SizeType, Capacity, Alignment> type;
+};
+
+template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment>
+struct StorageType<T, SizeType, Capacity, Alignment, false, true>
+{
+    typedef FixedInitializedStorage<T, SizeType, Alignment> type;
+};
+
+template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment>
+struct StorageType<T, SizeType, Capacity, Alignment, false, false>
+{
+    typedef FixedUninitializedStorage<T, SizeType, Alignment> type;
+};
+
 }
 
 #endif /* CCC_STORAGE_H_ */
