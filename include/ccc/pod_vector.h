@@ -22,6 +22,8 @@
 #include <ccc/type_traits.h>
 #include <ccc/alignment.h>
 
+#include <ccc/storage.h>
+
 namespace ccc
 {
 
@@ -53,7 +55,8 @@ struct PODVector
     alignas(Alignment) value_type m_Array[Capacity];
 #else
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
-    PaddedArray<value_type, Capacity, Alignment> m_Array;
+//    PaddedArray<value_type, Capacity, Alignment> m_Array;
+    StaticInitializedStorage<value_type, SizeType, Capacity, Alignment> m_Array;
 #endif
 
     pointer data(size_type Index) CCC_NOEXCEPT
@@ -81,7 +84,8 @@ struct PODVector
     void assign(size_type Count, const value_type& Value)
     {
         clear();
-        std::fill(begin(), begin() + Count, Value);
+//        std::fill(begin(), begin() + Count, Value);
+        m_Array.construct_and_assign(0, Count, Value);
         m_End = m_End + Count;
     }
 
@@ -89,7 +93,8 @@ struct PODVector
     void assign(IteratorType First, IteratorType Last)
     {
         clear();
-        std::copy(First, Last, begin());
+//        std::copy(First, Last, begin());
+        m_Array.construct_and_assign(0, First, Last);
         m_End = m_End + std::distance(First, Last);
     }
 
@@ -201,10 +206,7 @@ struct PODVector
 
     void clear() CCC_NOEXCEPT
     {
-        for (iterator it = begin(); it != end(); ++it)
-        {
-            *it = value_type();
-        }
+        m_Array.destroy(begin(), end());
         m_End = size_type();
     }
 
@@ -241,7 +243,7 @@ struct PODVector
     {
         if (size() < Capacity)
         {
-            m_Array[m_End] = Value; // ToDo: Must type be trivially copyable?
+            m_Array.construct_and_assign(m_End, Value);
             m_End = m_End + 1;
         }
         else
@@ -275,7 +277,7 @@ struct PODVector
     {
         if (size() < Capacity)
         {
-            m_Array[m_End] = value_type(); // ToDo: might not be necessary, since there should be a valid element
+            m_Array.construct_default(m_End);
             m_End = m_End + 1;
         }
         else
@@ -307,7 +309,8 @@ struct PODVector
         if (not empty())
         {
             // ToDo: Do we have to destroy the element?
-            m_Array[m_End - 1] = value_type(); // destroy element by overwriting
+//            m_Array[m_End - 1] = value_type(); // destroy element by overwriting
+            m_Array.destroy(m_End - 1);
             m_End = m_End - 1;
         }
     }
@@ -325,6 +328,10 @@ struct PODVector
     {
         if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
         {
+            // Do we need to construct the element to which we shift the other ones?
+            // Well, the object at Position is already constructed, so probably yes. Then the
+            // behavior is well defined, as all elements are constructed
+            m_Array.construct_default(m_End);
             if (UseRawMemOps)
             {
                 std::memmove(Position + 1, Position, (end() - Position) * sizeof(value_type));
@@ -349,6 +356,7 @@ struct PODVector
         difference_type Count = std::distance(First, Last);
         if (Count <= Capacity - size())
         {
+            m_Array.construct_default(m_End, Count);
             if (UseRawMemOps)
             {
                 std::memmove(Position + Count, Position, (end() - Position) * sizeof(value_type));
@@ -371,6 +379,7 @@ struct PODVector
     {
         if (Count <= Capacity - size())
         {
+            m_Array.construct_default(m_End, Count);
             if (UseRawMemOps)
             {
                 std::memmove(Position + Count, Position, (end() - Position) * sizeof(value_type));
@@ -389,10 +398,12 @@ struct PODVector
         }
     }
 
+    // emplace is a bad idea, if we have no default constructor
     iterator emplace(iterator Position)
     {
         if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
         {
+            m_Array.construct_default(m_End);
             if (UseRawMemOps)
             {
                 std::memmove(Position + 1, Position, (end() - Position) * sizeof(value_type));
@@ -420,7 +431,7 @@ struct PODVector
         if (Position < end())
         {
             // (*Position).~T(); // call destructor of the object at Position (might not work for basic types)
-            *Position = value_type();
+//            *Position = value_type();
             if (UseRawMemOps)
             {
                 std::memmove(Position, Position + 1, (end() - Position + 1) * sizeof(value_type));
@@ -430,6 +441,7 @@ struct PODVector
                 std::copy(Position + 1, end(), Position);
             }
             m_End = m_End - 1;
+            m_Array.destroy(m_End);
             return Position;
         }
         else
@@ -449,6 +461,7 @@ struct PODVector
             std::copy(Last, end(), First);
         }
         m_End = m_End - std::distance(First, Last);
+        m_Array.destroy(end(), end() + std::distance(First, Last));
         return First;
     }
 

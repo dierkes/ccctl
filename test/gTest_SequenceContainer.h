@@ -107,7 +107,8 @@ protected:
 
 TYPED_TEST_CASE_P(TestOfSequenceContainer);
 
-TYPED_TEST_P(TestOfSequenceContainer, InsertErase){
+TYPED_TEST_P(TestOfSequenceContainer, InsertErase)
+{
 {
     typename TypeParam::container c = ContainerFactory<typename TypeParam::container>::Create();
     typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference>::Create();

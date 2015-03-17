@@ -91,6 +91,7 @@ TEST(ConsistentVector, DestroyOnErase)
         c.push_back(U());
         c.erase(c.begin(), ccc::next(c.begin()));
         EXPECT_EQ(10, U::CurrentIDs.size()) << PrintContent(U::CurrentIDs);
+        c.clear(); // This is necessary in case of uninititalized storage
     }
     EXPECT_TRUE(U::CurrentIDs.empty()) << PrintContent(U::CurrentIDs);
 }
