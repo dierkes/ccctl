@@ -90,7 +90,7 @@ struct PODVector
     void assign(IteratorType First, IteratorType Last)
     {
         clear();
-        m_Storage.construct_and_assign(0, First, Last);
+        m_Storage.construct_and_assign(begin(), First, Last);
         m_End = m_End + std::distance(First, Last);
     }
 
@@ -262,7 +262,7 @@ struct PODVector
         difference_type Count = std::distance(First, Last);
         if (Count <= Capacity - size())
         {
-            m_Storage.construct_default(m_End, Count);
+            m_Storage.construct_default(end(), Count);
             if (UseRawMemOps)
             {
                 std::memmove(Position + Count, Position, (end() - Position) * sizeof(value_type));
@@ -285,7 +285,7 @@ struct PODVector
     {
         if (Count <= Capacity - size())
         {
-            m_Storage.construct_default(m_End, Count);
+            m_Storage.construct_default(end(), Count);
             if (UseRawMemOps)
             {
                 std::memmove(Position + Count, Position, (end() - Position) * sizeof(value_type));
