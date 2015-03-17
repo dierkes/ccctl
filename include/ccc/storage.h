@@ -13,6 +13,7 @@
 
 #include <ccc/memory.h>
 #include <ccc/alignment.h>
+#include <ccc/iterator.h>
 
 namespace ccc
 {
@@ -60,6 +61,12 @@ struct StaticInitializedStorage
         std::fill(&m_Array[Index], &m_Array[Index+Count], value_type());
     }
 
+    template <typename IteratorType>
+    void construct_default(IteratorType Position, size_type Count)
+    {
+        std::fill(Position, next(Position, Count), value_type());
+    }
+
     void construct_and_assign(size_type Index, const_reference Value)
     {
         // storage is already initializes
@@ -77,6 +84,18 @@ struct StaticInitializedStorage
     {
         // storage is already initialized
         std::copy(First, Last, &m_Array[Index]);
+    }
+
+    template <typename DestIteratorType, typename SrcIteratorType>
+    void construct_and_assign(DestIteratorType Position, size_type Count, const_reference Value)
+    {
+        std::fill(Position, next(Position, Count), Value);
+    }
+
+    template <typename DestIteratorType, typename SrcIteratorType>
+    void construct_and_assign(DestIteratorType Position, SrcIteratorType First, SrcIteratorType Last)
+    {
+        std::copy(First, Last, Position);
     }
 
     void destroy(size_type Index)
@@ -237,6 +256,12 @@ struct FixedInitializedStorage
         std::fill(&m_Array[Index], &m_Array[Index+Count], value_type());
     }
 
+    template <typename IteratorType>
+    void construct_default(IteratorType Position, size_type Count)
+    {
+        std::fill(Position, next(Position, Count), value_type());
+    }
+
     void construct_and_assign(size_type Index, const_reference Value)
     {
         // storage is already initializes
@@ -254,6 +279,18 @@ struct FixedInitializedStorage
     {
         // storage is already initialized
         std::copy(First, Last, &m_Array[Index]);
+    }
+
+    template <typename DestIteratorType, typename SrcIteratorType>
+    void construct_and_assign(DestIteratorType Position, size_type Count, const_reference Value)
+    {
+        std::fill(Position, next(Position, Count), Value);
+    }
+
+    template <typename DestIteratorType, typename SrcIteratorType>
+    void construct_and_assign(DestIteratorType Position, SrcIteratorType First, SrcIteratorType Last)
+    {
+        std::copy(First, Last, Position);
     }
 
     void destroy(size_type Index)
