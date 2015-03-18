@@ -50,17 +50,6 @@ struct StaticInitializedStorage
         return Capacity;
     }
 
-    void construct_default(size_type Index)
-    {
-        m_Array[Index] = value_type();
-    }
-
-    void construct_default(size_type Index, size_type Count)
-    {
-        // storage is already initializes
-        std::fill(&m_Array[Index], &m_Array[Index+Count], value_type());
-    }
-
     template <typename IteratorType>
     void construct_default(IteratorType Position)
     {
@@ -73,23 +62,11 @@ struct StaticInitializedStorage
         std::fill(Position, next(Position, Count), value_type());
     }
 
-    void construct_and_assign(size_type Index, const_reference Value)
+    template <typename DestIteratorType>
+    void construct_and_assign(DestIteratorType Position, const_reference Value)
     {
         // storage is already initializes
-        m_Array[Index] = Value;
-    }
-
-    void construct_and_assign(size_type Index, size_type Count, const_reference Value)
-    {
-        // storage is already initializes
-        std::fill(&m_Array[Index], &m_Array[Index+Count], Value);
-    }
-
-    template <typename IteratorType>
-    void construct_and_assign(size_type Index, IteratorType First, IteratorType Last)
-    {
-        // storage is already initialized
-        std::copy(First, Last, &m_Array[Index]);
+        *Position = Value;
     }
 
     template <typename DestIteratorType>
@@ -102,11 +79,6 @@ struct StaticInitializedStorage
     void construct_and_assign(DestIteratorType Position, SrcIteratorType First, SrcIteratorType Last)
     {
         std::copy(First, Last, Position);
-    }
-
-    void destroy(size_type Index)
-    {
-        // do not destroy, since storage is expected to be initializes
     }
 
     template <typename IteratorType>
@@ -165,37 +137,49 @@ struct StaticUninitializedStorage
         return Capacity;
     }
 
-    void construct_and_assign(size_type Index, const_reference Value)
+    template <typename IteratorType>
+    void construct_default(IteratorType Position)
     {
-        ::new((void *)(&reinterpret_cast<pointer>(&m_Array[0])[Index])) value_type(Value);
-    }
-
-    void construct_and_assign(size_type Index, size_type Count, const_reference Value)
-    {
-        for (size_type i = 0; i < Count; ++i, ++Index)
-        {
-            ::new((void *)(&reinterpret_cast<pointer>(&m_Array[0])[Index])) value_type(Value);
-        }
+        ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type();
     }
 
     template <typename IteratorType>
-    void construct_and_assign(size_type Index, IteratorType First, IteratorType Last)
+    void construct_default(IteratorType Position, size_type Count)
     {
-        for (; First != Last; ++First, ++Index)
+        for (size_type i = 0; i < Count; ++i, ++Position)
         {
-            ::new((void *)(&reinterpret_cast<pointer>(&m_Array[0])[Index])) value_type(*First);
+            ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type();
         }
     }
 
-    void destroy(size_type Index)
+    template <typename DestIteratorType>
+    void construct_and_assign(DestIteratorType Position, const_reference Value)
     {
-        (&reinterpret_cast<pointer>(&m_Array[0])[Index])->~value_type();
+        ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type();
+    }
+
+    template <typename DestIteratorType>
+    void construct_and_assign(DestIteratorType Position, size_type Count, const_reference Value)
+    {
+        for (size_type i = 0; i < Count; ++i, ++Position)
+        {
+            ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type(Value);
+        }
+    }
+
+    template <typename DestIteratorType, typename SrcIteratorType>
+    void construct_and_assign(DestIteratorType Position, SrcIteratorType First, SrcIteratorType Last)
+    {
+        for (; First != Last; ++First, ++Position)
+        {
+            ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type(*First);
+        }
     }
 
     template <typename IteratorType>
     void destroy(IteratorType Position)
     {
-        reinterpret_cast<pointer>(address(*Position))->~value_type();
+        Position->~value_type();
     }
 
     template <typename IteratorType>
@@ -203,7 +187,7 @@ struct StaticUninitializedStorage
     {
         for (; First != Last; ++First)
         {
-            (reinterpret_cast<pointer>(&*First))->~value_type();
+            First->~value_type();
         }
     }
 
@@ -267,16 +251,6 @@ struct FixedInitializedStorage
         return m_Capacity;
     }
 
-    void construct_default(size_type Index)
-    {
-        m_Array[Index] = value_type();
-    }
-
-    void construct_default(size_type Index, size_type Count)
-    {
-        std::fill(&m_Array[Index], &m_Array[Index+Count], value_type());
-    }
-
     template <typename IteratorType>
     void construct_default(IteratorType Position)
     {
@@ -289,23 +263,13 @@ struct FixedInitializedStorage
         std::fill(Position, next(Position, Count), value_type());
     }
 
-    void construct_and_assign(size_type Index, const_reference Value)
+    template <typename DestIteratorType>
+    void construct_and_assign(DestIteratorType Position, const_reference Value)
     {
-        m_Array[Index] = Value;
+        *Position = Value;
     }
 
-    void construct_and_assign(size_type Index, size_type Count, const_reference Value)
-    {
-        std::fill(&m_Array[Index], &m_Array[Index+Count], Value);
-    }
-
-    template <typename IteratorType>
-    void construct_and_assign(size_type Index, IteratorType First, IteratorType Last)
-    {
-        std::copy(First, Last, &m_Array[Index]);
-    }
-
-    template <typename DestIteratorType, typename SrcIteratorType>
+    template <typename DestIteratorType>
     void construct_and_assign(DestIteratorType Position, size_type Count, const_reference Value)
     {
         std::fill(Position, next(Position, Count), Value);
@@ -315,11 +279,6 @@ struct FixedInitializedStorage
     void construct_and_assign(DestIteratorType Position, SrcIteratorType First, SrcIteratorType Last)
     {
         std::copy(First, Last, Position);
-    }
-
-    void destroy(size_type Index)
-    {
-        // do not destroy, since storage is expected to be initialized
     }
 
     template <typename IteratorType>
@@ -395,37 +354,49 @@ struct FixedUninitializedStorage
         return m_Capacity;
     }
 
-    void construct_and_assign(size_type Index, const_reference Value)
+    template <typename IteratorType>
+    void construct_default(IteratorType Position)
     {
-        ::new((void *)(&reinterpret_cast<pointer>(&m_Array[0])[Index])) value_type(Value);
-    }
-
-    void construct_and_assign(size_type Index, size_type Count, const_reference Value)
-    {
-        for (size_type i = 0; i < Count; ++i, ++Index)
-        {
-            ::new((void *)(&reinterpret_cast<pointer>(&m_Array[0])[Index])) value_type(Value);
-        }
+        ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type();
     }
 
     template <typename IteratorType>
-    void construct_and_assign(size_type Index, IteratorType First, IteratorType Last)
+    void construct_default(IteratorType Position, size_type Count)
     {
-        for (; First != Last; ++First, ++Index)
+        for (size_type i = 0; i < Count; ++i, ++Position)
         {
-            ::new((void *)(&reinterpret_cast<pointer>(&m_Array[0])[Index])) value_type(*First);
+            ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type();
         }
     }
 
-    void destroy(size_type Index)
+    template <typename DestIteratorType>
+    void construct_and_assign(DestIteratorType Position, const_reference Value)
     {
-        (&reinterpret_cast<pointer>(&m_Array[0])[Index])->~value_type();
+        ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type();
+    }
+
+    template <typename DestIteratorType>
+    void construct_and_assign(DestIteratorType Position, size_type Count, const_reference Value)
+    {
+        for (size_type i = 0; i < Count; ++i, ++Position)
+        {
+            ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type(Value);
+        }
+    }
+
+    template <typename DestIteratorType, typename SrcIteratorType>
+    void construct_and_assign(DestIteratorType Position, SrcIteratorType First, SrcIteratorType Last)
+    {
+        for (; First != Last; ++First, ++Position)
+        {
+            ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type(*First);
+        }
     }
 
     template <typename IteratorType>
     void destroy(IteratorType Position)
     {
-        reinterpret_cast<pointer>(address(*Position))->~value_type();
+        Position->~value_type();
     }
 
     template <typename IteratorType>
@@ -433,7 +404,7 @@ struct FixedUninitializedStorage
     {
         for (; First != Last; ++First)
         {
-            (reinterpret_cast<pointer>(&*First))->~value_type();
+            First->~value_type();
         }
     }
 

@@ -212,7 +212,7 @@ struct PODVector
     {
         if (size() < Capacity)
         {
-            m_Storage.construct_and_assign(m_End, Value);
+            m_Storage.construct_and_assign(end(), Value);
             m_End = m_End + 1;
         }
         else

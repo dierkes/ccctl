@@ -27,6 +27,7 @@ public:
 
     ~FixedVector()
     {
+        this->clear();
         this->m_Storage.deallocate();
     }
 };

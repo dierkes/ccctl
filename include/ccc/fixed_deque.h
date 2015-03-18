@@ -24,6 +24,7 @@ public:
 
     ~FixedDeque()
     {
+        this->clear();
         this->m_Storage.deallocate();
     }
 };

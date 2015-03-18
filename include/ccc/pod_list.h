@@ -1,6 +1,6 @@
 /**
  *
- * @file This file contains the ArrayList container.
+ * @file This file contains the PODList container.
  *
  * @author Frank Dierkes
  *
@@ -18,7 +18,7 @@
 namespace ccc
 {
 
-template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8>
+template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool StaticStorage = true>
 struct PODList
 {
     typedef T value_type;
@@ -41,17 +41,16 @@ struct PODList
 
     typedef ListNode node_type;
 
+    typedef PODVector<node_index_type, size_type, Capacity + 1, Alignment, false, StaticStorage> deallocated_storage_type;
+
 #if (__cplusplus >= 201103L)
     alignas(Alignment) size_type m_Size;
-    alignas(Alignment) node_type m_Nodes[Capacity + 1];
-    alignas(Alignment) value_type m_Values[Capacity];
-    PODVector<node_index_type, size_type, Capacity + 1, Alignment> m_Deallocated;
 #else
     PaddedValue<size_type, Alignment> m_Size;
-    PaddedArray<node_type, Capacity + 1, Alignment> m_Nodes;
-    PaddedArray<value_type, Capacity, Alignment> m_Values;
-    PODVector<node_index_type, size_type, Capacity + 1, Alignment> m_Deallocated;
 #endif
+    typename StorageType<node_type, size_type, Capacity + 1, Alignment, StaticStorage, true>::type m_Nodes;
+    typename StorageType<value_type, size_type, Capacity, Alignment, StaticStorage, true>::type m_Values;
+    deallocated_storage_type m_Deallocated;
     static const node_index_type m_Anchor = 0;
 
     template <class T_>
@@ -345,7 +344,9 @@ struct PODList
         if (size() < Capacity)
         {
             node_index_type NewFront = _private_allocate_node();
-            m_Values[NewFront - 1] = Value;
+            m_Nodes.construct_default(&m_Nodes[NewFront]);
+            m_Values.construct_and_assign(&m_Values[NewFront - 1], Value);
+//            m_Values[NewFront - 1] = Value;
             node_index_type OldFront = m_Nodes[m_Anchor].m_Next;
             m_Nodes[NewFront].m_Prev = m_Anchor;
             m_Nodes[NewFront].m_Next = OldFront;
@@ -363,7 +364,9 @@ struct PODList
         if (size() < Capacity)
         {
             node_index_type NewBack = _private_allocate_node();
-            m_Values[NewBack - 1] = Value;
+            m_Nodes.construct_default(&m_Nodes[NewBack]);
+            m_Values.construct_and_assign(&m_Values[NewBack - 1], Value);
+//            m_Values[NewBack - 1] = Value;
             node_index_type OldBack = m_Nodes[m_Anchor].m_Prev;
             m_Nodes[NewBack].m_Prev = OldBack;
             m_Nodes[NewBack].m_Next = m_Anchor;
@@ -381,7 +384,9 @@ struct PODList
         if (size() < Capacity)
         {
             node_index_type NewFront = _private_allocate_node();
-            m_Values[NewFront - 1] = value_type(); // ToDo: necessary?
+//            m_Values[NewFront - 1] = value_type(); // ToDo: necessary?
+            m_Nodes.construct_default(&m_Nodes[NewFront]);
+            m_Values.construct_default(&m_Values[NewFront - 1]);
             node_index_type OldFront = m_Nodes[m_Anchor].m_Next;
             m_Nodes[NewFront].m_Prev = m_Anchor;
             m_Nodes[NewFront].m_Next = OldFront;
@@ -399,7 +404,9 @@ struct PODList
         if (size() < Capacity)
         {
             node_index_type NewBack = _private_allocate_node();
-            m_Values[NewBack - 1] = value_type(); // ToDo: necessary?
+//            m_Values[NewBack - 1] = value_type(); // ToDo: necessary?
+            m_Nodes.construct_default(&m_Nodes[NewBack]);
+            m_Values.construct_default(&m_Values[NewBack - 1]);
             node_index_type OldBack = m_Nodes[m_Anchor].m_Prev;
             m_Nodes[NewBack].m_Prev = OldBack;
             m_Nodes[NewBack].m_Next = m_Anchor;
@@ -417,11 +424,13 @@ struct PODList
         if (not empty())
         {
             node_index_type OldFront = m_Nodes[m_Anchor].m_Next;
-            m_Values[OldFront - 1] = value_type(); // destroy element (ToDo: necessary?)
+//            m_Values[OldFront - 1] = value_type(); // destroy element (ToDo: necessary?)
             node_index_type NewFront = m_Nodes[OldFront].m_Next;
             m_Nodes[NewFront].m_Prev = m_Anchor;
             m_Nodes[m_Anchor].m_Next = NewFront;
-            m_Nodes[OldFront] = node_type(); // reinitialize node (not necessary, but maybe helpful for debugging)
+//            m_Nodes[OldFront] = node_type(); // reinitialize node (not necessary, but maybe helpful for debugging)
+            m_Nodes.destroy(&m_Nodes[OldFront]);
+            m_Values.destroy(&m_Values[OldFront - 1]);
             _private_deallocate_node(OldFront);
         }
     }
@@ -431,11 +440,13 @@ struct PODList
         if (not empty())
         {
             node_index_type OldBack = m_Nodes[m_Anchor].m_Prev;
-            m_Values[OldBack - 1] = value_type(); // destroy element (ToDo: necessary?)
+//            m_Values[OldBack - 1] = value_type(); // destroy element (ToDo: necessary?)
             node_index_type NewBack = m_Nodes[OldBack].m_Prev;
             m_Nodes[NewBack].m_Next = m_Anchor;
             m_Nodes[m_Anchor].m_Prev = NewBack;
-            m_Nodes[OldBack] = node_type(); // reinitialize node (not necessary, but maybe helpful for debugging)
+//            m_Nodes[OldBack] = node_type(); // reinitialize node (not necessary, but maybe helpful for debugging)
+            m_Nodes.destroy(&m_Nodes[OldBack]);
+            m_Values.destroy(&m_Values[OldBack - 1]);
             _private_deallocate_node(OldBack);
         }
     }
@@ -447,7 +458,9 @@ struct PODList
             node_index_type Behind = Position.m_Node;
             node_index_type InFront = m_Nodes[Behind].m_Prev;
             node_index_type Inserted = _private_allocate_node();
-            m_Values[Inserted - 1] = Value;
+            m_Nodes.construct_default(&m_Nodes[Inserted]);
+            m_Values.construct_and_assign(&m_Values[Inserted - 1], Value);
+//            m_Values[Inserted - 1] = Value;
             m_Nodes[InFront].m_Next = Inserted;
             m_Nodes[Behind].m_Prev = Inserted;
             m_Nodes[Inserted].m_Prev = InFront;
@@ -511,7 +524,9 @@ struct PODList
             node_index_type Behind = Position.m_Node;
             node_index_type InFront = m_Nodes[Behind].m_Prev;
             node_index_type Inserted = _private_allocate_node();
-            m_Values[Inserted - 1] = value_type(); // ToDo: necessary?
+//            m_Values[Inserted - 1] = value_type(); // ToDo: necessary?
+            m_Nodes.construct_default(&m_Nodes[Inserted]);
+            m_Values.construct_default(&m_Values[Inserted - 1]);
             m_Nodes[InFront].m_Next = Inserted;
             m_Nodes[Behind].m_Prev = Inserted;
             m_Nodes[Inserted].m_Prev = InFront;
@@ -535,8 +550,10 @@ struct PODList
         node_index_type InFront = m_Nodes[Erase].m_Prev;
         m_Nodes[InFront].m_Next = Behind;
         m_Nodes[Behind].m_Prev = InFront;
-        m_Nodes[Erase] = node_type(); // reinitialize node (not necessary, but maybe helpful for debugging)
-        m_Values[Erase - 1] = value_type(); // destroy element (ToDo: necessary?)
+//        m_Nodes[Erase] = node_type(); // reinitialize node (not necessary, but maybe helpful for debugging)
+//        m_Values[Erase - 1] = value_type(); // destroy element (ToDo: necessary?)
+        m_Nodes.destroy(&m_Nodes[Erase]);
+        m_Values.destroy(&m_Values[Erase - 1]);
         _private_deallocate_node(Erase);
         return iterator(this, Behind);
     }

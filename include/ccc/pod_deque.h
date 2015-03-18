@@ -1,6 +1,6 @@
 /**
  *
- * @file This file contains the ArrayDeque container.
+ * @file This file contains the PODDeque container.
  *
  * @author Frank Dierkes
  *
@@ -46,7 +46,7 @@ struct PODDeque
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps> container_type; // necessary for random access iterator
+    typedef PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage> container_type; // necessary for random access iterator
 
     /**
      * Assumption: divisor is a positive number

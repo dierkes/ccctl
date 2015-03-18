@@ -16,15 +16,9 @@
 namespace ccc
 {
 
-template <class T, class SizeType, SizeType Capacity>
-struct StaticList: public ConsistentList<T, SizeType, Capacity>
+template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8>
+struct StaticList: public ConsistentList<T, SizeType, Capacity, Alignment, true>
 {
-protected:
-    using ConsistentList<T, SizeType, Capacity>::m_Size;
-    using ConsistentList<T, SizeType, Capacity>::m_Nodes;
-    using ConsistentList<T, SizeType, Capacity>::m_Values;
-    using ConsistentList<T, SizeType, Capacity>::m_Deallocated;
-    using ConsistentList<T, SizeType, Capacity>::m_Anchor;
 };
 
 }
