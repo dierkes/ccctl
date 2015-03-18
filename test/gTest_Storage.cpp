@@ -40,11 +40,13 @@ TEST(Storage, FixedInitialized)
     typedef cUniqueID<true> U;
     U::NextID = 0;
     U::CurrentIDs = std::set<std::size_t>();
-    ccc::FixedInitializedStorage<U, std::size_t> fis(10);
+    ccc::FixedInitializedStorage<U, std::size_t> fis;
+    fis.allocate(10);
 
     fis.construct_and_assign(0, U());
     fis.destroy(&fis[0]);
     EXPECT_EQ(10, U::CurrentIDs.size());
+    fis.deallocate();
 }
 
 TEST(Storage, FixedUninitialized)
@@ -52,11 +54,13 @@ TEST(Storage, FixedUninitialized)
     typedef cUniqueID<true> U;
     U::NextID = 0;
     U::CurrentIDs = std::set<std::size_t>();
-    ccc::FixedUninitializedStorage<U, std::size_t> fus(10);
+    ccc::FixedUninitializedStorage<U, std::size_t> fus;
+    fus.allocate(10);
 
     fus.construct_and_assign(0, U());
     fus.destroy(&fus[0]);
     fus[0] = U();
     fus[1] = U();
     EXPECT_EQ(0, U::CurrentIDs.size());
+    fus.deallocate();
 }

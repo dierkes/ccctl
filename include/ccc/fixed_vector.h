@@ -22,8 +22,12 @@ class FixedVector : public ConsistentVector<T, SizeType, 0, Alignment, UseRawMem
 public:
     explicit FixedVector(SizeType Capacity)
     {
-        typedef typename ConsistentVector<T, SizeType, 0, Alignment, UseRawMemOps, false>::storage_type storage_type;
-        this->m_Storage = storage_type(Capacity);
+        this->m_Storage.allocate(Capacity);
+    }
+
+    ~FixedVector()
+    {
+        this->m_Storage.deallocate();
     }
 };
 

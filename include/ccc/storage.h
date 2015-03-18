@@ -237,21 +237,19 @@ struct FixedInitializedStorage
     PaddedValue<value_type*, Alignment> m_Array;
 #endif
 
-    FixedInitializedStorage()
+    void allocate(size_type Capacity)
     {
-        m_Capacity = 0;
-        m_Array = 0;
-    }
-
-    explicit FixedInitializedStorage(size_type Capacity)
-    {
+        m_Array = new value_type[Capacity];
         m_Capacity = Capacity;
-        m_Array = new value_type[m_Capacity];
     }
 
-    ~FixedInitializedStorage()
+    void deallocate()
     {
-        delete[] m_Array;
+        if (m_Array)
+        {
+            delete[] static_cast<pointer>(m_Array);
+            m_Array = 0;
+        }
     }
 
     pointer address(reference Object) const
@@ -276,7 +274,6 @@ struct FixedInitializedStorage
 
     void construct_default(size_type Index, size_type Count)
     {
-        // storage is already initializes
         std::fill(&m_Array[Index], &m_Array[Index+Count], value_type());
     }
 
@@ -294,20 +291,17 @@ struct FixedInitializedStorage
 
     void construct_and_assign(size_type Index, const_reference Value)
     {
-        // storage is already initializes
         m_Array[Index] = Value;
     }
 
     void construct_and_assign(size_type Index, size_type Count, const_reference Value)
     {
-        // storage is already initializes
         std::fill(&m_Array[Index], &m_Array[Index+Count], Value);
     }
 
     template <typename IteratorType>
     void construct_and_assign(size_type Index, IteratorType First, IteratorType Last)
     {
-        // storage is already initialized
         std::copy(First, Last, &m_Array[Index]);
     }
 
@@ -371,21 +365,19 @@ struct FixedUninitializedStorage
     PaddedValue<byte_type*, Alignment> m_Array;
 #endif
 
-    FixedUninitializedStorage()
+    void allocate(size_type Capacity)
     {
-        m_Capacity = 0;
-        m_Array = 0;
-    }
-
-    explicit FixedUninitializedStorage(size_type Capacity)
-    {
+        m_Array = new byte_type[Capacity * sizeof(value_type)];
         m_Capacity = Capacity;
-        m_Array = new byte_type[m_Capacity * sizeof(value_type)];
     }
 
-    ~FixedUninitializedStorage()
+    void deallocate()
     {
-        delete[] m_Array;
+        if (m_Array)
+        {
+            delete[] static_cast<byte_type*>(m_Array);
+            m_Array = 0;
+        }
     }
 
     pointer address(reference Object) const

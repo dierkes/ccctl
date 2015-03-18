@@ -19,9 +19,12 @@ class FixedDeque : public ConsistentDeque<T, SizeType, 0, Alignment, UseRawMemOp
 public:
     explicit FixedDeque(SizeType Capacity)
     {
-//        using ConsistentDeque<T, SizeType, 0, Alignment, UseRawMemOps, false>::storage_type;
-        typedef typename ConsistentDeque<T, SizeType, 0, Alignment, UseRawMemOps, false>::storage_type storage_type;
-        this->m_Storage = storage_type(Capacity);
+        this->m_Storage.allocate(Capacity);
+    }
+
+    ~FixedDeque()
+    {
+        this->m_Storage.deallocate();
     }
 };
 
