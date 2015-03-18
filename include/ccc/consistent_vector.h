@@ -17,8 +17,8 @@ namespace ccc
 {
 
 template<class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps =
-        false>
-struct ConsistentVector: public PODVector<T, SizeType, Capacity, Alignment, UseRawMemOps>
+        false, bool StaticStorage = true>
+struct ConsistentVector: public PODVector<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>
 {
     ConsistentVector()
     {
@@ -29,6 +29,10 @@ struct ConsistentVector: public PODVector<T, SizeType, Capacity, Alignment, UseR
     {
         // destroy all (valid) elements?
     }
+
+protected:
+    using PODVector<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_End;
+    using PODVector<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Storage;
 };
 
 }
