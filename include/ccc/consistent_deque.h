@@ -28,7 +28,7 @@ struct ConsistentDeque: public PODDeque<T, SizeType, Capacity, Alignment, UseRaw
 
     ~ConsistentDeque()
     {
-        // destroy all (valid) elements?
+        this->clear();
     }
 
 protected:

@@ -27,7 +27,7 @@ struct ConsistentVector: public PODVector<T, SizeType, Capacity, Alignment, UseR
 
     ~ConsistentVector()
     {
-        // destroy all (valid) elements?
+        this->clear();
     }
 
 protected:
