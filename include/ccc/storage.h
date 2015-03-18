@@ -145,7 +145,7 @@ struct StaticUninitializedStorage
     typedef unsigned char byte_type;
 
 #if (__cplusplus >= 201103L)
-    alignas(Alignment) value_type m_Array[sizeof(value_type) * Capacity];
+    alignas(Alignment) byte_type m_Array[sizeof(value_type) * Capacity];
 #else
     PaddedArray<byte_type, sizeof(value_type) * Capacity, Alignment> m_Array;
 #endif
