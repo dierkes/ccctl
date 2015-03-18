@@ -237,6 +237,12 @@ struct FixedInitializedStorage
     PaddedValue<value_type*, Alignment> m_Array;
 #endif
 
+    FixedInitializedStorage()
+    {
+        m_Capacity = 0;
+        m_Array = 0;
+    }
+
     explicit FixedInitializedStorage(size_type Capacity)
     {
         m_Capacity = Capacity;
@@ -364,6 +370,12 @@ struct FixedUninitializedStorage
     PaddedValue<size_type, Alignment> m_Capacity;
     PaddedValue<byte_type*, Alignment> m_Array;
 #endif
+
+    FixedUninitializedStorage()
+    {
+        m_Capacity = 0;
+        m_Array = 0;
+    }
 
     explicit FixedUninitializedStorage(size_type Capacity)
     {
