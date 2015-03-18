@@ -84,7 +84,7 @@ struct PODVector
     void assign(size_type Count, const value_type& Value)
     {
         clear();
-        m_Storage.construct_and_assign(0, Count, Value);
+        m_Storage.construct_and_assign(begin(), Count, Value);
         m_End = m_End + Count;
     }
 
@@ -225,8 +225,8 @@ struct PODVector
     {
         if (not empty())
         {
-            m_Storage.destroy(m_End - 1);
             m_End = m_End - 1;
+            m_Storage.destroy(end());
         }
     }
 
@@ -239,7 +239,7 @@ struct PODVector
     {
         if (size() < Capacity)
         {
-            m_Storage.construct_default(m_End);
+            m_Storage.construct_default(end());
             if (UseRawMemOps)
             {
                 std::memmove(Position + 1, Position, (end() - Position) * sizeof(value_type));
@@ -319,7 +319,7 @@ struct PODVector
                 std::copy(Position + 1, end(), Position);
             }
             m_End = m_End - 1;
-            m_Storage.destroy(m_End);
+            m_Storage.destroy(end());
             return Position;
         }
         else

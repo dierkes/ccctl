@@ -62,6 +62,12 @@ struct StaticInitializedStorage
     }
 
     template <typename IteratorType>
+    void construct_default(IteratorType Position)
+    {
+        *Position = value_type();
+    }
+
+    template <typename IteratorType>
     void construct_default(IteratorType Position, size_type Count)
     {
         std::fill(Position, next(Position, Count), value_type());
@@ -86,7 +92,7 @@ struct StaticInitializedStorage
         std::copy(First, Last, &m_Array[Index]);
     }
 
-    template <typename DestIteratorType, typename SrcIteratorType>
+    template <typename DestIteratorType>
     void construct_and_assign(DestIteratorType Position, size_type Count, const_reference Value)
     {
         std::fill(Position, next(Position, Count), Value);
@@ -99,6 +105,12 @@ struct StaticInitializedStorage
     }
 
     void destroy(size_type Index)
+    {
+        // do not destroy, since storage is expected to be initializes
+    }
+
+    template <typename IteratorType>
+    void destroy(IteratorType Position)
     {
         // do not destroy, since storage is expected to be initializes
     }
@@ -181,6 +193,12 @@ struct StaticUninitializedStorage
     }
 
     template <typename IteratorType>
+    void destroy(IteratorType Position)
+    {
+        reinterpret_cast<pointer>(address(*Position))->~value_type();
+    }
+
+    template <typename IteratorType>
     void destroy(IteratorType First, IteratorType Last)
     {
         for (; First != Last; ++First)
@@ -257,6 +275,12 @@ struct FixedInitializedStorage
     }
 
     template <typename IteratorType>
+    void construct_default(IteratorType Position)
+    {
+        *Position = value_type();
+    }
+
+    template <typename IteratorType>
     void construct_default(IteratorType Position, size_type Count)
     {
         std::fill(Position, next(Position, Count), value_type());
@@ -295,7 +319,13 @@ struct FixedInitializedStorage
 
     void destroy(size_type Index)
     {
-        // do not destroy, since storage is expected to be initializes
+        // do not destroy, since storage is expected to be initialized
+    }
+
+    template <typename IteratorType>
+    void destroy(IteratorType Position)
+    {
+        // do not destroy, since storage is expected to be initialized
     }
 
     template <typename IteratorType>
@@ -386,6 +416,12 @@ struct FixedUninitializedStorage
     void destroy(size_type Index)
     {
         (&reinterpret_cast<pointer>(&m_Array[0])[Index])->~value_type();
+    }
+
+    template <typename IteratorType>
+    void destroy(IteratorType Position)
+    {
+        reinterpret_cast<pointer>(address(*Position))->~value_type();
     }
 
     template <typename IteratorType>

@@ -19,7 +19,7 @@ TEST(Storage, StaticInitialized)
     ccc::StaticInitializedStorage<U, std::size_t, 10> sis;
 
     sis.construct_and_assign(0, U());
-    sis.destroy(0);
+    sis.destroy(&sis[0]);
     EXPECT_EQ(10, U::CurrentIDs.size());
 }
 
@@ -31,7 +31,7 @@ TEST(Storage, StaticUninitialized)
     ccc::StaticUninitializedStorage<U, std::size_t, 10> sus;
 
     sus.construct_and_assign(0, U());
-    sus.destroy(0);
+    sus.destroy(&sus[0]);
     EXPECT_EQ(0, U::CurrentIDs.size());
 }
 
@@ -43,7 +43,7 @@ TEST(Storage, FixedInitialized)
     ccc::FixedInitializedStorage<U, std::size_t> fis(10);
 
     fis.construct_and_assign(0, U());
-    fis.destroy(0);
+    fis.destroy(&fis[0]);
     EXPECT_EQ(10, U::CurrentIDs.size());
 }
 
@@ -55,7 +55,7 @@ TEST(Storage, FixedUninitialized)
     ccc::FixedUninitializedStorage<U, std::size_t> fus(10);
 
     fus.construct_and_assign(0, U());
-    fus.destroy(0);
+    fus.destroy(&fus[0]);
     fus[0] = U();
     fus[1] = U();
     EXPECT_EQ(0, U::CurrentIDs.size());
