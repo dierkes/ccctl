@@ -23,6 +23,7 @@
 #include <ccc/memory.h>
 #include <ccc/type_traits.h>
 #include <ccc/alignment.h>
+#include <ccc/storage.h>
 
 namespace ccc
 {
@@ -61,26 +62,6 @@ struct PODDeque
             return (dividend % static_cast<difference_type>(divisor));
         }
     }
-//    template <bool NegativeModulo = (0 > (-1%2))>
-//    struct modulo {};
-//
-//    template <bool NegativeModulo>
-//    struct modulo<true>
-//    {
-//        size_type operator()(difference_type dividend, size_type divisor)
-//        {
-//            return (dividend % divisor) + divisor;
-//        }
-//    };
-//
-//    template <bool NegativeModulo>
-//    struct modulo<false>
-//    {
-//        size_type operator()(difference_type dividend, size_type divisor)
-//        {
-//            return (dividend % divisor);
-//        }
-//    };
 
     template <class T_>
     struct RandomAccessIterator
@@ -107,12 +88,12 @@ struct PODDeque
 
         reference operator*() const
         {
-            return m_Container->m_Array[m_PhysicalIndex];
+            return m_Container->m_Storage[m_PhysicalIndex];
         }
 
         pointer operator->() const
         {
-            return ccc::addressof<pointer>(m_Container->m_Array[m_PhysicalIndex]);
+            return ccc::addressof<pointer>(m_Container->m_Storage[m_PhysicalIndex]);
         }
 
         iterator_type& operator++()
@@ -256,12 +237,12 @@ struct PODDeque
 
         reference operator*() const
         {
-            return m_Container->m_Array[m_PhysicalIndex];
+            return m_Container->m_Storage[m_PhysicalIndex];
         }
 
         pointer operator->() const
         {
-            return ccc::addressof<pointer>(m_Container->m_Array[m_PhysicalIndex]);
+            return ccc::addressof<pointer>(m_Container->m_Storage[m_PhysicalIndex]);
         }
 
         iterator_type& operator++()
@@ -384,23 +365,22 @@ struct PODDeque
 #if (__cplusplus >= 201103L)
     alignas(Alignment) size_type m_Begin; // points at the first element
     alignas(Alignment) size_type m_End; // points at the element
-    alignas(Alignment) value_type m_Array[Capacity + 1]; // well, we might get rid of the extra element, but for the sake of simplicity let's keep it for now
 #else
     PaddedValue<size_type, Alignment> m_Begin;
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
-    PaddedArray<value_type, Capacity + 1, Alignment> m_Array;
 #endif
+    StaticInitializedStorage<T, SizeType, Capacity + 1, Alignment> m_Storage;
 
     // Private methods:
 
     pointer data(size_type PhysicalIndex)
     {
-        return ccc::addressof(m_Array[PhysicalIndex]);
+        return ccc::addressof(m_Storage[PhysicalIndex]);
     }
 
     const_pointer data(size_type PhysicalIndex) const CCC_NOEXCEPT
     {
-        return ccc::addressof(m_Array[PhysicalIndex]);
+        return ccc::addressof(m_Storage[PhysicalIndex]);
     }
 
     // Assign:
@@ -408,47 +388,52 @@ struct PODDeque
     void assign(size_type Count, const value_type& Value)
     {
         clear();
-        std::fill(begin(), begin() + Count, Value);
-        iterator NewEnd = end() + Count;
-        m_End = NewEnd.m_PhysicalIndex;
+//        std::fill(begin(), begin() + Count, Value);
+        m_Storage.construct_and_assign(begin(), Count, Value);
+//        iterator NewEnd = end() + Count;
+//        m_End = NewEnd.m_PhysicalIndex;
+        m_Storage.construct_and_assign(begin(), Count, Value);
+        m_End = next(end(), Count).m_PhysicalIndex;
     }
 
     template <typename IteratorType>
     void assign(IteratorType First, IteratorType Last)
     {
         clear();
-        std::copy(First, Last, begin());
-        iterator NewEnd = end() + std::distance(First, Last);
-        m_End = NewEnd.m_PhysicalIndex;
+//        std::copy(First, Last, begin());
+//        iterator NewEnd = end() + std::distance(First, Last);
+//        m_End = NewEnd.m_PhysicalIndex;
+        m_Storage.construct_and_assign(begin(), First, Last);
+        m_End = next(end(), std::distance(First, Last)).m_PhysicalIndex;
     }
 
     // Element access:
 
     reference operator[](size_type LogicalIndex)
     {
-        return m_Array[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
+        return m_Storage[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
     }
 
     CCC_CONSTEXPR
     const_reference operator[](size_type LogicalIndex) const CCC_NOEXCEPT
     {
-        return m_Array[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
+        return m_Storage[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
     }
 
     reference at(size_type LogicalIndex) // ToDo
     {
         if (LogicalIndex >= size())
         {
-            throw std::out_of_range("ConsistentArray::at"), m_Array[0];
+            throw std::out_of_range("ConsistentArray::at"), m_Storage[0];
         }
-        return m_Array[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
+        return m_Storage[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
     }
 
     CCC_CONSTEXPR
     const_reference at(size_type LogicalIndex) const // ToDo
     {
         return LogicalIndex < size() ?
-                m_Array[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)] : (throw std::out_of_range("ConsistentArray::at"), m_Array[0]);
+                m_Storage[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)] : (throw std::out_of_range("ConsistentArray::at"), m_Storage[0]);
     }
 
     reference front()
@@ -535,10 +520,11 @@ struct PODDeque
 
     void clear() CCC_NOEXCEPT
     {
-        for (iterator it = begin(); it != end(); ++it)
-        {
-            *it = value_type();
-        }
+//        for (iterator it = begin(); it != end(); ++it)
+//        {
+//            *it = value_type();
+//        }
+        m_Storage.destroy(begin(), end());
         m_Begin = size_type();
         m_End = size_type();
     }
@@ -548,7 +534,8 @@ struct PODDeque
         if (size() < Capacity)
         {
             m_Begin = (0 == m_Begin) ? Capacity : (m_Begin - 1);
-            m_Array[m_Begin] = Value; // ToDo: Must type be trivially copyable?
+//            m_Storage[m_Begin] = Value; // ToDo: Must type be trivially copyable?
+            m_Storage.construct_and_assign(begin(), Value);
         }
         else
         {
@@ -560,7 +547,8 @@ struct PODDeque
     {
         if (size() < Capacity)
         {
-            m_Array[m_End] = Value; // ToDo: Must type be trivially copyable?
+//            m_Storage[m_End] = Value; // ToDo: Must type be trivially copyable?
+            m_Storage.construct_and_assign(end(), Value);
             m_End = (Capacity == m_End) ? 0 : (m_End + 1);
         }
         else
@@ -574,7 +562,8 @@ struct PODDeque
         if (size() < Capacity)
         {
             m_Begin = (0 == m_Begin) ? Capacity : (m_Begin - 1);
-            m_Array[m_Begin] = value_type(); // ToDo: Must type be trivially copyable?
+//            m_Storage[m_Begin] = value_type(); // ToDo: Must type be trivially copyable?
+            m_Storage.construct_default(begin());
         }
         else
         {
@@ -586,7 +575,8 @@ struct PODDeque
     {
         if (size() < Capacity)
         {
-            m_Array[m_End] = value_type(); // ToDo: Must type be trivially copyable?
+//            m_Storage[m_End] = value_type(); // ToDo: Must type be trivially copyable?
+            m_Storage.construct_default(end());
             m_End = (Capacity == m_End) ? 0 : (m_End + 1);
         }
         else
@@ -600,7 +590,8 @@ struct PODDeque
         if (not empty())
         {
             // ToDo: Do we have to destroy the element?
-            front() = value_type(); // destroy element
+//            front() = value_type(); // destroy element
+            m_Storage.destroy(begin());
             m_Begin = (Capacity == m_Begin) ? 0 : (m_Begin + 1);
         }
     }
@@ -610,20 +601,22 @@ struct PODDeque
         if (not empty())
         {
             // ToDo: Do we have to destroy the element?
-            back() = value_type(); // destroy element
+//            back() = value_type(); // destroy element
             m_End = (0 == m_End) ? Capacity : (m_End - 1);
+            m_Storage.destroy(end());
         }
     }
 
     iterator insert(size_type Position, const_reference Value)
     {
-        return insert(iterator(ccc::addressof(m_Array[Position])), Value);
+        return insert(iterator(ccc::addressof(m_Storage[Position])), Value);
     }
 
     iterator insert(iterator Position, const_reference Value)
     {
         if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
         {
+            m_Storage.construct_default(begin() - 1);
             if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
             {
                 if (UseRawMemOps)
@@ -642,6 +635,7 @@ struct PODDeque
             else // == Position is in range [PhysicalBegin, LogicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
                  // or Position is in range [LogicalBegin, LogicalEnd], if PhysicalBegin <= LogicalBegin < LogicalEnd <= PhysicalEnd
             {
+                m_Storage.construct_default(end());
                 if (UseRawMemOps)
                 {
                     std::memmove(ccc::addressof(*Position) + 1, ccc::addressof(*Position), (end() - Position) * sizeof(value_type));
@@ -671,11 +665,13 @@ struct PODDeque
         }
         else if (Count <= max_size() - size())
         {
-                std::copy_backward(Position, end(), end() + Count);
-                std::copy(First, Last, Position);
-                iterator NewEnd = end() + Count;
-                m_End = NewEnd.m_PhysicalIndex;
-                return Position;
+            m_Storage.construct_default(end(), Count);
+            std::copy_backward(Position, end(), end() + Count);
+            std::copy(First, Last, Position);
+//            iterator NewEnd = end() + Count;
+//            m_End = NewEnd.m_PhysicalIndex;
+            m_End = next(end(), Count).m_PhysicalIndex;
+            return Position;
         }
         else
         {
@@ -691,11 +687,13 @@ struct PODDeque
         }
         else if (Count <= max_size() - size())
         {
-                std::copy_backward(Position, end(), end() + Count);
-                std::fill(Position, Position + Count, Value);
-                iterator NewEnd = end() + Count;
-                m_End = NewEnd.m_PhysicalIndex;
-                return Position;
+            m_Storage.construct_default(end(), Count);
+            std::copy_backward(Position, end(), end() + Count);
+            std::fill(Position, Position + Count, Value);
+//            iterator NewEnd = end() + Count;
+//            m_End = NewEnd.m_PhysicalIndex;
+            m_End = next(end(), Count).m_PhysicalIndex;
+            return Position;
         }
         else
         {
@@ -709,6 +707,7 @@ struct PODDeque
         {
             if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
             {
+                m_Storage.construct_default(begin() - 1);
                 if (UseRawMemOps)
                 {
                     // ccc::addressof(*(begin() - 1)) should not be necessary, since ccc::addressof should return a pointer of type value_type*
@@ -725,6 +724,7 @@ struct PODDeque
             else // == Position is in range [PhysicalBegin, LogicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
                  // or Position is in range [LogicalBegin, LogicalEnd], if PhysicalBegin <= LogicalBegin < LogicalEnd <= PhysicalEnd
             {
+                m_Storage.construct_default(end());
                 if (UseRawMemOps)
                 {
                     std::memmove(ccc::addressof(*Position) + 1, ccc::addressof(*Position), (end() - Position) * sizeof(value_type));
@@ -749,7 +749,7 @@ struct PODDeque
         if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
         {
             // (*Position).~T(); // call destructor of the object at Position (might not work for basic types)
-            *Position = value_type();
+//            *Position = value_type();
             if (UseRawMemOps)
             {
                 std::memmove(ccc::addressof(*begin()) + 1, ccc::addressof(*begin()), (Position - begin()) * sizeof(value_type));
@@ -758,12 +758,13 @@ struct PODDeque
             {
                 std::copy_backward(begin(), Position, Position + 1);
             }
+            m_Storage.destroy(begin());
             m_Begin = (Capacity == m_Begin) ? 0 : (m_Begin + 1);
             return Position + 1;
         }
         else
         {
-            *Position = value_type();
+//            *Position = value_type();
             if (UseRawMemOps)
             {
                 std::memmove(ccc::addressof(*Position), ccc::addressof(*Position) + 1, ((end() - 1) - Position) * sizeof(value_type));
@@ -773,6 +774,7 @@ struct PODDeque
                 std::copy(Position + 1, end(), Position);
             }
             m_End = (0 == m_End) ? Capacity : (m_End - 1);
+            m_Storage.destroy(end());
             return Position;
         }
     }
@@ -790,8 +792,10 @@ struct PODDeque
     iterator erase(iterator First, iterator Last)
     {
         std::copy(Last, end(), First);
-        iterator NewEnd = end() - std::distance(First, Last);
-        m_End = NewEnd.m_PhysicalIndex;
+//        iterator NewEnd = end() - std::distance(First, Last);
+//        m_End = NewEnd.m_PhysicalIndex;
+        m_End = next(end(), -std::distance(First, Last)).m_PhysicalIndex;
+        m_Storage.destroy(end(), end() + std::distance(First, Last));
         return First;
     }
 
