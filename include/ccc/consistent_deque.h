@@ -17,8 +17,8 @@ namespace ccc
 {
 
 template<class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps =
-        false>
-struct ConsistentDeque: public PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps>
+        false, bool StaticStorage = true>
+struct ConsistentDeque: public PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>
 {
     ConsistentDeque()
     {
@@ -30,6 +30,11 @@ struct ConsistentDeque: public PODDeque<T, SizeType, Capacity, Alignment, UseRaw
     {
         // destroy all (valid) elements?
     }
+
+protected:
+    using PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Begin;
+    using PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_End;
+    using PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Storage;
 };
 
 }
