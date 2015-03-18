@@ -35,7 +35,7 @@ namespace ccc
  * Linear time: Inserting and erasing elements elsewhere.
  * Noncompliance: No swap method, ...
  */
-template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = false>
+template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = false, bool StaticStorage = true>
 struct PODDeque
 {
     typedef T value_type;
@@ -369,7 +369,7 @@ struct PODDeque
     PaddedValue<size_type, Alignment> m_Begin;
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
 #endif
-    StaticInitializedStorage<T, SizeType, Capacity + 1, Alignment> m_Storage;
+    typename StorageType<T, SizeType, Capacity + 1, Alignment, StaticStorage, true>::type m_Storage;
 
     // Private methods:
 
