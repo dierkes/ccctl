@@ -362,6 +362,8 @@ struct PODDeque
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
+    typedef typename StorageType<T, SizeType, Capacity + 1, Alignment, StaticStorage, true>::type storage_type;
+
 #if (__cplusplus >= 201103L)
     alignas(Alignment) size_type m_Begin; // points at the first element
     alignas(Alignment) size_type m_End; // points at the element
@@ -369,7 +371,7 @@ struct PODDeque
     PaddedValue<size_type, Alignment> m_Begin;
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
 #endif
-    typename StorageType<T, SizeType, Capacity + 1, Alignment, StaticStorage, true>::type m_Storage;
+    storage_type m_Storage;
 
     // Private methods:
 
