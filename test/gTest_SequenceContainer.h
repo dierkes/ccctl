@@ -14,7 +14,8 @@
 #include <ccc/iterator.h>
 
 #include <gtest/gtest.h>
-#include "gTest_Objects.h"
+
+#include "utils.h"
 
 template<typename Container, typename Reference>
 struct reftest

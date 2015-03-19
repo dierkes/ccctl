@@ -9,7 +9,7 @@
 
 #include <ccc/storage.h>
 
-#include "gTest_Objects.h"
+#include "utils.h"
 
 TEST(Storage, StaticInitialized)
 {

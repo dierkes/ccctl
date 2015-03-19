@@ -16,7 +16,8 @@
 #define CCC_GTEST_CONTAINER_H_
 
 #include <gtest/gtest.h>
-#include "gTest_Objects.h"
+
+#include "utils.h"
 
 template<typename T>
 class TestOfContainer: public ::testing::Test

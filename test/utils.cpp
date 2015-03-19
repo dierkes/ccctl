@@ -12,7 +12,7 @@
  *
  */
 
-#include "gTest_Objects.h"
+#include "utils.h"
 
 template <>
 int random_object<int>()
