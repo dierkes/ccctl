@@ -24,7 +24,10 @@ public:
     {
         this->m_Size = 0;
         this->m_Deallocated = typename PODList<T, SizeType, Capacity, Alignment, StaticStorage>::deallocated_storage_type();
-        this->m_Nodes[this->m_Anchor] = typename PODList<T, SizeType, Capacity, Alignment, StaticStorage>::node_type();
+        if (StaticStorage)
+        {
+            this->m_Nodes[this->m_Anchor] = typename PODList<T, SizeType, Capacity, Alignment, StaticStorage>::node_type();
+        }
     }
 
     ~ConsistentList()

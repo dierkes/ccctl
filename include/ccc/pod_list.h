@@ -337,6 +337,7 @@ struct PODList
         {
             pop_front();
         }
+        m_Deallocated.clear();
     }
 
     void push_front(const_reference Value)
