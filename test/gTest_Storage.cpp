@@ -59,8 +59,6 @@ TEST(Storage, FixedUninitialized)
 
     fus.construct_and_assign(&fus[0], U());
     fus.destroy(&fus[0]);
-    fus[0] = U();
-    fus[1] = U();
     EXPECT_EQ(0, U::CurrentIDs.size());
     fus.deallocate();
 }

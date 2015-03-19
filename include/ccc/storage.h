@@ -155,7 +155,7 @@ struct StaticUninitializedStorage
     template <typename DestIteratorType>
     void construct_and_assign(DestIteratorType Position, const_reference Value)
     {
-        ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type();
+        ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type(Value);
     }
 
     template <typename DestIteratorType>
@@ -372,7 +372,7 @@ struct FixedUninitializedStorage
     template <typename DestIteratorType>
     void construct_and_assign(DestIteratorType Position, const_reference Value)
     {
-        ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type();
+        ::new((void *)(reinterpret_cast<pointer>(&*Position))) value_type(Value);
     }
 
     template <typename DestIteratorType>
