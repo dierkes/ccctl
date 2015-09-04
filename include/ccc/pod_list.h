@@ -29,7 +29,7 @@ struct PODList
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PODList<T, SizeType, Capacity> container_type; // necessary for iterator
+    typedef PODList<T, SizeType, Capacity, Alignment, StaticStorage> container_type; // necessary for iterator
 
     typedef size_type node_index_type;
 
@@ -278,7 +278,7 @@ struct PODList
     CCC_CONSTEXPR
     size_type max_size() const CCC_NOEXCEPT
     {
-        return Capacity;
+        return m_Values.max_size();
     }
 
     CCC_CONSTEXPR
@@ -342,7 +342,7 @@ struct PODList
 
     void push_front(const_reference Value)
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             node_index_type NewFront = _private_allocate_node();
             m_Nodes.construct_default(&m_Nodes[NewFront]);
@@ -362,7 +362,7 @@ struct PODList
 
     void push_back(const_reference Value)
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             node_index_type NewBack = _private_allocate_node();
             m_Nodes.construct_default(&m_Nodes[NewBack]);
@@ -382,7 +382,7 @@ struct PODList
 
     void emplace_front()
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             node_index_type NewFront = _private_allocate_node();
 //            m_Values[NewFront - 1] = value_type(); // ToDo: necessary?
@@ -402,7 +402,7 @@ struct PODList
 
     void emplace_back()
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             node_index_type NewBack = _private_allocate_node();
 //            m_Values[NewBack - 1] = value_type(); // ToDo: necessary?
@@ -454,7 +454,7 @@ struct PODList
 
     iterator insert(iterator Position, const_reference Value)
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             node_index_type Behind = Position.m_Node;
             node_index_type InFront = m_Nodes[Behind].m_Prev;
@@ -481,7 +481,7 @@ struct PODList
         {
             return Position;
         }
-        else if (std::distance(First, Last) <= Capacity - size())
+        else if (std::distance(First, Last) <= max_size() - size())
         {
             iterator Result = insert(Position, *First);
             ++First;
@@ -520,7 +520,7 @@ struct PODList
 
     iterator emplace(iterator Position)
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             node_index_type Behind = Position.m_Node;
             node_index_type InFront = m_Nodes[Behind].m_Prev;

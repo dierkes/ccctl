@@ -16,8 +16,8 @@
 namespace ccc
 {
 
-template <typename T, typename SizeType, std::size_t Alignment = 8, bool UseRawMemOps = false>
-class StaticDeque : public ConsistentDeque<T, SizeType, 0, Alignment, UseRawMemOps, true>
+template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = false>
+class StaticDeque : public ConsistentDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, true>
 {
 };
 

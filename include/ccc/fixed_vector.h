@@ -16,7 +16,7 @@
 namespace ccc
 {
 
-template <typename T, typename SizeType, std::size_t Alignment = 8, bool UseRawMemOps = false>
+template <typename T, typename SizeType = std::size_t, std::size_t Alignment = 8, bool UseRawMemOps = false>
 class FixedVector : public ConsistentVector<T, SizeType, 0, Alignment, UseRawMemOps, false>
 {
 public:

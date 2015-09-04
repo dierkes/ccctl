@@ -147,7 +147,7 @@ struct PODVector
     CCC_CONSTEXPR
     size_type max_size() const CCC_NOEXCEPT
     {
-        return Capacity;
+        return m_Storage.max_size();
     }
 
     CCC_CONSTEXPR
@@ -210,7 +210,7 @@ struct PODVector
 
     void push_back(const_reference Value)
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             m_Storage.construct_and_assign(end(), Value);
             m_End = m_End + 1;
@@ -237,7 +237,7 @@ struct PODVector
 
     iterator insert(iterator Position, const_reference Value)
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             m_Storage.construct_default(end());
             if (UseRawMemOps)
@@ -262,7 +262,7 @@ struct PODVector
     iterator insert(iterator Position, IteratorType First, IteratorType Last)
     {
         difference_type Count = std::distance(First, Last);
-        if (Count <= Capacity - size())
+        if (Count <= max_size() - size())
         {
             m_Storage.construct_default(end(), Count);
             if (UseRawMemOps)
@@ -285,7 +285,7 @@ struct PODVector
 
     iterator insert(iterator Position, size_type Count, const value_type& Value)
     {
-        if (Count <= Capacity - size())
+        if (Count <= max_size() - size())
         {
             m_Storage.construct_default(end(), Count);
             if (UseRawMemOps)

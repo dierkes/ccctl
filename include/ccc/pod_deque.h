@@ -98,28 +98,28 @@ struct PODDeque
 
         iterator_type& operator++()
         {
-            m_PhysicalIndex = (Capacity == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
+            m_PhysicalIndex = (m_Container->max_size() == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
             return *this;
         }
 
         iterator_type operator++(int)
         {
             iterator_type tmp = *this;
-            m_PhysicalIndex = (Capacity == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
+            m_PhysicalIndex = (m_Container->max_size() == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
             return tmp;
         }
 
         iterator_type&
         operator--()
         {
-            m_PhysicalIndex = (0 == m_PhysicalIndex) ? Capacity : (m_PhysicalIndex - 1);
+            m_PhysicalIndex = (0 == m_PhysicalIndex) ? m_Container->max_size() : (m_PhysicalIndex - 1);
             return *this;
         }
 
         iterator_type operator--(int)
         {
             iterator_type tmp = *this;
-            m_PhysicalIndex = (0 == m_PhysicalIndex) ? Capacity : (m_PhysicalIndex - 1);
+            m_PhysicalIndex = (0 == m_PhysicalIndex) ? m_Container->max_size() : (m_PhysicalIndex - 1);
             return tmp;
         }
 
@@ -139,19 +139,19 @@ struct PODDeque
         {
             if (0 > rhs)
             {
-                rhs = modulo(rhs, (Capacity + 1)) - (Capacity + 1);
+                rhs = static_cast<difference_type>(modulo(rhs, (m_Container->max_size() + 1))) - (m_Container->max_size() + 1);
             }
             else
             {
-                rhs = modulo(rhs, (Capacity + 1));
+                rhs = modulo(rhs, (m_Container->max_size() + 1));
             }
             if (0 > rhs)
             {
-                m_PhysicalIndex = (-rhs > static_cast<difference_type>(m_PhysicalIndex)) ? (Capacity + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
+                m_PhysicalIndex = (-rhs > static_cast<difference_type>(m_PhysicalIndex)) ? (m_Container->max_size() + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
             }
             else
             {
-                m_PhysicalIndex = (static_cast<difference_type>(Capacity - m_PhysicalIndex) < rhs) ? (rhs - (Capacity - m_PhysicalIndex) - 1) : (m_PhysicalIndex + rhs);
+                m_PhysicalIndex = (static_cast<difference_type>(m_Container->max_size() - m_PhysicalIndex) < rhs) ? (rhs - (m_Container->max_size() - m_PhysicalIndex) - 1) : (m_PhysicalIndex + rhs);
             }
             return *this;
         }
@@ -185,7 +185,7 @@ struct PODDeque
             bool NegativeResult;
             if (m_Container->m_End < m_Container->m_Begin)
             {
-                NegativeResult = modulo((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin), (Capacity + 1)) < modulo((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin), (Capacity + 1));
+                NegativeResult = modulo((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin), (m_Container->max_size() + 1)) < modulo((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin), (m_Container->max_size() + 1));
             }
             else
             {
@@ -193,11 +193,11 @@ struct PODDeque
             }
             if (NegativeResult)
             {
-                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (Capacity + 1)) - (Capacity + 1);
+                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (m_Container->max_size() + 1)) - (m_Container->max_size() + 1);
             }
             else
             {
-                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (Capacity + 1));
+                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (m_Container->max_size() + 1));
             }
         }
 
@@ -247,28 +247,28 @@ struct PODDeque
 
         iterator_type& operator++()
         {
-            m_PhysicalIndex = (Capacity == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
+            m_PhysicalIndex = (m_Container->max_size() == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
             return *this;
         }
 
         iterator_type operator++(int)
         {
             iterator_type tmp = *this;
-            m_PhysicalIndex = (Capacity == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
+            m_PhysicalIndex = (m_Container->max_size() == m_PhysicalIndex) ? 0 : (m_PhysicalIndex + 1);
             return tmp;
         }
 
         iterator_type&
         operator--()
         {
-            m_PhysicalIndex = (0 == m_PhysicalIndex) ? Capacity : (m_PhysicalIndex - 1);
+            m_PhysicalIndex = (0 == m_PhysicalIndex) ? m_Container->max_size() : (m_PhysicalIndex - 1);
             return *this;
         }
 
         iterator_type operator--(int)
         {
             iterator_type tmp = *this;
-            m_PhysicalIndex = (0 == m_PhysicalIndex) ? Capacity : (m_PhysicalIndex - 1);
+            m_PhysicalIndex = (0 == m_PhysicalIndex) ? m_Container->max_size() : (m_PhysicalIndex - 1);
             return tmp;
         }
 
@@ -288,19 +288,19 @@ struct PODDeque
         {
             if (0 > rhs)
             {
-                rhs = modulo(rhs, (Capacity + 1)) - (Capacity + 1);
+                rhs = static_cast<difference_type>(modulo(rhs, (m_Container->max_size() + 1))) - (m_Container->max_size() + 1);
             }
             else
             {
-                rhs = modulo(rhs, (Capacity + 1));
+                rhs = modulo(rhs, (m_Container->max_size() + 1));
             }
             if (0 > rhs)
             {
-                m_PhysicalIndex = (-rhs > static_cast<difference_type>(m_PhysicalIndex)) ? (Capacity + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
+                m_PhysicalIndex = (-rhs > static_cast<difference_type>(m_PhysicalIndex)) ? (m_Container->max_size() + (rhs + m_PhysicalIndex) + 1) : (m_PhysicalIndex + rhs);
             }
             else
             {
-                m_PhysicalIndex = (static_cast<difference_type>(Capacity - m_PhysicalIndex) < rhs) ? (rhs - (Capacity - m_PhysicalIndex) - 1) : (m_PhysicalIndex + rhs);
+                m_PhysicalIndex = (static_cast<difference_type>(m_Container->max_size() - m_PhysicalIndex) < rhs) ? (rhs - (m_Container->max_size() - m_PhysicalIndex) - 1) : (m_PhysicalIndex + rhs);
             }
             return *this;
         }
@@ -334,7 +334,7 @@ struct PODDeque
             bool NegativeResult;
             if (m_Container->m_End < m_Container->m_Begin)
             {
-                NegativeResult = modulo((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin), (Capacity + 1)) < modulo((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin), (Capacity + 1));
+                NegativeResult = modulo((static_cast<difference_type>(this->m_PhysicalIndex) - m_Container->m_Begin), (m_Container->max_size() + 1)) < modulo((static_cast<difference_type>(rhs.m_PhysicalIndex) - m_Container->m_Begin), (m_Container->max_size() + 1));
             }
             else
             {
@@ -342,11 +342,11 @@ struct PODDeque
             }
             if (NegativeResult)
             {
-                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (Capacity + 1)) - (Capacity + 1);
+                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (m_Container->max_size() + 1)) - (m_Container->max_size() + 1);
             }
             else
             {
-                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (Capacity + 1));
+                return modulo((static_cast<difference_type>(this->m_PhysicalIndex) - rhs.m_PhysicalIndex), (m_Container->max_size() + 1));
             }
         }
 
@@ -407,13 +407,13 @@ struct PODDeque
 
     reference operator[](size_type LogicalIndex)
     {
-        return m_Storage[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
+        return m_Storage[(max_size() - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (max_size() + 1)) : (m_Begin + LogicalIndex)];
     }
 
     CCC_CONSTEXPR
     const_reference operator[](size_type LogicalIndex) const CCC_NOEXCEPT
     {
-        return m_Storage[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
+        return m_Storage[(max_size() - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (max_size() + 1)) : (m_Begin + LogicalIndex)];
     }
 
     reference at(size_type LogicalIndex) // ToDo
@@ -422,14 +422,14 @@ struct PODDeque
         {
             throw std::out_of_range("ConsistentArray::at"), m_Storage[0];
         }
-        return m_Storage[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)];
+        return m_Storage[(max_size() - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (max_size() + 1)) : (m_Begin + LogicalIndex)];
     }
 
     CCC_CONSTEXPR
     const_reference at(size_type LogicalIndex) const // ToDo
     {
         return LogicalIndex < size() ?
-                m_Storage[(Capacity - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (Capacity + 1)) : (m_Begin + LogicalIndex)] : (throw std::out_of_range("ConsistentArray::at"), m_Storage[0]);
+                m_Storage[(max_size() - LogicalIndex < m_Begin) ? (m_Begin + LogicalIndex - (max_size() + 1)) : (m_Begin + LogicalIndex)] : (throw std::out_of_range("ConsistentArray::at"), m_Storage[0]);
     }
 
     reference front()
@@ -503,13 +503,13 @@ struct PODDeque
 
     size_type size() const CCC_NOEXCEPT
     {
-        return (m_End < m_Begin) ? (m_End - m_Begin + Capacity + 1) : (m_End - m_Begin);
+        return (m_End < m_Begin) ? (m_End - m_Begin + max_size() + 1) : (m_End - m_Begin);
     }
 
     CCC_CONSTEXPR
     size_type max_size() const CCC_NOEXCEPT
     {
-        return Capacity;
+        return m_Storage.max_size() - 1;
     }
 
     // Modifiers:
@@ -523,9 +523,9 @@ struct PODDeque
 
     void push_front(const_reference Value)
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
-            m_Begin = (0 == m_Begin) ? Capacity : (m_Begin - 1);
+            m_Begin = (0 == m_Begin) ? max_size() : (m_Begin - 1);
             m_Storage.construct_and_assign(begin(), Value);
         }
         else
@@ -536,10 +536,10 @@ struct PODDeque
 
     void push_back(const_reference Value)
     {
-        if (size() < Capacity)
+        if (size() < max_size())
         {
             m_Storage.construct_and_assign(end(), Value);
-            m_End = (Capacity == m_End) ? 0 : (m_End + 1);
+            m_End = (max_size() == m_End) ? 0 : (m_End + 1);
         }
         else
         {
@@ -552,7 +552,7 @@ struct PODDeque
         if (not empty())
         {
             m_Storage.destroy(begin());
-            m_Begin = (Capacity == m_Begin) ? 0 : (m_Begin + 1);
+            m_Begin = (max_size() == m_Begin) ? 0 : (m_Begin + 1);
         }
     }
 
@@ -560,7 +560,7 @@ struct PODDeque
     {
         if (not empty())
         {
-            m_End = (0 == m_End) ? Capacity : (m_End - 1);
+            m_End = (0 == m_End) ? max_size() : (m_End - 1);
             m_Storage.destroy(end());
         }
     }
@@ -572,7 +572,7 @@ struct PODDeque
 
     iterator insert(iterator Position, const_reference Value)
     {
-        if (size() < Capacity) // rules out case LogicalBegin == LogicalEnd
+        if (size() < max_size()) // rules out case LogicalBegin == LogicalEnd
         {
             m_Storage.construct_default(begin() - 1);
             if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
@@ -586,7 +586,7 @@ struct PODDeque
                 {
                     std::copy(begin(), Position, begin() - 1);
                 }
-                m_Begin = (0 == m_Begin) ? Capacity : (m_Begin - 1);
+                m_Begin = (0 == m_Begin) ? max_size() : (m_Begin - 1);
                 *(Position - 1) = Value;
                 return (Position - 1);
             }
@@ -602,7 +602,7 @@ struct PODDeque
                 {
                     std::copy_backward(Position, end(), end() + 1);
                 }
-                m_End = (Capacity == m_End) ? 0 : (m_End + 1);
+                m_End = (max_size() == m_End) ? 0 : (m_End + 1);
                 *Position = Value;
                 return Position;
             }
@@ -668,7 +668,7 @@ struct PODDeque
                 std::copy_backward(begin(), Position, Position + 1);
             }
             m_Storage.destroy(begin());
-            m_Begin = (Capacity == m_Begin) ? 0 : (m_Begin + 1);
+            m_Begin = (max_size() == m_Begin) ? 0 : (m_Begin + 1);
             return Position + 1;
         }
         else
@@ -681,7 +681,7 @@ struct PODDeque
             {
                 std::copy(Position + 1, end(), Position);
             }
-            m_End = (0 == m_End) ? Capacity : (m_End - 1);
+            m_End = (0 == m_End) ? max_size() : (m_End - 1);
             m_Storage.destroy(end());
             return Position;
         }
