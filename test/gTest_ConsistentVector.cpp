@@ -51,30 +51,6 @@ typedef reftest<ccc::ConsistentVector<cNoPOD, std::size_t, 10>, std::vector<cNoP
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs, RefContainerOfNonPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(ConsistentVector, TestOfSequenceContainer, RefContainerImplementations);
 
-
-//TEST(ConsistentVector, DestroyOnErase)
-//{
-//    cUniqueID::NextID = 0;
-//    cUniqueID::CurrentIDs = std::set<std::size_t>();
-//    typedef ccc::ConsistentVector<cUniqueID, std::size_t, 10> Container;
-////    typedef std::vector<cUniqueID> Container;
-//    EXPECT_TRUE(cUniqueID::CurrentIDs.empty());
-//    {
-////        Container c = Container();
-//        Container c;
-//        EXPECT_EQ(10, cUniqueID::CurrentIDs.size()) << PrintContent(cUniqueID::CurrentIDs) << std::endl << PrintContent(c);
-//        {
-//            cUniqueID obj = cUniqueID();
-//            c.push_back(obj);
-//        }
-//        EXPECT_EQ(10, cUniqueID::CurrentIDs.size()) << PrintContent(cUniqueID::CurrentIDs) << std::endl << PrintContent(c);
-//        c.push_back(cUniqueID());
-//        EXPECT_EQ(10, cUniqueID::CurrentIDs.size()) << PrintContent(cUniqueID::CurrentIDs) << std::endl << PrintContent(c);
-//    }
-//    EXPECT_TRUE(cUniqueID::CurrentIDs.empty()) << PrintContent(cUniqueID::CurrentIDs);
-//}
-
-
 TEST(ConsistentVector, DestroyOnErase)
 {
     typedef cUniqueID<true> U;

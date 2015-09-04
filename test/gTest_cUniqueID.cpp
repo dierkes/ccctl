@@ -23,7 +23,7 @@ TEST(UniqueID, DefaultInitialization)
 
 TEST(UniqueID, ValueInitialization)
 {
-    typedef cUniqueID<false> U;
+    typedef cUniqueID<true> U;
     U::NextID = 0;
     U::CurrentIDs = std::set<std::size_t>();
     U obj_0 = U();
@@ -34,7 +34,7 @@ TEST(UniqueID, ValueInitialization)
 
 TEST(UniqueID, Assignment)
 {
-    typedef cUniqueID<false> U;
+    typedef cUniqueID<true> U;
     U::NextID = 0;
     U::CurrentIDs = std::set<std::size_t>();
     U obj_0;
