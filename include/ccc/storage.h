@@ -30,9 +30,9 @@ struct StaticInitializedStorage
     typedef std::ptrdiff_t difference_type;
 
 #if (__cplusplus >= 201103L)
-    alignas(Alignment) value_type m_Array[Capacity];
+    alignas(Alignment) value_type m_StaticInitializedStorage[Capacity];
 #else
-    PaddedArray<value_type, Capacity, Alignment> m_Array;
+    PaddedArray<value_type, Capacity, Alignment> m_StaticInitializedStorage;
 #endif
 
     pointer address(reference Object) const
@@ -94,12 +94,12 @@ struct StaticInitializedStorage
 
     reference operator[](size_type Index)
     {
-        return m_Array[Index];
+        return m_StaticInitializedStorage[Index];
     }
 
     const_reference operator[](size_type Index) const
     {
-        return m_Array[Index];
+        return m_StaticInitializedStorage[Index];
     }
 };
 
@@ -117,9 +117,9 @@ struct StaticUninitializedStorage
     typedef unsigned char byte_type;
 
 #if (__cplusplus >= 201103L)
-    alignas(Alignment) byte_type m_Array[sizeof(value_type) * Capacity];
+    alignas(Alignment) byte_type m_StaticUninitializedStorage[sizeof(value_type) * Capacity];
 #else
-    PaddedArray<byte_type, sizeof(value_type) * Capacity, Alignment> m_Array;
+    PaddedArray<byte_type, sizeof(value_type) * Capacity, Alignment> m_StaticUninitializedStorage;
 #endif
 
     pointer address(reference Object) const
@@ -193,12 +193,12 @@ struct StaticUninitializedStorage
 
     reference operator[](size_type Index)
     {
-        return reinterpret_cast<pointer>(&m_Array[0])[Index];
+        return reinterpret_cast<pointer>(&m_StaticUninitializedStorage[0])[Index];
     }
 
     const_reference operator[](size_type Index) const
     {
-        return (reinterpret_cast<const_pointer>(&m_Array[0])[Index]);
+        return (reinterpret_cast<const_pointer>(&m_StaticUninitializedStorage[0])[Index]);
     }
 };
 
@@ -215,24 +215,24 @@ struct FixedInitializedStorage
 
 #if (__cplusplus >= 201103L)
     alignas(Alignment) size_type m_Capacity;
-    alignas(Alignment) value_type* m_Array;
+    alignas(Alignment) value_type* m_FixedInitializedStorage;
 #else
     PaddedValue<size_type, Alignment> m_Capacity;
-    PaddedValue<value_type*, Alignment> m_Array;
+    PaddedValue<value_type*, Alignment> m_FixedInitializedStorage;
 #endif
 
     void allocate(size_type Capacity)
     {
-        m_Array = new value_type[Capacity];
+        m_FixedInitializedStorage = new value_type[Capacity];
         m_Capacity = Capacity;
     }
 
     void deallocate()
     {
-        if (m_Array)
+        if (m_FixedInitializedStorage)
         {
-            delete[] static_cast<pointer>(m_Array);
-            m_Array = 0;
+            delete[] static_cast<pointer>(m_FixedInitializedStorage);
+            m_FixedInitializedStorage = 0;
         }
     }
 
@@ -294,12 +294,12 @@ struct FixedInitializedStorage
 
     reference operator[](size_type Index)
     {
-        return m_Array[Index];
+        return m_FixedInitializedStorage[Index];
     }
 
     const_reference operator[](size_type Index) const
     {
-        return m_Array[Index];
+        return m_FixedInitializedStorage[Index];
     }
 };
 
@@ -318,24 +318,24 @@ struct FixedUninitializedStorage
 
 #if (__cplusplus >= 201103L)
     alignas(Alignment) size_type m_Capacity;
-    alignas(Alignment) byte_type* m_Array;
+    alignas(Alignment) byte_type* m_FixedUninitializedStorage;
 #else
     PaddedValue<size_type, Alignment> m_Capacity;
-    PaddedValue<byte_type*, Alignment> m_Array;
+    PaddedValue<byte_type*, Alignment> m_FixedUninitializedStorage;
 #endif
 
     void allocate(size_type Capacity)
     {
-        m_Array = new byte_type[Capacity * sizeof(value_type)];
+        m_FixedUninitializedStorage = new byte_type[Capacity * sizeof(value_type)];
         m_Capacity = Capacity;
     }
 
     void deallocate()
     {
-        if (m_Array)
+        if (m_FixedUninitializedStorage)
         {
-            delete[] static_cast<byte_type*>(m_Array);
-            m_Array = 0;
+            delete[] static_cast<byte_type*>(m_FixedUninitializedStorage);
+            m_FixedUninitializedStorage = 0;
         }
     }
 
@@ -410,12 +410,12 @@ struct FixedUninitializedStorage
 
     reference operator[](size_type Index)
     {
-        return reinterpret_cast<pointer>(&m_Array[0])[Index];
+        return reinterpret_cast<pointer>(&m_FixedUninitializedStorage[0])[Index];
     }
 
     const_reference operator[](size_type Index) const
     {
-        return (reinterpret_cast<const_pointer>(&m_Array[0])[Index]);
+        return (reinterpret_cast<const_pointer>(&m_FixedUninitializedStorage[0])[Index]);
     }
 };
 
