@@ -16,7 +16,7 @@
 namespace ccc
 {
 
-template<class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps =
+template<class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps =
         false, bool StaticStorage = true>
 struct ConsistentVector: public PODVector<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>
 {

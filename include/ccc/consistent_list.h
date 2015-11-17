@@ -16,7 +16,7 @@
 namespace ccc
 {
 
-template<class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8, bool StaticStorage = true>
+template<class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool StaticStorage = true>
 class ConsistentList: public PODList<T, SizeType, Capacity, Alignment, StaticStorage>
 {
 public:

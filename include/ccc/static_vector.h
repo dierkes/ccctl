@@ -16,7 +16,7 @@
 namespace ccc
 {
 
-template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment = 8, bool UseRawMemOps = false>
+template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps = false>
 class StaticVector : public ConsistentVector<T, SizeType, Capacity, Alignment, UseRawMemOps, true>
 {
 };

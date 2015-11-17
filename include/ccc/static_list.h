@@ -16,7 +16,7 @@
 namespace ccc
 {
 
-template <class T, class SizeType, SizeType Capacity, std::size_t Alignment = 8>
+template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8>
 struct StaticList: public ConsistentList<T, SizeType, Capacity, Alignment, true>
 {
 };

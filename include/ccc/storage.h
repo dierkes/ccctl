@@ -18,7 +18,7 @@
 namespace ccc
 {
 
-template<typename T, typename SizeType, SizeType Capacity, std::size_t Alignment = 8>
+template<typename T, typename SizeType, SizeType Capacity, unsigned int Alignment = 8>
 struct StaticInitializedStorage
 {
     typedef T value_type;
@@ -103,7 +103,7 @@ struct StaticInitializedStorage
     }
 };
 
-template<typename T, typename SizeType, SizeType Capacity, std::size_t Alignment = 8>
+template<typename T, typename SizeType, SizeType Capacity, unsigned int Alignment = 8>
 struct StaticUninitializedStorage
 {
     typedef T value_type;
@@ -202,7 +202,7 @@ struct StaticUninitializedStorage
     }
 };
 
-template<typename T, typename SizeType, std::size_t Alignment = 8>
+template<typename T, typename SizeType, unsigned int Alignment = 8>
 struct FixedInitializedStorage
 {
     typedef T value_type;
@@ -303,7 +303,7 @@ struct FixedInitializedStorage
     }
 };
 
-template<typename T, typename SizeType, std::size_t Alignment = 8>
+template<typename T, typename SizeType, unsigned int Alignment = 8>
 struct FixedUninitializedStorage
 {
     typedef T value_type;
@@ -419,31 +419,31 @@ struct FixedUninitializedStorage
     }
 };
 
-template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment, bool StaticStorage, bool InitializedStorage>
+template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment, bool StaticStorage, bool InitializedStorage>
 struct StorageType
 {
     typedef void type;
 };
 
-template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment>
+template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
 struct StorageType<T, SizeType, Capacity, Alignment, true, true>
 {
     typedef StaticInitializedStorage<T, SizeType, Capacity, Alignment> type;
 };
 
-template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment>
+template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
 struct StorageType<T, SizeType, Capacity, Alignment, true, false>
 {
     typedef StaticUninitializedStorage<T, SizeType, Capacity, Alignment> type;
 };
 
-template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment>
+template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
 struct StorageType<T, SizeType, Capacity, Alignment, false, true>
 {
     typedef FixedInitializedStorage<T, SizeType, Alignment> type;
 };
 
-template <typename T, typename SizeType, SizeType Capacity, std::size_t Alignment>
+template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
 struct StorageType<T, SizeType, Capacity, Alignment, false, false>
 {
     typedef FixedUninitializedStorage<T, SizeType, Alignment> type;
