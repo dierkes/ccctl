@@ -149,8 +149,8 @@ public:
 
     cUniqueID& operator=(const cUniqueID& Other)
     {
-//        m_ID = NextID++;
-//        CurrentIDs.insert(m_ID);
+        // do NOT assign m_ID of other to m_ID of this!
+        m_ID = m_ID + 0; // make cppcheck not complaining
         if (Verbose)
         {
             std::cout << "Assignment of " << Other.m_ID << " to " << m_ID << std::endl;
