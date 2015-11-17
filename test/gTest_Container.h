@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 
 #include "utils.h"
+#include "consistent_integers.h"
 
 template<typename T>
 class TestOfContainer: public ::testing::Test
@@ -41,7 +42,7 @@ template<typename T>
 class TestOfStaticContainer: public ::testing::Test
 {
 public:
-    static std::size_t m_Capacity;
+    static uint64_t m_Capacity;
 };
 
 TYPED_TEST_CASE_P(TestOfPODContainer);

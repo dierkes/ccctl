@@ -23,8 +23,8 @@
 
 #include <list>
 
-typedef ccc::PODList<int, std::size_t, 10> ContainerOfInts;
-typedef ccc::PODList<tPOD, std::size_t, 10> ContainerOfPODs;
+typedef ccc::PODList<int, uint64_t, 10> ContainerOfInts;
+typedef ccc::PODList<tPOD, uint64_t, 10> ContainerOfPODs;
 
 #if (__cplusplus >= 201103L)
 TEST(PODList, TypeTraits_Cpp11)
@@ -34,16 +34,16 @@ TEST(PODList, TypeTraits_Cpp11)
 }
 #endif
 
-template<> std::size_t TestOfStaticContainer<ContainerOfInts>::m_Capacity = 10;
-template<> std::size_t TestOfStaticContainer<ContainerOfPODs>::m_Capacity = 10;
+template<> uint64_t TestOfStaticContainer<ContainerOfInts>::m_Capacity = 10;
+template<> uint64_t TestOfStaticContainer<ContainerOfPODs>::m_Capacity = 10;
 
 typedef ::testing::Types<ContainerOfInts, ContainerOfPODs> ContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(PODList, TestOfContainer, ContainerImplementations);
 INSTANTIATE_TYPED_TEST_CASE_P(PODList, TestOfPODContainer, ContainerImplementations);
 INSTANTIATE_TYPED_TEST_CASE_P(PODList, TestOfStaticContainer, ContainerImplementations);
 
-typedef reftest<ccc::PODList<int, std::size_t, 10>, std::list<int> > RefContainerOfInts;
-typedef reftest<ccc::PODList<tPOD, std::size_t, 10>, std::list<tPOD> > RefContainerOfPODs;
+typedef reftest<ccc::PODList<int, uint16_t, 10>, std::list<int> > RefContainerOfInts;
+typedef reftest<ccc::PODList<tPOD, uint16_t, 10>, std::list<tPOD> > RefContainerOfPODs;
 
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(PODList, TestOfSequenceContainer, RefContainerImplementations);
