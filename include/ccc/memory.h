@@ -26,5 +26,7 @@ T* addressof(T& r)
 
 }
 
+#define ccc_offsetof(T, m) reinterpret_cast<unsigned long>(&reinterpret_cast<char const volatile&>(reinterpret_cast<T*>(0)->m))
+
 
 #endif /* CCC_MEMORY_H_ */
