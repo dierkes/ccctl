@@ -13,6 +13,8 @@
 
 #include <cstddef>
 
+#include <ccc/compat.h>
+
 namespace ccc
 {
 
@@ -60,6 +62,35 @@ struct PaddedValue
     {
         return m_PaddedValue.Data;
     }
+};
+
+template <typename T, std::size_t Alignment>
+struct Aligned
+{
+};
+
+template <typename T>
+struct Aligned<T, 1>
+{
+    typedef CCC_ALIGNED_TYPE(T, 1) type;
+};
+
+template <typename T>
+struct Aligned<T, 2>
+{
+    typedef CCC_ALIGNED_TYPE(T, 2) type;
+};
+
+template <typename T>
+struct Aligned<T, 4>
+{
+    typedef CCC_ALIGNED_TYPE(T, 4) type;
+};
+
+template <typename T>
+struct Aligned<T, 8>
+{
+    typedef CCC_ALIGNED_TYPE(T, 8) type;
 };
 
 }

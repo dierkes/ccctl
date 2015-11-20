@@ -16,6 +16,7 @@
 #include <cstring>
 #include <algorithm>
 #include <stdexcept>
+#include <iterator>
 
 #include <ccc/compat.h>
 #include <ccc/memory.h>

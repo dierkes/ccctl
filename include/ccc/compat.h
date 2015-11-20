@@ -20,6 +20,7 @@
 #define CCC_DEFAULT {}
 #define CCC_IS_TRIVIALLY_COPYABLE_AVAILABLE false
 #define CCC_IS_POD_AVAILABLE false
+#define CCC_ALIGNED_TYPE(T) // this will cause a compile error, if the macro is not specified for a compiler
 
 /*
  * Compiler-specific definitions:
@@ -28,6 +29,8 @@
  */
 
 #if defined(__GNUG__) // equivalent to (__GNUC__ && __cplusplus)
+
+#define CCC_ALIGNED_TYPE(T, Alignment) T __attribute__(aligned((Alignment)))
 
 #if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 7) && (__cplusplus >= 201103L)
 
@@ -41,6 +44,8 @@
 #endif
 
 #elif defined(_MSC_VER)
+
+#define CCC_ALIGNED_TYPE(T, Alignment) __declspec(align((Alignment))) T
 
 /*
  * Version numbers of Microsoft compilers:
