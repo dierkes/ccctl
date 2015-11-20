@@ -30,7 +30,7 @@
 
 #if defined(__GNUG__) // equivalent to (__GNUC__ && __cplusplus)
 
-#define CCC_ALIGNED_TYPE(T, Alignment) T __attribute__(aligned((Alignment)))
+#define CCC_ALIGNED_TYPE(T, Alignment) T __attribute__((aligned((Alignment))))
 
 #if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 7) && (__cplusplus >= 201103L)
 
