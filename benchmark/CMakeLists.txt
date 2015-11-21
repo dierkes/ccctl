@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(CCCTL_Benchmark)
+project(ccctl_celero)
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 
@@ -15,8 +15,8 @@ set(source_files
 	celero_fill.cpp
 )
 
-add_executable(celero_ccctl ${source_files})
+add_executable(ccctl_celero ${source_files})
 
-target_link_libraries(celero_ccctl
+target_link_libraries(ccctl_celero
     celero
 )
