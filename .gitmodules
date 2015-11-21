@@ -1,0 +1,8 @@
+[submodule "gtest"]
+	path = gtest
+	url = https://github.com/google/googletest
+	branch = master
+[submodule "celero"]
+	path = celero
+	url = https://github.com/DigitalInBlue/Celero.git
+	branch = master
