@@ -15,8 +15,6 @@
 
 #include <random>
 
-CELERO_MAIN
-
 const int N = 10000;
 
 class ArrayFixture : public celero::TestFixture

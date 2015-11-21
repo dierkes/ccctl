@@ -1,13 +1,8 @@
 /**
  *
  * @file
- * Copyright &copy; Audi AG. All rights reserved.
  *
  * @author Frank Dierkes
- *
- * $LastChangedBy$
- * $Date$
- * $Revision$
  *
  * @remarks
  *
@@ -20,8 +15,6 @@
 #include <vector>
 
 #include <random>
-
-CELERO_MAIN
 
 BASELINE(ccctl, std_vector, 30, 100)
 {
