@@ -21,6 +21,7 @@
 #define CCC_IS_TRIVIALLY_COPYABLE_AVAILABLE false
 #define CCC_IS_POD_AVAILABLE false
 #define CCC_ALIGNED_TYPE(T) // this will cause a compile error, if the macro is not specified for a compiler
+#define CCC_ALIGNAS_AVAILABLE false
 
 /*
  * Compiler-specific definitions:
@@ -72,6 +73,8 @@
 #define CCC_CONSTEXPR constexpr
 #undef CCC_DEFAULT
 #define CCC_DEFAULT = default;
+#undef CCC_ALIGNAS_AVAILABLE
+#define CCC_ALIGNAS_AVAILABLE true
 
 #endif // (_MSC_VER >= 1800)
 

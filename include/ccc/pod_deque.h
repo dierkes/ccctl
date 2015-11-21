@@ -364,7 +364,7 @@ struct PODDeque
 
     typedef typename StorageType<T, SizeType, Capacity + 1, Alignment, StaticStorage, true>::type storage_type;
 
-#if (__cplusplus >= 201103L)
+#if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Begin; // points at the first element
     alignas(Alignment) size_type m_End; // points at the element
 #else

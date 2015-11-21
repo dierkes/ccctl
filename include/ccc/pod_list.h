@@ -43,7 +43,7 @@ struct PODList
 
     typedef PODVector<node_index_type, size_type, Capacity + 1, Alignment, false, StaticStorage> deallocated_storage_type;
 
-#if (__cplusplus >= 201103L)
+#if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Size;
 #else
     PaddedValue<size_type, Alignment> m_Size;

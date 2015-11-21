@@ -53,7 +53,7 @@ struct PODVector
 
     typedef typename StorageType<T, SizeType, Capacity, Alignment, StaticStorage, true>::type storage_type;
 
-#if (__cplusplus >= 201103L)
+#if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_End;
 #else
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element

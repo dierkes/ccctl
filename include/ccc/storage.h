@@ -29,7 +29,7 @@ struct StaticInitializedStorage
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-#if (__cplusplus >= 201103L)
+#if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) value_type m_StaticInitializedStorage[Capacity];
 #else
     PaddedArray<value_type, Capacity, Alignment> m_StaticInitializedStorage;
@@ -116,7 +116,7 @@ struct StaticUninitializedStorage
 
     typedef unsigned char byte_type;
 
-#if (__cplusplus >= 201103L)
+#if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) byte_type m_StaticUninitializedStorage[sizeof(value_type) * Capacity];
 #else
     PaddedArray<byte_type, sizeof(value_type) * Capacity, Alignment> m_StaticUninitializedStorage;
@@ -213,7 +213,7 @@ struct FixedInitializedStorage
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-#if (__cplusplus >= 201103L)
+#if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Capacity;
     alignas(Alignment) value_type* m_FixedInitializedStorage;
 #else
@@ -316,7 +316,7 @@ struct FixedUninitializedStorage
 
     typedef unsigned char byte_type;
 
-#if (__cplusplus >= 201103L)
+#if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Capacity;
     alignas(Alignment) byte_type* m_FixedUninitializedStorage;
 #else
