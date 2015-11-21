@@ -9,8 +9,10 @@ include_directories(
 	"../celero/include"
 )
 
-file(GLOB source_files
-    "*.cpp"
+set(source_files
+	celero_main.cpp
+	celero_test.cpp
+	celero_fill.cpp
 )
 
 add_executable(celero_ccctl ${source_files})
