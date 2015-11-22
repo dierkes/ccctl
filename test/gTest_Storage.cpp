@@ -13,7 +13,7 @@
 
 TEST(Storage, StaticInitialized)
 {
-    typedef cUniqueID<true> U;
+    typedef cUniqueID<false> U;
     U::NextID = 0;
     U::CurrentIDs = std::set<std::size_t>();
     ccc::StaticInitializedStorage<U, std::size_t, 10> sis;
@@ -25,7 +25,7 @@ TEST(Storage, StaticInitialized)
 
 TEST(Storage, StaticUninitialized)
 {
-    typedef cUniqueID<true> U;
+    typedef cUniqueID<false> U;
     U::NextID = 0;
     U::CurrentIDs = std::set<std::size_t>();
     ccc::StaticUninitializedStorage<U, std::size_t, 10> sus;
@@ -37,7 +37,7 @@ TEST(Storage, StaticUninitialized)
 
 TEST(Storage, FixedInitialized)
 {
-    typedef cUniqueID<true> U;
+    typedef cUniqueID<false> U;
     U::NextID = 0;
     U::CurrentIDs = std::set<std::size_t>();
     ccc::FixedInitializedStorage<U, std::size_t> fis;
@@ -51,7 +51,7 @@ TEST(Storage, FixedInitialized)
 
 TEST(Storage, FixedUninitialized)
 {
-    typedef cUniqueID<true> U;
+    typedef cUniqueID<false> U;
     U::NextID = 0;
     U::CurrentIDs = std::set<std::size_t>();
     ccc::FixedUninitializedStorage<U, std::size_t> fus;
