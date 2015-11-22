@@ -16,7 +16,7 @@
 
 #include <random>
 
-BASELINE(ccctl, std_vector, 30, 100)
+BASELINE(ccctl1, std_vector, 30, 100)
 {
     std::vector<int> v;
     v.reserve(1000);
@@ -26,7 +26,7 @@ BASELINE(ccctl, std_vector, 30, 100)
     }
 }
 
-BENCHMARK(ccctl, ccc_StaticVector, 30, 100)
+BENCHMARK(ccctl1, ccc_StaticVector, 30, 100)
 {
     ccc::StaticVector<int, int, 1000> v;
     for (int i = 0; i < 1000; ++i)
