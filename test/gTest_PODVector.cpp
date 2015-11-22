@@ -18,6 +18,8 @@
 
 #include <ccc/pod_vector.h>
 
+#pragma pack(pop)
+
 #include "gTest_Container.h"
 #include "gTest_SequenceContainer.h"
 #include "consistent_integers.h"
@@ -131,5 +133,3 @@ TEST(PodVector, ConsistentLayout)
     EXPECT_EQ(8, ccc_offsetof(PodVector_32_8_2_8, m_Storage[0]));
     EXPECT_EQ(12, ccc_offsetof(PodVector_32_8_2_8, m_Storage[1]));
 }
-
-#pragma pack(pop)
