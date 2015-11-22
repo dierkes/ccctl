@@ -9,8 +9,26 @@ include_directories(
 	"../gtest/include"
 )
 
-file(GLOB source_files
-    "*.cpp"
+#file(GLOB source_files
+#    "*.cpp"
+#)
+
+set(source_files
+    utils.cpp
+    gTest_cUniqueID.cpp
+    gTest_Alignment.cpp
+    gTest_Array.cpp
+    gTest_Storage.cpp
+    gTest_PODVector.cpp
+    gTest_PODDeque.cpp
+    gTest_PODList.cpp
+    gTest_ConsistentVector.cpp
+    gTest_ConsistentDeque.cpp
+    gTest_ConsistentList.cpp
+    gTest_FixedVector.cpp
+    gTest_FixedDeque.cpp
+    gTest_FixedList.cpp
+    gTest_StaticList.cpp
 )
 
 add_executable(ccctl_gtest ${source_files})
