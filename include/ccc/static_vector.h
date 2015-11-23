@@ -16,10 +16,14 @@
 namespace ccc
 {
 
+#pragma pack(push, 1)
+
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps = false>
 class StaticVector : public ConsistentVector<T, SizeType, Capacity, Alignment, UseRawMemOps, true>
 {
 };
+
+#pragma pack(pop)
 
 }
 

@@ -28,6 +28,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 1)
+
 /**
  * @brief Consistent, static-capacity vector.
  *
@@ -345,6 +347,8 @@ struct PODVector
     }
 
 };
+
+#pragma pack(pop)
 
 }
 
