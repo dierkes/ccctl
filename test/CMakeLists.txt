@@ -19,9 +19,9 @@ set(source_files
     gTest_Alignment.cpp
     gTest_Array.cpp
     gTest_Storage.cpp
-    gTest_PODVector.cpp
-    gTest_PODDeque.cpp
-    gTest_PODList.cpp
+    gTest_PodVector.cpp
+    gTest_PodDeque.cpp
+    gTest_PodList.cpp
     gTest_ConsistentVector.cpp
     gTest_ConsistentDeque.cpp
     gTest_ConsistentList.cpp

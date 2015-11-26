@@ -38,7 +38,7 @@ namespace ccc
  * Noncompliance: No swap method, ...
  */
 template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps = false, bool StaticStorage = true>
-struct PODVector
+struct PodVector
 {
     typedef T value_type;
     typedef value_type* pointer;

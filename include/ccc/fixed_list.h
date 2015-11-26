@@ -23,7 +23,7 @@ public:
     explicit FixedList(SizeType Capacity)
     {
         this->m_Nodes.allocate(Capacity + 1);
-        this->m_Nodes[this->m_Anchor] = typename PODList<T, SizeType, 0, Alignment, false>::node_type();
+        this->m_Nodes[this->m_Anchor] = typename PodList<T, SizeType, 0, Alignment, false>::node_type();
         this->m_Values.allocate(Capacity);
         this->m_Deallocated.m_Storage.allocate(Capacity);
     }

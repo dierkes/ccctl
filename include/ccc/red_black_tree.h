@@ -59,7 +59,7 @@ namespace ccc
  */
 template<typename T, typename SizeType, SizeType Capacity, std::size_t Alignment = 8,
         bool UseRawMemOps = false, bool StaticStorage = true>
-struct PODRedBlackTree
+struct PodRedBlackTree
 {
     typedef T value_type;
     typedef value_type* pointer;

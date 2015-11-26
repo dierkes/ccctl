@@ -18,7 +18,7 @@ namespace ccc
 
 template<class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps =
         false, bool StaticStorage = true>
-struct ConsistentDeque: public PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>
+struct ConsistentDeque: public PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>
 {
     ConsistentDeque()
     {
@@ -32,9 +32,9 @@ struct ConsistentDeque: public PODDeque<T, SizeType, Capacity, Alignment, UseRaw
     }
 
 protected:
-    using PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Begin;
-    using PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_End;
-    using PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Storage;
+    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Begin;
+    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_End;
+    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Storage;
 };
 
 }

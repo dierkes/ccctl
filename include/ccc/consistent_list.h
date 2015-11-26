@@ -17,16 +17,16 @@ namespace ccc
 {
 
 template<class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool StaticStorage = true>
-class ConsistentList: public PODList<T, SizeType, Capacity, Alignment, StaticStorage>
+class ConsistentList: public PodList<T, SizeType, Capacity, Alignment, StaticStorage>
 {
 public:
     ConsistentList()
     {
         this->m_Size = 0;
-        this->m_Deallocated = typename PODList<T, SizeType, Capacity, Alignment, StaticStorage>::deallocated_storage_type();
+        this->m_Deallocated = typename PodList<T, SizeType, Capacity, Alignment, StaticStorage>::deallocated_storage_type();
         if (StaticStorage)
         {
-            this->m_Nodes[this->m_Anchor] = typename PODList<T, SizeType, Capacity, Alignment, StaticStorage>::node_type();
+            this->m_Nodes[this->m_Anchor] = typename PodList<T, SizeType, Capacity, Alignment, StaticStorage>::node_type();
         }
     }
 
@@ -36,11 +36,11 @@ public:
     }
 
 protected:
-    using PODList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Size;
-    using PODList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Nodes;
-    using PODList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Values;
-    using PODList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Deallocated;
-    using PODList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Anchor;
+    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Size;
+    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Nodes;
+    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Values;
+    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Deallocated;
+    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Anchor;
 };
 
 }

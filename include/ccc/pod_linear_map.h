@@ -18,7 +18,7 @@ namespace ccc
 
 template<typename KeyType, typename T, KeyType Capacity, KeyType Offset = 0,
         std::size_t Alignment = 8, bool StaticStorage = true>
-struct PODLinearMap
+struct PodLinearMap
 {
     typedef KeyType key_type;
     typedef T mapped_type;

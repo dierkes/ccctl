@@ -36,7 +36,7 @@ namespace ccc
  * Noncompliance: No swap method, ...
  */
 template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps = false, bool StaticStorage = true>
-struct PODDeque
+struct PodDeque
 {
     typedef T value_type;
     typedef value_type* pointer;
@@ -46,7 +46,7 @@ struct PODDeque
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PODDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage> container_type; // necessary for random access iterator
+    typedef PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage> container_type; // necessary for random access iterator
 
     /**
      * Assumption: divisor is a positive number

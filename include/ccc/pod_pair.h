@@ -16,7 +16,7 @@ namespace ccc
 {
 
 template <typename T1, typename T2, std::size_t Alignment = 8>
-struct PODPair
+struct PodPair
 {
     typedef T1 first_type;
     typedef T2 second_type;
@@ -26,9 +26,9 @@ struct PODPair
 };
 
 template <typename T1, typename T2, std::size_t Alignment = 8>
-PODPair<T1, T2, Alignment> Pair(const T1& First, const T2& Second)
+PodPair<T1, T2, Alignment> make_pair(const T1& First, const T2& Second)
 {
-    PODPair<T1, T2, Alignment> P;
+    PodPair<T1, T2, Alignment> P;
     P.first = First;
     P.second = Second;
     return P;

@@ -19,7 +19,7 @@ namespace ccc
 {
 
 template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool StaticStorage = true>
-struct PODList
+struct PodList
 {
     typedef T value_type;
     typedef value_type* pointer;
@@ -29,7 +29,7 @@ struct PODList
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PODList<T, SizeType, Capacity, Alignment, StaticStorage> container_type; // necessary for iterator
+    typedef PodList<T, SizeType, Capacity, Alignment, StaticStorage> container_type; // necessary for iterator
 
     typedef size_type node_index_type;
 
@@ -41,7 +41,7 @@ struct PODList
 
     typedef ListNode node_type;
 
-    typedef PODVector<node_index_type, size_type, Capacity + 1, Alignment, false, StaticStorage> deallocated_storage_type;
+    typedef PodVector<node_index_type, size_type, Capacity + 1, Alignment, false, StaticStorage> deallocated_storage_type;
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Size;

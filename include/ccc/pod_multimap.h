@@ -15,9 +15,9 @@ namespace ccc
 {
 
 template <typename KeyType, typename T, typename SizeType, SizeType Capacity, std::size_t Alignment = 8>
-struct PODMultiMap
+struct PodMultiMap
 {
-    PODRedBlackTree<PODPair<KeyType, T>, SizeType, Capacity, Alignment> m_Tree;
+    PodRedBlackTree<PodPair<KeyType, T>, SizeType, Capacity, Alignment> m_Tree;
 
     // insert
 
