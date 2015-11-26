@@ -74,7 +74,7 @@ BASELINE_F(CCCTL, std_vector, ArrayFixture, 30, 100)
 
 BENCHMARK_F(CCCTL, ccc_PodVector, ArrayFixture, 30, 100)
 {
-	ccc::PODVector<int, std::size_t, N> v = ccc::PODVector<int, std::size_t, N>();
+	ccc::PodVector<int, std::size_t, N> v = ccc::PodVector<int, std::size_t, N>();
 	//for (int i = 0; i < N; ++i)
 	//{
 	//	v.push_back(i);
