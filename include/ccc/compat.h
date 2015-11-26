@@ -31,6 +31,7 @@
 
 #if defined(__GNUG__) // equivalent to (__GNUC__ && __cplusplus)
 
+#undef CCC_ALIGNED_TYPE
 #define CCC_ALIGNED_TYPE(T, Alignment) T __attribute__((aligned((Alignment))))
 
 #if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 7) && (__cplusplus >= 201103L)
@@ -46,6 +47,7 @@
 
 #elif defined(_MSC_VER)
 
+#undef CCC_ALIGNED_TYPE
 #define CCC_ALIGNED_TYPE(T, Alignment) __declspec(align((Alignment))) T
 
 /*
