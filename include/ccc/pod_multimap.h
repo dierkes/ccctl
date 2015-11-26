@@ -14,6 +14,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 1)
+
 template <typename KeyType, typename T, typename SizeType, SizeType Capacity, std::size_t Alignment = 8>
 struct PodMultiMap
 {
@@ -24,8 +26,8 @@ struct PodMultiMap
     // erase
 };
 
+#pragma pack(pop)
+
 }
-
-
 
 #endif /* INCLUDE_CCC_POD_MULTIMAP_H_ */

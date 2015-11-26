@@ -28,6 +28,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 1)
+
 /**
  * @brief Consistent, static-capacity double-ended queue.
  *
@@ -696,6 +698,8 @@ struct PodDeque
     }
 
 };
+
+#pragma pack(pop)
 
 }
 

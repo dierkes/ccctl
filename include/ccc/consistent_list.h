@@ -16,6 +16,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 1)
+
 template<class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool StaticStorage = true>
 class ConsistentList: public PodList<T, SizeType, Capacity, Alignment, StaticStorage>
 {
@@ -42,6 +44,8 @@ protected:
     using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Deallocated;
     using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Anchor;
 };
+
+#pragma pack(pop)
 
 }
 

@@ -53,6 +53,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 1)
+
 /**
  * @brief Consistent, static-capacity array.
  *
@@ -752,6 +754,8 @@ struct PodRedBlackTree
     std::pair<iterator, bool> PrivateInsertKey(const key_type& key, true_type);
     iterator DoInsertKey(const key_type& key, false_type);
 };
+
+#pragma pack(pop)
 
 }
 

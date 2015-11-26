@@ -18,6 +18,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 1)
+
 template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool StaticStorage = true>
 struct PodList
 {
@@ -569,6 +571,8 @@ struct PodList
     }
 
 };
+
+#pragma pack(pop)
 
 }
 
