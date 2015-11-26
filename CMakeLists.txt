@@ -12,4 +12,3 @@ add_subdirectory("test")
 
 set(CMAKE_BINARY_DIR "bin")
 add_subdirectory("celero")
-add_subdirectory("benchmark")
