@@ -53,7 +53,7 @@ struct PodVector
     typedef std::reverse_iterator<iterator> reverse_iterator; // ToDo: what does this mean in case of a pointer, in general it's a class derivation
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator; // ToDo: see above
 
-    typedef typename StorageType<T, SizeType, Capacity, Alignment, StaticStorage, true>::type storage_type;
+    typedef typename Storage<T, SizeType, Capacity, Alignment, StaticStorage, true>::type storage_type;
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_End;

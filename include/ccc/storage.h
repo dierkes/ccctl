@@ -420,31 +420,31 @@ struct FixedUninitializedStorage
 };
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment, bool StaticStorage, bool InitializedStorage>
-struct StorageType
+struct Storage
 {
     typedef void type;
 };
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
-struct StorageType<T, SizeType, Capacity, Alignment, true, true>
+struct Storage<T, SizeType, Capacity, Alignment, true, true>
 {
     typedef StaticInitializedStorage<T, SizeType, Capacity, Alignment> type;
 };
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
-struct StorageType<T, SizeType, Capacity, Alignment, true, false>
+struct Storage<T, SizeType, Capacity, Alignment, true, false>
 {
     typedef StaticUninitializedStorage<T, SizeType, Capacity, Alignment> type;
 };
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
-struct StorageType<T, SizeType, Capacity, Alignment, false, true>
+struct Storage<T, SizeType, Capacity, Alignment, false, true>
 {
     typedef FixedInitializedStorage<T, SizeType, Alignment> type;
 };
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
-struct StorageType<T, SizeType, Capacity, Alignment, false, false>
+struct Storage<T, SizeType, Capacity, Alignment, false, false>
 {
     typedef FixedUninitializedStorage<T, SizeType, Alignment> type;
 };

@@ -364,7 +364,7 @@ struct PodDeque
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    typedef typename StorageType<T, SizeType, Capacity + 1, Alignment, StaticStorage, true>::type storage_type;
+    typedef typename Storage<T, SizeType, Capacity + 1, Alignment, StaticStorage, true>::type storage_type;
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Begin; // points at the first element

@@ -111,7 +111,7 @@ struct PodRedBlackTree
     };
 
     // support zero-sized arrays (see std::array in gcc)
-    typedef typename StorageType<DataNode, SizeType, Capacity ? Capacity : 1, Alignment,
+    typedef typename Storage<DataNode, SizeType, Capacity ? Capacity : 1, Alignment,
             StaticStorage, true>::type storage_type;
     storage_type m_Storage;
 

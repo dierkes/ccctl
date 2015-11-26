@@ -50,8 +50,8 @@ struct PodList
 #else
     PaddedValue<size_type, Alignment> m_Size;
 #endif
-    typename StorageType<node_type, size_type, Capacity + 1, Alignment, StaticStorage, true>::type m_Nodes;
-    typename StorageType<value_type, size_type, Capacity, Alignment, StaticStorage, true>::type m_Values;
+    typename Storage<node_type, size_type, Capacity + 1, Alignment, StaticStorage, true>::type m_Nodes;
+    typename Storage<value_type, size_type, Capacity, Alignment, StaticStorage, true>::type m_Values;
     deallocated_storage_type m_Deallocated;
     static const node_index_type m_Anchor = 0;
 

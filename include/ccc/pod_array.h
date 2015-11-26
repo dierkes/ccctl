@@ -48,7 +48,7 @@ struct PODArray
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     // support zero-sized arrays (see std::array in gcc)
-    typedef typename StorageType<T, SizeType, Capacity ? Capacity : 1, Alignment, StaticStorage,
+    typedef typename Storage<T, SizeType, Capacity ? Capacity : 1, Alignment, StaticStorage,
             true>::type storage_type;
     storage_type m_Storage;
 
