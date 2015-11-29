@@ -14,11 +14,7 @@
 
 #include <stddef.h>
 
-#pragma pack(push, 1)
-
 #include <ccc/pod_vector.h>
-
-#pragma pack(pop)
 
 #include "gTest_Container.h"
 #include "gTest_SequenceContainer.h"
