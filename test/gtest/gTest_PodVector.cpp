@@ -61,7 +61,7 @@ typedef ccc::PodVector<int8_t, uint8_t, 2, 2> PodVector_8_8_2_2;
 typedef ccc::PodVector<int8_t, uint8_t, 2, 4> PodVector_8_8_2_4;
 typedef ccc::PodVector<int8_t, uint8_t, 2, 8> PodVector_8_8_2_8;
 
-typedef ccc::PodVector<int32_t, uint8_t, 2, 1> PodVector_32_8_2_1;
+typedef ccc::PodVector<int32_t, uint8_t, 2, 1> PodVector_32_8_2_1; // inconsistent type: violation of alignment rule
 typedef ccc::PodVector<int32_t, uint8_t, 2, 2> PodVector_32_8_2_2;
 typedef ccc::PodVector<int32_t, uint8_t, 2, 4> PodVector_32_8_2_4;
 typedef ccc::PodVector<int32_t, uint8_t, 2, 8> PodVector_32_8_2_8;
@@ -98,7 +98,7 @@ TEST(PodVector, ConsistentSize)
     EXPECT_EQ(8, sizeof(PodVector_8_8_2_4));
     EXPECT_EQ(16, sizeof(PodVector_8_8_2_8));
 
-    EXPECT_EQ(9, sizeof(PodVector_32_8_2_1));
+    EXPECT_EQ(12, sizeof(PodVector_32_8_2_1));
 //    EXPECT_EQ(4, sizeof(PodVector_32_8_2_2));
 //    EXPECT_EQ(8, sizeof(PodVector_32_8_2_4));
 //    EXPECT_EQ(16, sizeof(PodVector_32_8_2_8));
@@ -124,8 +124,8 @@ TEST(PodVector, ConsistentLayout)
     EXPECT_EQ(0, ccc_offsetof(PodVector_8_8_1_1, m_End));
     EXPECT_EQ(1, ccc_offsetof(PodVector_8_8_1_1, m_Storage));
     EXPECT_EQ(0, ccc_offsetof(PodVector_32_8_2_1, m_End));
-    EXPECT_EQ(1, ccc_offsetof(PodVector_32_8_2_1, m_Storage[0]));
-    EXPECT_EQ(5, ccc_offsetof(PodVector_32_8_2_1, m_Storage[1]));
+    EXPECT_EQ(4, ccc_offsetof(PodVector_32_8_2_1, m_Storage[0]));
+    EXPECT_EQ(8, ccc_offsetof(PodVector_32_8_2_1, m_Storage[1]));
     EXPECT_EQ(8, ccc_offsetof(PodVector_32_8_2_8, m_Storage[0]));
     EXPECT_EQ(12, ccc_offsetof(PodVector_32_8_2_8, m_Storage[1]));
 }

@@ -6,6 +6,7 @@ project(ccctl_gtest)
 
 include_directories(
     "../../include"
+    "../include"
 	"../../gtest/include"
 )
 
@@ -29,7 +30,10 @@ set(source_files
     gTest_FixedDeque.cpp
     gTest_FixedList.cpp
     gTest_StaticList.cpp
+    gTest_PragmaPack.cpp
 )
+
+#set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -H")
 
 add_executable(ccctl_gtest ${source_files})
 
