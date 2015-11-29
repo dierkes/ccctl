@@ -28,7 +28,7 @@
 namespace ccc
 {
 
-#pragma pack(push, 1)
+#pragma pack(push, 16)
 
 /**
  * @brief Consistent, static-capacity double-ended queue.

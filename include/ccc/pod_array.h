@@ -26,6 +26,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 16)
+
 /**
  * @brief Consistent, static-capacity array.
  *
@@ -175,6 +177,8 @@ struct PODArray
     }
 
 };
+
+#pragma pack(pop)
 
 }
 

@@ -16,6 +16,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 16)
+
 template<typename KeyType, typename T, KeyType Capacity, KeyType Offset = 0,
         std::size_t Alignment = 8, bool StaticStorage = true>
 struct PodLinearMap
@@ -124,6 +126,8 @@ struct PodLinearMap
     value_type insert(const value_type& Value);
 
 };
+
+#pragma pack(pop)
 
 }
 

@@ -18,6 +18,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 16)
+
 template <typename T, unsigned int Alignment, unsigned int Size = sizeof(T), unsigned int PaddedBytes = Alignment - (Size % Alignment)>
 struct Padded
 {
@@ -93,8 +95,8 @@ struct Aligned<T, 8>
     typedef CCC_ALIGNED_TYPE(T, 8) type;
 };
 
+#pragma pack(pop)
+
 }
-
-
 
 #endif /* CCC_ALIGNMENT_H_ */

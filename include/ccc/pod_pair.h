@@ -15,6 +15,8 @@
 namespace ccc
 {
 
+#pragma pack(push, 16)
+
 template <typename T1, typename T2, std::size_t Alignment = 8>
 struct PodPair
 {
@@ -33,6 +35,8 @@ PodPair<T1, T2, Alignment> make_pair(const T1& First, const T2& Second)
     P.second = Second;
     return P;
 }
+
+#pragma pack(pop)
 
 }
 

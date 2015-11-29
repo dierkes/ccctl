@@ -16,7 +16,7 @@
 namespace ccc
 {
 
-#pragma pack(push, 1)
+#pragma pack(push, 16)
 
 template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8>
 struct StaticList: public ConsistentList<T, SizeType, Capacity, Alignment, true>
