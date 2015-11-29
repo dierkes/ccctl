@@ -21,7 +21,9 @@
 #define CCC_IS_TRIVIALLY_COPYABLE_AVAILABLE false
 #define CCC_IS_POD_AVAILABLE false
 #define CCC_ALIGNED_TYPE(T) // this will cause a compile error, if the macro is not specified for a compiler
+#define CCC_ALIGNED_TYPE_AVAILABLE false
 #define CCC_ALIGNAS_AVAILABLE false
+#define CCC_ALIGNOF_AVAILABLE false
 
 /*
  * Compiler-specific definitions:
@@ -33,6 +35,8 @@
 
 #undef CCC_ALIGNED_TYPE
 #define CCC_ALIGNED_TYPE(T, Alignment) T __attribute__((aligned((Alignment))))
+#undef CCC_ALIGNED_TYPE_AVAILABLE
+#define CCC_ALIGNED_TYPE_AVAILABLE true
 
 #if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 7) && (__cplusplus >= 201103L)
 
@@ -49,6 +53,8 @@
 
 #undef CCC_ALIGNED_TYPE
 #define CCC_ALIGNED_TYPE(T, Alignment) __declspec(align((Alignment))) T
+#undef CCC_ALIGNED_TYPE_AVAILABLE
+#define CCC_ALIGNED_TYPE_AVAILABLE true
 
 /*
  * Version numbers of Microsoft compilers:
@@ -81,5 +87,14 @@
 #endif // (_MSC_VER >= 1800)
 
 #endif
+
+// CCC_ALIGNOF
+#if CCC_ALIGNOF_AVAILABLE
+#define CCC_ALIGNOF(type) alignof((type))
+#else
+#define CCC_ALIGNOF(type) __alignof((type))
+#endif
+
+
 
 #endif /* CCC_COMPAT_H_ */
