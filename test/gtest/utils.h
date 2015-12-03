@@ -19,7 +19,13 @@
 template <typename T>
 T random_object()
 {
-    return T();
+    T o = T();
+    char* p = reinterpret_cast<char*>(&o);
+    for (uint64_t i = 0; i < sizeof(T); ++i)
+    {
+        p[i] = static_cast<char>(std::rand());
+    }
+    return o;
 }
 
 template <typename T>
