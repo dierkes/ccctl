@@ -14,6 +14,8 @@
 #include <set>
 #include <iostream>
 
+#include "consistent_integers.h"
+
 template <typename T>
 T random_object()
 {
@@ -122,10 +124,10 @@ template<bool Verbose = false>
 class cUniqueID
 {
 public:
-    static std::size_t NextID;
-    static std::set<std::size_t> CurrentIDs;
+    static uint64_t NextID;
+    static std::set<uint64_t> CurrentIDs;
 
-    std::size_t m_ID;
+    uint64_t m_ID;
 
     cUniqueID()
     {

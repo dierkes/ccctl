@@ -8,13 +8,14 @@
 #include <gtest/gtest.h>
 
 #include "utils.h"
+#include "consistent_integers.h"
 
 
 TEST(UniqueID, DefaultInitialization)
 {
     typedef cUniqueID<false> U;
     U::NextID = 0;
-    U::CurrentIDs = std::set<std::size_t>();
+    U::CurrentIDs = std::set<uint64_t>();
     U obj_0;
     EXPECT_EQ(0, obj_0.m_ID);
     EXPECT_EQ(1, U::NextID);
@@ -23,9 +24,9 @@ TEST(UniqueID, DefaultInitialization)
 
 TEST(UniqueID, ValueInitialization)
 {
-    typedef cUniqueID<true> U;
+    typedef cUniqueID<false> U;
     U::NextID = 0;
-    U::CurrentIDs = std::set<std::size_t>();
+    U::CurrentIDs = std::set<uint64_t>();
     U obj_0 = U();
     EXPECT_EQ(0, obj_0.m_ID);
     EXPECT_EQ(1, U::NextID);
@@ -34,9 +35,9 @@ TEST(UniqueID, ValueInitialization)
 
 TEST(UniqueID, Assignment)
 {
-    typedef cUniqueID<true> U;
+    typedef cUniqueID<false> U;
     U::NextID = 0;
-    U::CurrentIDs = std::set<std::size_t>();
+    U::CurrentIDs = std::set<uint64_t>();
     U obj_0;
     U obj_1 = obj_0;
     EXPECT_EQ(1, obj_1.m_ID);
@@ -48,7 +49,7 @@ TEST(UniqueID, Scope)
 {
     typedef cUniqueID<false> U;
     U::NextID = 0;
-    U::CurrentIDs = std::set<std::size_t>();
+    U::CurrentIDs = std::set<uint64_t>();
     {
         U obj_0;
         EXPECT_EQ(0, obj_0.m_ID);
@@ -62,7 +63,7 @@ TEST(UniqueID, Destructor)
 {
     typedef cUniqueID<false> U;
     U::NextID = 0;
-    U::CurrentIDs = std::set<std::size_t>();
+    U::CurrentIDs = std::set<uint64_t>();
     U obj_0;
     EXPECT_EQ(0, obj_0.m_ID);
     EXPECT_EQ(1, U::NextID);
@@ -75,7 +76,7 @@ TEST(UniqueID, Array)
 {
     typedef cUniqueID<false> U;
     U::NextID = 0;
-    U::CurrentIDs = std::set<std::size_t>();
+    U::CurrentIDs = std::set<uint64_t>();
     {
         U a[2];
         EXPECT_EQ(0, a[0].m_ID);

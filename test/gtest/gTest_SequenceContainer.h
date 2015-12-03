@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 
 #include "utils.h"
+#include "consistent_integers.h"
 
 template<typename Container, typename Reference>
 struct reftest
@@ -61,9 +62,9 @@ protected:
         return Equal and (it_lhs == lhs.end()) and (it_rhs == rhs.end());
     }
 
-    void insert_end_N(typename T::container& c, typename T::reference& r, std::size_t N)
+    void insert_end_N(typename T::container& c, typename T::reference& r, uint64_t N)
     {
-        for (std::size_t n = 0; n < N; ++n)
+        for (uint64_t n = 0; n < N; ++n)
         {
             typename T::container::value_type o =
                     random_object<typename T::container::value_type>();
@@ -72,9 +73,9 @@ protected:
         }
     }
 
-    void insert_begin_N(typename T::container& c, typename T::reference& r, std::size_t N)
+    void insert_begin_N(typename T::container& c, typename T::reference& r, uint64_t N)
     {
-        for (std::size_t n = 0; n < N; ++n)
+        for (uint64_t n = 0; n < N; ++n)
         {
             typename T::container::value_type o =
                     random_object<typename T::container::value_type>();
@@ -83,9 +84,9 @@ protected:
         }
     }
 
-    void erase_end_N(typename T::container& c, typename T::reference& r, std::size_t N)
+    void erase_end_N(typename T::container& c, typename T::reference& r, uint64_t N)
     {
-        for (std::size_t n = 0; n < N; ++n)
+        for (uint64_t n = 0; n < N; ++n)
         {
             typename T::container::iterator it_c = c.end();
             typename T::reference::iterator it_r = r.end();
@@ -96,9 +97,9 @@ protected:
         }
     }
 
-    void erase_begin_N(typename T::container& c, typename T::reference& r, std::size_t N)
+    void erase_begin_N(typename T::container& c, typename T::reference& r, uint64_t N)
     {
-        for (std::size_t n = 0; n < N; ++n)
+        for (uint64_t n = 0; n < N; ++n)
         {
             c.erase(c.begin());
             r.erase(r.begin());
@@ -151,8 +152,8 @@ TYPED_TEST_P(TestOfSequenceContainer, InsertErase)
     EXPECT_NO_THROW(d = c);
     EXPECT_TRUE(this->ContainersAreEqual(d, r)) << PrintContent(d) << std::endl << PrintContent(r);
     typename TypeParam::container::value_type v = random_object<typename TypeParam::container::value_type>();
-    EXPECT_NO_THROW(d.assign(static_cast<std::size_t>(4), v));
-    EXPECT_NO_THROW(r.assign(static_cast<std::size_t>(4), v));
+    EXPECT_NO_THROW(d.assign(static_cast<uint64_t>(4), v));
+    EXPECT_NO_THROW(r.assign(static_cast<uint64_t>(4), v));
     EXPECT_TRUE(this->ContainersAreEqual(d, r)) << PrintContent(d) << std::endl << PrintContent(r);
 }
 {
@@ -161,8 +162,8 @@ TYPED_TEST_P(TestOfSequenceContainer, InsertErase)
     typename TypeParam::reference r = ContainerFactory<typename TypeParam::reference>::Create();
     typename TypeParam::reference s = ContainerFactory<typename TypeParam::reference>::Create();
     typename TypeParam::container::value_type v = random_object<typename TypeParam::container::value_type>();
-    EXPECT_NO_THROW(c.insert(c.begin(), static_cast<std::size_t>(4), v));
-    EXPECT_NO_THROW(r.insert(r.begin(), static_cast<std::size_t>(4), v));
+    EXPECT_NO_THROW(c.insert(c.begin(), static_cast<uint64_t>(4), v));
+    EXPECT_NO_THROW(r.insert(r.begin(), static_cast<uint64_t>(4), v));
     EXPECT_TRUE(this->ContainersAreEqual(c, r)) << PrintContent(c) << std::endl << PrintContent(r);
     EXPECT_NO_THROW(this->insert_end_N(d, s, 5));
     EXPECT_NO_THROW(c.insert(c.end(), s.begin(), s.end()));

@@ -39,7 +39,7 @@ cNoPOD random_object<cNoPOD>()
     return cNoPOD(Value, static_cast<double>(Value));
 }
 
-template<> std::size_t cUniqueID<true>::NextID = 0;
-template<> std::set<std::size_t> cUniqueID<true>::CurrentIDs = std::set<std::size_t>();
-template<> std::size_t cUniqueID<false>::NextID = 0;
-template<> std::set<std::size_t> cUniqueID<false>::CurrentIDs = std::set<std::size_t>();
+template<> uint64_t cUniqueID<true>::NextID = 0;
+template<> std::set<uint64_t> cUniqueID<true>::CurrentIDs = std::set<uint64_t>();
+template<> uint64_t cUniqueID<false>::NextID = 0;
+template<> std::set<uint64_t> cUniqueID<false>::CurrentIDs = std::set<uint64_t>();

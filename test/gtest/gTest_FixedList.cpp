@@ -9,9 +9,10 @@
 #include <gtest/gtest.h>
 
 #include <ccc/fixed_list.h>
+#include "consistent_integers.h"
 
 TEST(FixedList, experimental)
 {
-    typedef ccc::FixedList<int, std::size_t> FixedContainer;
+    typedef ccc::FixedList<int, uint64_t> FixedContainer;
     FixedContainer c(10);
 }

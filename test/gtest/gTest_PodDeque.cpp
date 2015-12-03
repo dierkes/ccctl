@@ -34,7 +34,7 @@ TEST(PodDeque, TypeTraits_Cpp11)
 }
 #endif
 
-template<>uint64_t TestOfStaticContainer<ContainerOfInts>::m_Capacity = 10;
+template<> uint64_t TestOfStaticContainer<ContainerOfInts>::m_Capacity = 10;
 template<> uint64_t TestOfStaticContainer<ContainerOfPODs>::m_Capacity = 10;
 
 typedef ::testing::Types<ContainerOfInts, ContainerOfPODs> ContainerImplementations;
