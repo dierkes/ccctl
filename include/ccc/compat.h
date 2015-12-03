@@ -93,4 +93,10 @@
 
 #endif
 
+#if (defined __i386) || (defined _M_IX86)
+#define CCC_X86
+#elif (defined __x86_64__) || (defined _M_X64)
+#define CCC_X64
+#endif
+
 #endif /* CCC_COMPAT_H_ */
