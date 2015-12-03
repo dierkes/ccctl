@@ -42,8 +42,21 @@ INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfContainer, ContainerImplementations
 INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfPODContainer, ContainerImplementations);
 INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfStaticContainer, ContainerImplementations);
 
-typedef RefPair<ccc::PodList<int, uint16_t, 10>, std::list<int> > RefContainerOfInts;
-typedef RefPair<ccc::PodList<tPOD, uint16_t, 10>, std::list<tPOD> > RefContainerOfPODs;
-
-typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs> RefContainerImplementations;
-INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfSequenceContainer, RefContainerImplementations);
+typedef ::testing::Types<
+        RefPair<ccc::PodList<ccc_test::Pod<1, 1>, uint8_t, 10, 1>, std::list<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<1, 1>, uint8_t, 10, 2>, std::list<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<1, 1>, uint8_t, 10, 4>, std::list<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<1, 1>, uint8_t, 10, 8>, std::list<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<1, 1>, uint8_t, 10, 16>, std::list<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<2, 2>, uint8_t, 10, 1>, std::list<ccc_test::Pod<2, 2> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<4, 4>, uint8_t, 10, 1>, std::list<ccc_test::Pod<4, 4> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<8, 8>, uint8_t, 10, 1>, std::list<ccc_test::Pod<8, 8> > >,
+#if !(defined _MSC_VER && defined CCC_X86)
+        RefPair<ccc::PodList<ccc_test::Pod<16, 16>, uint8_t, 10, 1>, std::list<ccc_test::Pod<16, 16> > >,
+#endif
+        RefPair<ccc::PodList<ccc_test::Pod<2, 1>, uint8_t, 10, 1>, std::list<ccc_test::Pod<2, 1> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<4, 1>, uint8_t, 10, 1>, std::list<ccc_test::Pod<4, 1> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<8, 1>, uint8_t, 10, 1>, std::list<ccc_test::Pod<8, 1> > >,
+        RefPair<ccc::PodList<ccc_test::Pod<16, 1>, uint8_t, 10, 1>, std::list<ccc_test::Pod<16, 1> > >
+> RefPairTypes;
+INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfSequenceContainer, RefPairTypes);
