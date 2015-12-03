@@ -7,7 +7,8 @@
 
 #include <gtest/gtest.h>
 
-#include "consistent_integers.h"
+#include <ccc/compat.h>
+#include <ccc/test/consistent_integers.h>
 
 #pragma pack(push)
 
@@ -80,18 +81,18 @@ struct Int64Packed16
 
 TEST(PragmaPack, vsAlignment)
 {
-    EXPECT_EQ(1, alignof(Int16Packed1));
-    EXPECT_EQ(2, alignof(Int16Packed2));
-    EXPECT_EQ(2, alignof(Int16Packed4));
-    EXPECT_EQ(1, alignof(Int32Packed1));
-    EXPECT_EQ(2, alignof(Int32Packed2));
-    EXPECT_EQ(4, alignof(Int32Packed4));
-    EXPECT_EQ(4, alignof(Int32Packed8));
-    EXPECT_EQ(1, alignof(Int64Packed1));
-    EXPECT_EQ(2, alignof(Int64Packed2));
-    EXPECT_EQ(4, alignof(Int64Packed4));
-    EXPECT_EQ(8, alignof(Int64Packed8));
-    EXPECT_EQ(8, alignof(Int64Packed16));
+    EXPECT_EQ(1, CCC_ALIGNOF(Int16Packed1));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16Packed2));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16Packed4));
+    EXPECT_EQ(1, CCC_ALIGNOF(Int32Packed1));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int32Packed2));
+    EXPECT_EQ(4, CCC_ALIGNOF(Int32Packed4));
+    EXPECT_EQ(4, CCC_ALIGNOF(Int32Packed8));
+    EXPECT_EQ(1, CCC_ALIGNOF(Int64Packed1));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int64Packed2));
+    EXPECT_EQ(4, CCC_ALIGNOF(Int64Packed4));
+    EXPECT_EQ(8, CCC_ALIGNOF(Int64Packed8));
+    EXPECT_EQ(8, CCC_ALIGNOF(Int64Packed16));
 }
 
 #pragma pack(8)
@@ -158,13 +159,13 @@ TEST(PragmaPack, vsAlignas)
 {
 #if defined __GNUC__
     EXPECT_EQ(2, sizeof(Int16Packed1Alignas4));
-    EXPECT_EQ(1, alignof(Int16Packed1Alignas4));
+    EXPECT_EQ(1, CCC_ALIGNOF(Int16Packed1Alignas4));
 #elif defined _MSC_VER
     EXPECT_EQ(4, sizeof(Int16Packed1Alignas4));
-    EXPECT_EQ(4, alignof(Int16Packed1Alignas4));
+    EXPECT_EQ(4, CCC_ALIGNOF(Int16Packed1Alignas4));
 #endif
     EXPECT_EQ(2, sizeof(Int16Packed4Alignas1));
-    EXPECT_EQ(2, alignof(Int16Packed4Alignas1));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16Packed4Alignas1));
 }
 
 #pragma pack(pop)
