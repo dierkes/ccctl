@@ -66,7 +66,7 @@ struct PaddedValue
     }
 };
 
-template <typename T, std::size_t Alignment>
+template <typename T, unsigned int Alignment>
 struct Aligned
 {
 };
@@ -74,25 +74,31 @@ struct Aligned
 template <typename T>
 struct Aligned<T, 1>
 {
-    typedef CCC_ALIGNED_TYPE(T, 1) type;
+    typedef CCC_ALIGNED(T, 1) type;
 };
 
 template <typename T>
 struct Aligned<T, 2>
 {
-    typedef CCC_ALIGNED_TYPE(T, 2) type;
+    typedef CCC_ALIGNED(T, 2) type;
 };
 
 template <typename T>
 struct Aligned<T, 4>
 {
-    typedef CCC_ALIGNED_TYPE(T, 4) type;
+    typedef CCC_ALIGNED(T, 4) type;
 };
 
 template <typename T>
 struct Aligned<T, 8>
 {
-    typedef CCC_ALIGNED_TYPE(T, 8) type;
+    typedef CCC_ALIGNED(T, 8) type;
+};
+
+template <typename T>
+struct Aligned<T, 16>
+{
+    typedef CCC_ALIGNED(T, 16) type;
 };
 
 #pragma pack(pop)
