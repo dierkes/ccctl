@@ -341,7 +341,7 @@ struct PodVector
         {
             std::copy(Last, end(), First);
         }
-        m_End = m_End - std::distance(First, Last);
+        m_End = static_cast<size_type>(m_End - std::distance(First, Last));
         m_Storage.destroy(end(), end() + std::distance(First, Last));
         return First;
     }
