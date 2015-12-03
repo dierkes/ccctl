@@ -91,8 +91,13 @@ TEST(PragmaPack, vsAlignment)
     EXPECT_EQ(1, CCC_ALIGNOF(Int64Packed1));
     EXPECT_EQ(2, CCC_ALIGNOF(Int64Packed2));
     EXPECT_EQ(4, CCC_ALIGNOF(Int64Packed4));
+#if defined __GNUC__ && defined CCC_X86
+    EXPECT_EQ(4, CCC_ALIGNOF(Int64Packed8));
+    EXPECT_EQ(4, CCC_ALIGNOF(Int64Packed16));
+#else
     EXPECT_EQ(8, CCC_ALIGNOF(Int64Packed8));
     EXPECT_EQ(8, CCC_ALIGNOF(Int64Packed16));
+#endif
 }
 
 #pragma pack(8)
@@ -128,8 +133,13 @@ struct TemplateStructPacked1
 #pragma pack(1)
 TEST(PragmaPack, vsTemplates_Packed1)
 {
+#if defined __GNUC__ && defined CCC_X86
+    EXPECT_EQ(12, sizeof(PlainStructPacked8));
+    EXPECT_EQ(12, sizeof(TemplateStructPacked8<int8_t, int64_t>));
+#else
     EXPECT_EQ(16, sizeof(PlainStructPacked8));
     EXPECT_EQ(16, sizeof(TemplateStructPacked8<int8_t, int64_t>));
+#endif
     EXPECT_EQ(9, sizeof(PlainStructPacked1));
     EXPECT_EQ(9, sizeof(TemplateStructPacked1<int8_t, int64_t>));
 }
@@ -137,8 +147,13 @@ TEST(PragmaPack, vsTemplates_Packed1)
 #pragma pack(8)
 TEST(PragmaPack, vsTemplates_Packed8)
 {
+#if defined __GNUC__ && defined CCC_X86
+    EXPECT_EQ(12, sizeof(PlainStructPacked8));
+    EXPECT_EQ(12, sizeof(TemplateStructPacked8<int8_t, int64_t>));
+#else
     EXPECT_EQ(16, sizeof(PlainStructPacked8));
     EXPECT_EQ(16, sizeof(TemplateStructPacked8<int8_t, int64_t>));
+#endif
     EXPECT_EQ(9, sizeof(PlainStructPacked1));
     EXPECT_EQ(9, sizeof(TemplateStructPacked1<int8_t, int64_t>));
 }

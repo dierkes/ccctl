@@ -32,7 +32,7 @@
 
 #if defined(__GNUG__) // equivalent to (__GNUC__ && __cplusplus)
 
-#define CCC_ALIGNED(T, Alignment) T __attribute__((aligned((Alignment))))
+#define CCC_ALIGNED(T, Alignment) T __attribute__((aligned(Alignment)))
 #undef CCC_ALIGNED_AVAILABLE
 #define CCC_ALIGNED_AVAILABLE 1
 #undef CCC_ALIGNOF_AVAILABLE
@@ -50,7 +50,7 @@
 
 #else
 
-#define CCC_ALIGNOF(type) __alignof((type))
+#define CCC_ALIGNOF(type) __alignof(type)
 
 #endif
 

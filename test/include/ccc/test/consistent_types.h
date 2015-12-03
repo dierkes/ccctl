@@ -51,11 +51,23 @@ struct PodMember<4>
     int32_t m;
 };
 
+#if defined __GNUC__ && defined CCC_X86
+
+template <>
+struct PodMember<8>
+{
+	CCC_ALIGNED(int64_t, 8) m;
+};
+
+#else
+
 template <>
 struct PodMember<8>
 {
     int64_t m;
 };
+
+#endif // defined __GNUC__ && defined CCC_X86
 
 template <>
 struct PodMember<16>

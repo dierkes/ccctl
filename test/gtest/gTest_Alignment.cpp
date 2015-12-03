@@ -178,65 +178,6 @@ TEST(Alignment, Modifiers)
     EXPECT_EQ(12, sizeof(ArrayOf5Int16Padded4));
 }
 
-struct tPacked
-{
-    char a;
-    char b;
-    int c;
-};
-
-#if (__cplusplus >= 201103L)
-
-struct tAligned
-{
-    alignas(8) char a;
-    alignas(8) char b;
-    alignas(8) int c;
-    alignas(8) char d[9];
-};
-
-#else
-
-struct tAligned
-{
-    ccc::PaddedValue<char, 8> a;
-    ccc::PaddedValue<char, 8> b;
-    ccc::PaddedValue<int, 8> c;
-    ccc::PaddedArray<char, 9, 8> d;
-};
-
-#endif
-
-TEST(Alignment, a)
-{
-    EXPECT_EQ(40, sizeof(tAligned));
-    EXPECT_EQ(0, offsetof(tAligned, a));
-    EXPECT_EQ(8, offsetof(tAligned, b));
-    EXPECT_EQ(16, offsetof(tAligned, c));
-    EXPECT_EQ(24, offsetof(tAligned, d));
-}
-
-TEST(Alignment, Padded)
-{
-    EXPECT_EQ(8, sizeof(ccc::Padded<long, 8>));
-    EXPECT_EQ(8, sizeof(ccc::Padded<char[4], 8>));
-    EXPECT_EQ(1, sizeof(ccc::Padded<char, 1>));
-    EXPECT_EQ(8, sizeof(ccc::Padded<char, 8>));
-    EXPECT_EQ(4, sizeof(ccc::Padded<char, 4>));
-    EXPECT_EQ(8, sizeof(ccc::Padded<long, 8>));
-}
-
-TEST(Alignment, PaddedArray)
-{
-    EXPECT_EQ(8, sizeof(ccc::PaddedArray<char, 7, 8>));
-    EXPECT_EQ(8, sizeof(ccc::PaddedArray<char, 8, 8>));
-    EXPECT_EQ(16, sizeof(ccc::PaddedArray<char, 9, 8>));
-    ccc::PaddedArray<int, 9, 8> a;
-    EXPECT_NO_THROW(a[0] = 1);
-    EXPECT_EQ(1, a[0]);
-    EXPECT_EQ(1, *(&a[0]));
-}
-
 /** C++ Standard: 5.3.3/2
  *
  *  When applied to a class, the result [of sizeof] is the number of bytes in an object of that
@@ -401,7 +342,11 @@ struct TestPragmaPackPosition1
 
 TEST(PragmaPack, Position1)
 {
+#if defined __GNUC__ && defined CCC_X86
+    EXPECT_EQ(4, CCC_OFFSETOF(TestPragmaPackPosition1, m2));
+#else
     EXPECT_EQ(8, CCC_OFFSETOF(TestPragmaPackPosition1, m2));
+#endif
 }
 
 #if CCC_ALIGNAS_AVAILABLE
@@ -448,7 +393,11 @@ TEST(AlignmentModifiers, Aligned)
     EXPECT_EQ(8, CCC_ALIGNOF(Int64TypedefAligned1));
 #endif
     EXPECT_EQ(8, sizeof(Int64Aligned1));
+#if defined __GNUC__ && defined CCC_X86
+    EXPECT_EQ(4, CCC_ALIGNOF(Int64Aligned1));
+#else
     EXPECT_EQ(8, CCC_ALIGNOF(Int64Aligned1));
+#endif
 }
 
 struct Size16Align8
@@ -484,7 +433,11 @@ TEST(TestTypes, Alignment)
     EXPECT_EQ(1, CCC_ALIGNOF(Size1Align1));
     EXPECT_EQ(1, CCC_ALIGNOF(Size2Align1));
     EXPECT_EQ(2, CCC_ALIGNOF(Size2Align2));
+#if defined __GNUC__ && defined CCC_X86
+    EXPECT_EQ(4, CCC_ALIGNOF(Size16Align8));
+#else
     EXPECT_EQ(8, CCC_ALIGNOF(Size16Align8));
+#endif
 }
 
 #pragma pack(8)
@@ -500,10 +453,18 @@ TEST(Alignment, Bytes16_a8)
     {
         Bytes16_a8 a[2];
     };
+
+#if defined __GNUC__ && defined CCC_X86
+    EXPECT_EQ(12, sizeof(Bytes16_a8));
+    EXPECT_EQ(4, CCC_ALIGNOF(Bytes16_a8));
+    EXPECT_EQ(24, sizeof(S));
+    EXPECT_EQ(12, CCC_OFFSETOF(S, a[1]));
+#else
     EXPECT_EQ(16, sizeof(Bytes16_a8));
     EXPECT_EQ(8, CCC_ALIGNOF(Bytes16_a8));
     EXPECT_EQ(32, sizeof(S));
     EXPECT_EQ(16, CCC_OFFSETOF(S, a[1]));
+#endif
 }
 
 #if CCC_ALIGNAS_AVAILABLE

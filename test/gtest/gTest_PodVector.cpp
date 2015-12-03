@@ -162,7 +162,7 @@ TEST(PodVector, ConsistentLayout)
 template <typename ContainerType, uint64_t Capacity, uint64_t Alignment>
 struct LayoutTraits
 {
-    typedef typename ContainerType container_type;
+    typedef ContainerType container_type;
     typedef typename ContainerType::value_type value_type;
     typedef typename ContainerType::size_type size_type;
 
@@ -179,7 +179,7 @@ struct LayoutTraits
     static uint64_t ExpectedSize()
     {
         uint64_t SizeOfDataArray = Capacity * sizeof(value_type);
-        uint64_t ExpectedPadding = SizeOfDataArray % Alignment ? Alignment - (SizeOfDataArray % Alignment) : 0;
+        uint64_t ExpectedPadding = (SizeOfDataArray % Alignment) ? Alignment - (SizeOfDataArray % Alignment) : 0;
         return ExpectedOffsetStorage(0) + SizeOfDataArray + ExpectedPadding;
     }
 };
@@ -195,12 +195,14 @@ TYPED_TEST_CASE_P(ConsistentLayoutTest);
 
 TYPED_TEST_P(ConsistentLayoutTest, ConsistentSize)
 {
-    EXPECT_EQ(TypeParam::ExpectedSize(), sizeof(TypeParam::container_type));
+    typedef typename TypeParam::container_type container_type;
+    EXPECT_EQ(TypeParam::ExpectedSize(), sizeof(container_type));
 }
 
 TYPED_TEST_P(ConsistentLayoutTest, ConsistentAlignment)
 {
-    EXPECT_EQ(TypeParam::ExpectedAlignment(), CCC_ALIGNOF(TypeParam::container_type));
+    typedef typename TypeParam::container_type container_type;
+    EXPECT_EQ(TypeParam::ExpectedAlignment(), CCC_ALIGNOF(container_type));
 }
 
 TYPED_TEST_P(ConsistentLayoutTest, ConsistentLayout)
