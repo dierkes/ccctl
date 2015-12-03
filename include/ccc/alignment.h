@@ -69,6 +69,7 @@ struct PaddedValue
 template <typename T, unsigned int Alignment>
 struct Aligned
 {
+    typedef void type;
 };
 
 template <typename T>
