@@ -33,8 +33,8 @@ struct StaticInitializedStorage
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) value_type m_StaticInitializedStorage[Capacity];
-//#elif (CCC_ALIGNED_TYPE_AVAILABLE)
-//    typename Aligned<value_type[Capacity], Alignment>::type m_StaticInitializedStorage;
+#elif (CCC_ALIGNED_AVAILABLE)
+    typename Aligned<value_type[Capacity], Alignment>::type m_StaticInitializedStorage;
 #else
     PaddedArray<value_type, Capacity, Alignment> m_StaticInitializedStorage;
 #endif
@@ -122,8 +122,8 @@ struct StaticUninitializedStorage
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) byte_type m_StaticUninitializedStorage[sizeof(value_type) * Capacity];
-//#elif (CCC_ALIGNED_TYPE_AVAILABLE)
-//    typename Aligned<byte_type[sizeof(value_type) * Capacity], Alignment>::type m_StaticUninitializedStorage;
+#elif (CCC_ALIGNED_AVAILABLE)
+    typename Aligned<byte_type[sizeof(value_type) * Capacity], Alignment>::type m_StaticUninitializedStorage;
 #else
     PaddedArray<byte_type, sizeof(value_type) * Capacity, Alignment> m_StaticUninitializedStorage;
 #endif
@@ -222,6 +222,9 @@ struct FixedInitializedStorage
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Capacity;
     alignas(Alignment) value_type* m_FixedInitializedStorage;
+#elif (CCC_ALIGNED_AVAILABLE)
+    typename ccc::Aligned<size_type, Alignment>::type m_Capacity;
+    typename ccc::Aligned<value_type*, Alignment>::type m_FixedInitializedStorage;
 #else
     PaddedValue<size_type, Alignment> m_Capacity;
     PaddedValue<value_type*, Alignment> m_FixedInitializedStorage;
@@ -325,6 +328,9 @@ struct FixedUninitializedStorage
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Capacity;
     alignas(Alignment) byte_type* m_FixedUninitializedStorage;
+#elif (CCC_ALIGNED_AVAILABLE)
+    typename ccc::Aligned<size_type, Alignment>::type m_Capacity;
+    typename ccc::Aligned<byte_type*, Alignment>::type m_FixedUninitializedStorage;
 #else
     PaddedValue<size_type, Alignment> m_Capacity;
     PaddedValue<byte_type*, Alignment> m_FixedUninitializedStorage;
