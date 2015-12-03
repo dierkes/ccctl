@@ -12,7 +12,8 @@
  *
  */
 
-#include <stddef.h>
+#include <cstddef>
+#include <vector>
 
 #include <ccc/pod_vector.h>
 
@@ -23,8 +24,6 @@
 #if (__cplusplus >= 201103L)
 #include <type_traits>
 #endif
-
-#include <vector>
 
 typedef ccc::PodVector<int, uint16_t, 10> ContainerOfInts;
 typedef ccc::PodVector<tPOD, uint16_t, 10> ContainerOfPODs;
@@ -51,81 +50,92 @@ typedef reftest<ccc::PodVector<tPOD, uint16_t, 10>, std::vector<tPOD> > RefConta
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(PodVector, TestOfSequenceContainer, RefContainerImplementations);
 
-typedef ccc::PodVector<int8_t, uint8_t, 1, 1> PodVector_8_8_1_1;
-typedef ccc::PodVector<int8_t, uint8_t, 1, 2> PodVector_8_8_1_2;
-typedef ccc::PodVector<int8_t, uint8_t, 1, 4> PodVector_8_8_1_4;
-typedef ccc::PodVector<int8_t, uint8_t, 1, 8> PodVector_8_8_1_8;
+typedef ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 2, 1> PodVector_1_1_1_2_1;
 
-typedef ccc::PodVector<int8_t, uint8_t, 2, 1> PodVector_8_8_2_1;
-typedef ccc::PodVector<int8_t, uint8_t, 2, 2> PodVector_8_8_2_2;
-typedef ccc::PodVector<int8_t, uint8_t, 2, 4> PodVector_8_8_2_4;
-typedef ccc::PodVector<int8_t, uint8_t, 2, 8> PodVector_8_8_2_8;
+typedef ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 2, 2> PodVector_1_1_1_2_2;
+typedef ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 2, 4> PodVector_1_1_1_2_4;
+typedef ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 2, 8> PodVector_1_1_1_2_8;
+typedef ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 2, 16> PodVector_1_1_1_2_16;
 
-typedef ccc::PodVector<int32_t, uint8_t, 2, 1> PodVector_32_8_2_1; // inconsistent type: violation of alignment rule
-typedef ccc::PodVector<int32_t, uint8_t, 2, 2> PodVector_32_8_2_2;
-typedef ccc::PodVector<int32_t, uint8_t, 2, 4> PodVector_32_8_2_4;
-typedef ccc::PodVector<int32_t, uint8_t, 2, 8> PodVector_32_8_2_8;
+typedef ccc::PodVector<ccc_test::Pod<2, 2>, uint8_t, 2, 1> PodVector_2_2_1_2_1;
+typedef ccc::PodVector<ccc_test::Pod<4, 4>, uint8_t, 2, 1> PodVector_4_4_1_2_1;
+typedef ccc::PodVector<ccc_test::Pod<8, 8>, uint8_t, 2, 1> PodVector_8_8_1_2_1;
+typedef ccc::PodVector<ccc_test::Pod<16, 16>, uint8_t, 2, 1> PodVector_16_16_1_2_1;
 
-typedef ccc::PodVector<int64_t, uint8_t, 2, 1> PodVector_64_8_2_1;
-typedef ccc::PodVector<int64_t, uint8_t, 2, 2> PodVector_64_8_2_2;
-typedef ccc::PodVector<int64_t, uint8_t, 2, 4> PodVector_64_8_2_4;
-typedef ccc::PodVector<int64_t, uint8_t, 2, 8> PodVector_64_8_2_8;
-
-typedef ccc::PodVector<int32_t[3], uint8_t, 2, 1> PodVector_96_8_2_1;
-typedef ccc::PodVector<int32_t[3], uint8_t, 2, 2> PodVector_96_8_2_2;
-typedef ccc::PodVector<int32_t[3], uint8_t, 2, 4> PodVector_96_8_2_4;
-typedef ccc::PodVector<int32_t[3], uint8_t, 2, 8> PodVector_96_8_2_8;
-
-typedef ccc::PodVector<int32_t[3], uint8_t, 9, 1> PodVector_96_8_9_1;
-typedef ccc::PodVector<int32_t[3], uint8_t, 9, 2> PodVector_96_8_9_2;
-typedef ccc::PodVector<int32_t[3], uint8_t, 9, 4> PodVector_96_8_9_4;
-typedef ccc::PodVector<int32_t[3], uint8_t, 9, 8> PodVector_96_8_9_8;
+typedef ccc::PodVector<ccc_test::Pod<2, 1>, uint8_t, 2, 1> PodVector_2_1_1_2_1;
+typedef ccc::PodVector<ccc_test::Pod<4, 1>, uint8_t, 2, 1> PodVector_4_1_1_2_1;
+typedef ccc::PodVector<ccc_test::Pod<8, 1>, uint8_t, 2, 1> PodVector_8_1_1_2_1;
+typedef ccc::PodVector<ccc_test::Pod<16, 1>, uint8_t, 2, 1> PodVector_16_1_1_2_1;
 
 TEST(PodVector, ConsistentSize)
 {
-    EXPECT_EQ(16, sizeof(ccc::PodVector<char, uint64_t, 1>));
-    EXPECT_EQ(16, sizeof(ccc::PodVector<char, uint64_t, 2>));
-    EXPECT_EQ(16, sizeof(ccc::PodVector<char, uint64_t, 4>));
-    EXPECT_EQ(16, sizeof(ccc::PodVector<char, uint64_t, 8>));
+    EXPECT_EQ(3, sizeof(PodVector_1_1_1_2_1));
 
-    EXPECT_EQ(2, sizeof(PodVector_8_8_1_1));
-    EXPECT_EQ(4, sizeof(PodVector_8_8_1_2));
-    EXPECT_EQ(8, sizeof(PodVector_8_8_1_4));
-    EXPECT_EQ(16, sizeof(PodVector_8_8_1_8));
+    EXPECT_EQ(4, sizeof(PodVector_1_1_1_2_2));
+    EXPECT_EQ(8, sizeof(PodVector_1_1_1_2_4));
+    EXPECT_EQ(16, sizeof(PodVector_1_1_1_2_8));
+    EXPECT_EQ(32, sizeof(PodVector_1_1_1_2_16));
 
-    EXPECT_EQ(3, sizeof(PodVector_8_8_2_1));
-    EXPECT_EQ(4, sizeof(PodVector_8_8_2_2));
-    EXPECT_EQ(8, sizeof(PodVector_8_8_2_4));
-    EXPECT_EQ(16, sizeof(PodVector_8_8_2_8));
+    EXPECT_EQ(6, sizeof(PodVector_2_2_1_2_1));
+    EXPECT_EQ(12, sizeof(PodVector_4_4_1_2_1));
+    EXPECT_EQ(24, sizeof(PodVector_8_8_1_2_1));
+    EXPECT_EQ(48, sizeof(PodVector_16_16_1_2_1));
 
-    EXPECT_EQ(12, sizeof(PodVector_32_8_2_1));
-//    EXPECT_EQ(4, sizeof(PodVector_32_8_2_2));
-//    EXPECT_EQ(8, sizeof(PodVector_32_8_2_4));
-//    EXPECT_EQ(16, sizeof(PodVector_32_8_2_8));
+    EXPECT_EQ(5, sizeof(PodVector_2_1_1_2_1));
+    EXPECT_EQ(9, sizeof(PodVector_4_1_1_2_1));
+    EXPECT_EQ(17, sizeof(PodVector_8_1_1_2_1));
+    EXPECT_EQ(33, sizeof(PodVector_16_1_1_2_1));
+}
 
-//    EXPECT_EQ(3, sizeof(PodVector_64_8_2_1));
-//    EXPECT_EQ(4, sizeof(PodVector_64_8_2_2));
-//    EXPECT_EQ(8, sizeof(PodVector_64_8_2_4));
-//    EXPECT_EQ(16, sizeof(PodVector_64_8_2_8));
+TEST(PodVector, ConsistentAlignment)
+{
+    EXPECT_EQ(1, CCC_ALIGNOF(PodVector_1_1_1_2_1));
 
-//    EXPECT_EQ(3, sizeof(PodVector_96_8_2_1));
-//    EXPECT_EQ(4, sizeof(PodVector_96_8_2_2));
-//    EXPECT_EQ(8, sizeof(PodVector_96_8_2_4));
-//    EXPECT_EQ(16, sizeof(PodVector_96_8_2_8));
+    EXPECT_EQ(2, CCC_ALIGNOF(PodVector_1_1_1_2_2));
+    EXPECT_EQ(4, CCC_ALIGNOF(PodVector_1_1_1_2_4));
+    EXPECT_EQ(8, CCC_ALIGNOF(PodVector_1_1_1_2_8));
+    EXPECT_EQ(16, CCC_ALIGNOF(PodVector_1_1_1_2_16));
 
-//    EXPECT_EQ(3, sizeof(PodVector_96_8_9_1));
-//    EXPECT_EQ(4, sizeof(PodVector_96_8_9_2));
-//    EXPECT_EQ(8, sizeof(PodVector_96_8_9_4));
-//    EXPECT_EQ(16, sizeof(PodVector_96_8_9_8));
+    EXPECT_EQ(2, CCC_ALIGNOF(PodVector_2_2_1_2_1));
+    EXPECT_EQ(4, CCC_ALIGNOF(PodVector_4_4_1_2_1));
+    EXPECT_EQ(8, CCC_ALIGNOF(PodVector_8_8_1_2_1));
+    EXPECT_EQ(16, CCC_ALIGNOF(PodVector_16_16_1_2_1));
+
+    EXPECT_EQ(1, CCC_ALIGNOF(PodVector_2_1_1_2_1));
+    EXPECT_EQ(1, CCC_ALIGNOF(PodVector_4_1_1_2_1));
+    EXPECT_EQ(1, CCC_ALIGNOF(PodVector_8_1_1_2_1));
+    EXPECT_EQ(1, CCC_ALIGNOF(PodVector_16_1_1_2_1));
 }
 
 TEST(PodVector, ConsistentLayout)
 {
-    EXPECT_EQ(0, CCC_OFFSETOF(PodVector_8_8_1_1, m_End));
-    EXPECT_EQ(1, CCC_OFFSETOF(PodVector_8_8_1_1, m_Storage));
-    EXPECT_EQ(0, CCC_OFFSETOF(PodVector_32_8_2_1, m_End));
-    EXPECT_EQ(4, CCC_OFFSETOF(PodVector_32_8_2_1, m_Storage[0]));
-    EXPECT_EQ(8, CCC_OFFSETOF(PodVector_32_8_2_1, m_Storage[1]));
-    EXPECT_EQ(8, CCC_OFFSETOF(PodVector_32_8_2_8, m_Storage[0]));
-    EXPECT_EQ(12, CCC_OFFSETOF(PodVector_32_8_2_8, m_Storage[1]));
+    EXPECT_EQ(1, CCC_OFFSETOF(PodVector_1_1_1_2_1, m_Storage[0]));
+    EXPECT_EQ(2, CCC_OFFSETOF(PodVector_1_1_1_2_1, m_Storage[1]));
+
+    EXPECT_EQ(2, CCC_OFFSETOF(PodVector_1_1_1_2_2, m_Storage[0]));
+    EXPECT_EQ(3, CCC_OFFSETOF(PodVector_1_1_1_2_2, m_Storage[1]));
+    EXPECT_EQ(4, CCC_OFFSETOF(PodVector_1_1_1_2_4, m_Storage[0]));
+    EXPECT_EQ(5, CCC_OFFSETOF(PodVector_1_1_1_2_4, m_Storage[1]));
+    EXPECT_EQ(8, CCC_OFFSETOF(PodVector_1_1_1_2_8, m_Storage[0]));
+    EXPECT_EQ(9, CCC_OFFSETOF(PodVector_1_1_1_2_8, m_Storage[1]));
+    EXPECT_EQ(16, CCC_OFFSETOF(PodVector_1_1_1_2_16, m_Storage[0]));
+    EXPECT_EQ(17, CCC_OFFSETOF(PodVector_1_1_1_2_16, m_Storage[1]));
+
+    EXPECT_EQ(2, CCC_OFFSETOF(PodVector_2_2_1_2_1, m_Storage[0]));
+    EXPECT_EQ(4, CCC_OFFSETOF(PodVector_2_2_1_2_1, m_Storage[1]));
+    EXPECT_EQ(4, CCC_OFFSETOF(PodVector_4_4_1_2_1, m_Storage[0]));
+    EXPECT_EQ(8, CCC_OFFSETOF(PodVector_4_4_1_2_1, m_Storage[1]));
+    EXPECT_EQ(8, CCC_OFFSETOF(PodVector_8_8_1_2_1, m_Storage[0]));
+    EXPECT_EQ(16, CCC_OFFSETOF(PodVector_8_8_1_2_1, m_Storage[1]));
+    EXPECT_EQ(16, CCC_OFFSETOF(PodVector_16_16_1_2_1, m_Storage[0]));
+    EXPECT_EQ(32, CCC_OFFSETOF(PodVector_16_16_1_2_1, m_Storage[1]));
+
+    EXPECT_EQ(1, CCC_OFFSETOF(PodVector_2_1_1_2_1, m_Storage[0]));
+    EXPECT_EQ(3, CCC_OFFSETOF(PodVector_2_1_1_2_1, m_Storage[1]));
+    EXPECT_EQ(1, CCC_OFFSETOF(PodVector_4_1_1_2_1, m_Storage[0]));
+    EXPECT_EQ(5, CCC_OFFSETOF(PodVector_4_1_1_2_1, m_Storage[1]));
+    EXPECT_EQ(1, CCC_OFFSETOF(PodVector_8_1_1_2_1, m_Storage[0]));
+    EXPECT_EQ(9, CCC_OFFSETOF(PodVector_8_1_1_2_1, m_Storage[1]));
+    EXPECT_EQ(1, CCC_OFFSETOF(PodVector_16_1_1_2_1, m_Storage[0]));
+    EXPECT_EQ(17, CCC_OFFSETOF(PodVector_16_1_1_2_1, m_Storage[1]));
 }
