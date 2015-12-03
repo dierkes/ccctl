@@ -47,6 +47,8 @@ struct PodList
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Size;
+#elif CCC_ALIGNED_AVAILABLE
+    typename ccc::Aligned<size_type, Alignment>::type m_Size;
 #else
     PaddedValue<size_type, Alignment> m_Size;
 #endif

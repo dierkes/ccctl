@@ -368,7 +368,10 @@ struct PodDeque
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Begin; // points at the first element
-    alignas(Alignment) size_type m_End; // points at the element
+    alignas(Alignment) size_type m_End;
+#elif CCC_ALIGNED_AVAILABLE
+    typename ccc::Aligned<size_type, Alignment>::type m_Begin;
+    typename ccc::Aligned<size_type, Alignment>::type m_End;
 #else
     PaddedValue<size_type, Alignment> m_Begin;
     PaddedValue<size_type, Alignment> m_End; // points at the element behind the last valid element
