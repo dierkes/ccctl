@@ -156,8 +156,13 @@ struct Int16Packed4Alignas1
 
 TEST(PragmaPack, vsAlignas)
 {
+#if defined __GNUC__
     EXPECT_EQ(2, sizeof(Int16Packed1Alignas4));
     EXPECT_EQ(1, alignof(Int16Packed1Alignas4));
+#elif defined _MSC_VER
+    EXPECT_EQ(4, sizeof(Int16Packed1Alignas4));
+    EXPECT_EQ(4, alignof(Int16Packed1Alignas4));
+#endif
     EXPECT_EQ(2, sizeof(Int16Packed4Alignas1));
     EXPECT_EQ(2, alignof(Int16Packed4Alignas1));
 }
