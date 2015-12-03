@@ -121,11 +121,11 @@ TEST(PodVector, ConsistentSize)
 
 TEST(PodVector, ConsistentLayout)
 {
-    EXPECT_EQ(0, ccc_offsetof(PodVector_8_8_1_1, m_End));
-    EXPECT_EQ(1, ccc_offsetof(PodVector_8_8_1_1, m_Storage));
-    EXPECT_EQ(0, ccc_offsetof(PodVector_32_8_2_1, m_End));
-    EXPECT_EQ(4, ccc_offsetof(PodVector_32_8_2_1, m_Storage[0]));
-    EXPECT_EQ(8, ccc_offsetof(PodVector_32_8_2_1, m_Storage[1]));
-    EXPECT_EQ(8, ccc_offsetof(PodVector_32_8_2_8, m_Storage[0]));
-    EXPECT_EQ(12, ccc_offsetof(PodVector_32_8_2_8, m_Storage[1]));
+    EXPECT_EQ(0, CCC_OFFSETOF(PodVector_8_8_1_1, m_End));
+    EXPECT_EQ(1, CCC_OFFSETOF(PodVector_8_8_1_1, m_Storage));
+    EXPECT_EQ(0, CCC_OFFSETOF(PodVector_32_8_2_1, m_End));
+    EXPECT_EQ(4, CCC_OFFSETOF(PodVector_32_8_2_1, m_Storage[0]));
+    EXPECT_EQ(8, CCC_OFFSETOF(PodVector_32_8_2_1, m_Storage[1]));
+    EXPECT_EQ(8, CCC_OFFSETOF(PodVector_32_8_2_8, m_Storage[0]));
+    EXPECT_EQ(12, CCC_OFFSETOF(PodVector_32_8_2_8, m_Storage[1]));
 }

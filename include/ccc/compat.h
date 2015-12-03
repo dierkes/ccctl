@@ -20,8 +20,7 @@
 #define CCC_DEFAULT {}
 #define CCC_IS_TRIVIALLY_COPYABLE_AVAILABLE false
 #define CCC_IS_POD_AVAILABLE false
-#define CCC_ALIGNED_TYPE(T) // this will cause a compile error, if the macro is not specified for a compiler
-#define CCC_ALIGNED_TYPE_AVAILABLE false
+#define CCC_ALIGNED_AVAILABLE false
 #define CCC_ALIGNAS_AVAILABLE false
 #define CCC_ALIGNOF_AVAILABLE false
 
@@ -33,10 +32,11 @@
 
 #if defined(__GNUG__) // equivalent to (__GNUC__ && __cplusplus)
 
-#undef CCC_ALIGNED_TYPE
-#define CCC_ALIGNED_TYPE(T, Alignment) T __attribute__((aligned((Alignment))))
-#undef CCC_ALIGNED_TYPE_AVAILABLE
-#define CCC_ALIGNED_TYPE_AVAILABLE true
+#define CCC_ALIGNED(T, Alignment) T __attribute__((aligned((Alignment))))
+#undef CCC_ALIGNED_AVAILABLE
+#define CCC_ALIGNED_AVAILABLE true
+#undef CCC_ALIGNOF_AVAILABLE
+#define CCC_ALIGNOF_AVAILABLE true
 
 #if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 7) && (__cplusplus >= 201103L)
 
@@ -46,15 +46,21 @@
 #define CCC_CONSTEXPR constexpr
 #undef CCC_DEFAULT
 #define CCC_DEFAULT = default;
+#define CCC_ALIGNOF(type) alignof(type)
+
+#else
+
+#define CCC_ALIGNOF(type) __alignof((type))
 
 #endif
 
 #elif defined(_MSC_VER)
 
-#undef CCC_ALIGNED_TYPE
-#define CCC_ALIGNED_TYPE(T, Alignment) __declspec(align((Alignment))) T
-#undef CCC_ALIGNED_TYPE_AVAILABLE
-#define CCC_ALIGNED_TYPE_AVAILABLE true
+#define CCC_ALIGNED(T, Alignment) __declspec(align((Alignment))) T
+#undef CCC_ALIGNED_AVAILABLE
+#define CCC_ALIGNED_AVAILABLE true
+#undef CCC_ALIGNOF_AVAILABLE
+#define CCC_ALIGNOF_AVAILABLE true
 
 /*
  * Version numbers of Microsoft compilers:
@@ -64,16 +70,10 @@
  * VS 2010 == VC10 == _MSC_VER 1600
  * VS 2012 == VC11 == _MSC_VER 1700
  * VS 2013 == VC12 == _MSC_VER 1800
+ * VS 2015 == VC14 == _MSC_VER 1900
  */
 
-#if (_MSC_VER < 1700)
-#undef CCC_IS_TRIVIALLY_COPYABLE_AVAILABLE
-#define CCC_IS_TRIVIALLY_COPYABLE_AVAILABLE 0
-#undef CCC_IS_POD_AVAILABLE
-#define CCC_IS_POD_AVAILABLE 0
-#endif
-
-#if (_MSC_VER >= 1800)
+#if (_MSC_VER >= 1900)
 
 #undef CCC_NOEXCEPT
 #define CCC_NOEXCEPT noexcept
@@ -83,18 +83,14 @@
 #define CCC_DEFAULT = default;
 #undef CCC_ALIGNAS_AVAILABLE
 #define CCC_ALIGNAS_AVAILABLE true
+#define CCC_ALIGNOF(expression) alignof(expression)
+
+#else
+
+#define CCC_ALIGNOF(type) __alignof(type)
 
 #endif // (_MSC_VER >= 1800)
 
 #endif
-
-// CCC_ALIGNOF
-#if CCC_ALIGNOF_AVAILABLE
-#define CCC_ALIGNOF(type) alignof((type))
-#else
-#define CCC_ALIGNOF(type) __alignof((type))
-#endif
-
-
 
 #endif /* CCC_COMPAT_H_ */
