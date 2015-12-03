@@ -10,7 +10,7 @@
 #include <ccc/storage.h>
 
 #include "utils.h"
-#include "consistent_integers.h"
+#include <ccc/test/consistent_integers.h>
 
 TEST(Storage, StaticInitialized)
 {

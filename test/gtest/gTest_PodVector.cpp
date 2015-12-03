@@ -18,7 +18,7 @@
 
 #include "gTest_Container.h"
 #include "gTest_SequenceContainer.h"
-#include "consistent_integers.h"
+#include <ccc/test/consistent_types.h>
 
 #if (__cplusplus >= 201103L)
 #include <type_traits>

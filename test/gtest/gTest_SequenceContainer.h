@@ -16,7 +16,7 @@
 #include <gtest/gtest.h>
 
 #include "utils.h"
-#include "consistent_integers.h"
+#include <ccc/test/consistent_integers.h>
 
 template<typename Container, typename Reference>
 struct reftest

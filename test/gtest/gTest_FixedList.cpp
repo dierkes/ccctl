@@ -9,7 +9,7 @@
 #include <gtest/gtest.h>
 
 #include <ccc/fixed_list.h>
-#include "consistent_integers.h"
+#include <ccc/test/consistent_integers.h>
 
 TEST(FixedList, experimental)
 {

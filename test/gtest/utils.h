@@ -14,7 +14,7 @@
 #include <set>
 #include <iostream>
 
-#include "consistent_integers.h"
+#include <ccc/test/consistent_types.h>
 
 template <typename T>
 T random_object()

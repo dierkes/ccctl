@@ -18,7 +18,7 @@
 #include <gtest/gtest.h>
 
 #include "utils.h"
-#include "consistent_integers.h"
+#include <ccc/test/consistent_integers.h>
 
 template<typename T>
 class TestOfContainer: public ::testing::Test

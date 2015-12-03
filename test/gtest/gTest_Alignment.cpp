@@ -19,7 +19,7 @@
 
 #include <cstddef>
 
-#include "consistent_integers.h"
+#include <ccc/test/consistent_integers.h>
 #include <ccc/memory.h>
 
 #pragma pack(push)
