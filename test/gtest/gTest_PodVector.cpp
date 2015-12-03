@@ -53,7 +53,9 @@ typedef ::testing::Types<
         RefPair<ccc::PodVector<ccc_test::Pod<2, 2>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<2, 2> > >,
         RefPair<ccc::PodVector<ccc_test::Pod<4, 4>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<4, 4> > >,
         RefPair<ccc::PodVector<ccc_test::Pod<8, 8>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<8, 8> > >,
+#if !(defined _MSC_VER && defined CCC_X86)
         RefPair<ccc::PodVector<ccc_test::Pod<16, 16>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<16, 16> > >,
+#endif
         RefPair<ccc::PodVector<ccc_test::Pod<2, 1>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<2, 1> > >,
         RefPair<ccc::PodVector<ccc_test::Pod<4, 1>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<4, 1> > >,
         RefPair<ccc::PodVector<ccc_test::Pod<8, 1>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<8, 1> > >,
@@ -90,7 +92,9 @@ TEST(PodVector, ConsistentSize)
     EXPECT_EQ(6, sizeof(PodVector_2_2_1_2_2));
     EXPECT_EQ(12, sizeof(PodVector_4_4_1_2_4));
     EXPECT_EQ(24, sizeof(PodVector_8_8_1_2_8));
+#if !(defined _MSC_VER && defined CCC_X86)
     EXPECT_EQ(48, sizeof(PodVector_16_16_1_2_16));
+#endif
 
     EXPECT_EQ(5, sizeof(PodVector_2_1_1_2_1));
     EXPECT_EQ(9, sizeof(PodVector_4_1_1_2_1));
@@ -110,7 +114,9 @@ TEST(PodVector, ConsistentAlignment)
     EXPECT_EQ(2, CCC_ALIGNOF(PodVector_2_2_1_2_2));
     EXPECT_EQ(4, CCC_ALIGNOF(PodVector_4_4_1_2_4));
     EXPECT_EQ(8, CCC_ALIGNOF(PodVector_8_8_1_2_8));
+#if !(defined _MSC_VER && defined CCC_X86)
     EXPECT_EQ(16, CCC_ALIGNOF(PodVector_16_16_1_2_16));
+#endif
 
     EXPECT_EQ(1, CCC_ALIGNOF(PodVector_2_1_1_2_1));
     EXPECT_EQ(1, CCC_ALIGNOF(PodVector_4_1_1_2_1));
@@ -138,8 +144,10 @@ TEST(PodVector, ConsistentLayout)
     EXPECT_EQ(8, CCC_OFFSETOF(PodVector_4_4_1_2_4, m_Storage[1]));
     EXPECT_EQ(8, CCC_OFFSETOF(PodVector_8_8_1_2_8, m_Storage[0]));
     EXPECT_EQ(16, CCC_OFFSETOF(PodVector_8_8_1_2_8, m_Storage[1]));
+#if !(defined _MSC_VER && defined CCC_X86)
     EXPECT_EQ(16, CCC_OFFSETOF(PodVector_16_16_1_2_16, m_Storage[0]));
     EXPECT_EQ(32, CCC_OFFSETOF(PodVector_16_16_1_2_16, m_Storage[1]));
+#endif
 
     EXPECT_EQ(1, CCC_OFFSETOF(PodVector_2_1_1_2_1, m_Storage[0]));
     EXPECT_EQ(3, CCC_OFFSETOF(PodVector_2_1_1_2_1, m_Storage[1]));
@@ -213,7 +221,9 @@ typedef ::testing::Types<
         LayoutTraits<ccc::PodVector<ccc_test::Pod<2, 2>, uint8_t, 10, 2>, 10, 2>,
         LayoutTraits<ccc::PodVector<ccc_test::Pod<4, 4>, uint8_t, 10, 4>, 10, 4>,
         LayoutTraits<ccc::PodVector<ccc_test::Pod<8, 8>, uint8_t, 10, 8>, 10, 8>,
+#if !(defined _MSC_VER && defined CCC_X86)
         LayoutTraits<ccc::PodVector<ccc_test::Pod<16, 16>, uint8_t, 10, 16>, 10, 16>,
+#endif
         LayoutTraits<ccc::PodVector<ccc_test::Pod<2, 1>, uint8_t, 10, 1>, 10, 1>,
         LayoutTraits<ccc::PodVector<ccc_test::Pod<4, 1>, uint8_t, 10, 1>, 10, 1>,
         LayoutTraits<ccc::PodVector<ccc_test::Pod<8, 1>, uint8_t, 10, 1>, 10, 1>,
