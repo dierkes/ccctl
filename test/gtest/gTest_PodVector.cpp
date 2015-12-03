@@ -44,11 +44,22 @@ INSTANTIATE_TYPED_TEST_CASE_P(PodVector, TestOfContainer, ContainerImplementatio
 INSTANTIATE_TYPED_TEST_CASE_P(PodVector, TestOfPODContainer, ContainerImplementations);
 INSTANTIATE_TYPED_TEST_CASE_P(PodVector, TestOfStaticContainer, ContainerImplementations);
 
-typedef reftest<ccc::PodVector<int, uint16_t, 10>, std::vector<int> > RefContainerOfInts;
-typedef reftest<ccc::PodVector<tPOD, uint16_t, 10>, std::vector<tPOD> > RefContainerOfPODs;
-
-typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs> RefContainerImplementations;
-INSTANTIATE_TYPED_TEST_CASE_P(PodVector, TestOfSequenceContainer, RefContainerImplementations);
+typedef ::testing::Types<
+        RefPair<ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 10, 2>, std::vector<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 10, 4>, std::vector<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 10, 8>, std::vector<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 10, 16>, std::vector<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<2, 2>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<2, 2> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<4, 4>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<4, 4> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<8, 8>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<8, 8> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<16, 16>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<16, 16> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<2, 1>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<2, 1> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<4, 1>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<4, 1> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<8, 1>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<8, 1> > >,
+        RefPair<ccc::PodVector<ccc_test::Pod<16, 1>, uint8_t, 10, 1>, std::vector<ccc_test::Pod<16, 1> > >
+> RefPairTypes;
+INSTANTIATE_TYPED_TEST_CASE_P(PodVector, TestOfSequenceContainer, RefPairTypes);
 
 typedef ccc::PodVector<ccc_test::Pod<1, 1>, uint8_t, 2, 1> PodVector_1_1_1_2_1;
 

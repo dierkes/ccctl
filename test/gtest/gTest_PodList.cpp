@@ -42,8 +42,8 @@ INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfContainer, ContainerImplementations
 INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfPODContainer, ContainerImplementations);
 INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfStaticContainer, ContainerImplementations);
 
-typedef reftest<ccc::PodList<int, uint16_t, 10>, std::list<int> > RefContainerOfInts;
-typedef reftest<ccc::PodList<tPOD, uint16_t, 10>, std::list<tPOD> > RefContainerOfPODs;
+typedef RefPair<ccc::PodList<int, uint16_t, 10>, std::list<int> > RefContainerOfInts;
+typedef RefPair<ccc::PodList<tPOD, uint16_t, 10>, std::list<tPOD> > RefContainerOfPODs;
 
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(PodList, TestOfSequenceContainer, RefContainerImplementations);

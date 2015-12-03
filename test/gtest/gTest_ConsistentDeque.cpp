@@ -44,9 +44,9 @@ INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, TestOfContainer, ContainerImpleme
 INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, TestOfRegularContainer, ContainerImplementations);
 INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, TestOfStaticContainer, ContainerImplementations);
 
-typedef reftest<ccc::ConsistentDeque<int, uint64_t, 10>, std::deque<int> > RefContainerOfInts;
-typedef reftest<ccc::ConsistentDeque<tPOD, uint64_t, 10>, std::deque<tPOD> > RefContainerOfPODs;
-typedef reftest<ccc::ConsistentDeque<cNoPOD, uint64_t, 10>, std::deque<cNoPOD> > RefContainersOfNonPODs;
+typedef RefPair<ccc::ConsistentDeque<int, uint64_t, 10>, std::deque<int> > RefContainerOfInts;
+typedef RefPair<ccc::ConsistentDeque<tPOD, uint64_t, 10>, std::deque<tPOD> > RefContainerOfPODs;
+typedef RefPair<ccc::ConsistentDeque<cNoPOD, uint64_t, 10>, std::deque<cNoPOD> > RefContainersOfNonPODs;
 
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs, RefContainersOfNonPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(ConsistentDeque, TestOfSequenceContainer, RefContainerImplementations);

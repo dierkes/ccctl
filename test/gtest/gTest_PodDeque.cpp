@@ -42,8 +42,8 @@ INSTANTIATE_TYPED_TEST_CASE_P(PodDeque, TestOfContainer, ContainerImplementation
 INSTANTIATE_TYPED_TEST_CASE_P(PodDeque, TestOfPODContainer, ContainerImplementations);
 INSTANTIATE_TYPED_TEST_CASE_P(PodDeque, TestOfStaticContainer, ContainerImplementations);
 
-typedef reftest<ccc::PodDeque<int, uint64_t, 10>, std::deque<int> > RefContainerOfInts;
-typedef reftest<ccc::PodDeque<tPOD, uint64_t, 10>, std::deque<tPOD> > RefContainerOfPODs;
+typedef RefPair<ccc::PodDeque<int, uint64_t, 10>, std::deque<int> > RefContainerOfInts;
+typedef RefPair<ccc::PodDeque<tPOD, uint64_t, 10>, std::deque<tPOD> > RefContainerOfPODs;
 
 typedef ::testing::Types<RefContainerOfInts, RefContainerOfPODs> RefContainerImplementations;
 INSTANTIATE_TYPED_TEST_CASE_P(PodDeque, TestOfSequenceContainer, RefContainerImplementations);

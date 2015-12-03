@@ -19,7 +19,7 @@
 #include <ccc/test/consistent_integers.h>
 
 template<typename Container, typename Reference>
-struct reftest
+struct RefPair
 {
     typedef Container container;
     typedef Reference reference;
