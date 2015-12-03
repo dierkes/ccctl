@@ -143,6 +143,8 @@ TEST(PragmaPack, vsTemplates_Packed8)
     EXPECT_EQ(9, sizeof(TemplateStructPacked1<int8_t, int64_t>));
 }
 
+#if CCC_ALIGNAS_AVAILABLE
+
 #pragma pack(1)
 struct Int16Packed1Alignas4
 {
@@ -167,5 +169,7 @@ TEST(PragmaPack, vsAlignas)
     EXPECT_EQ(2, sizeof(Int16Packed4Alignas1));
     EXPECT_EQ(2, CCC_ALIGNOF(Int16Packed4Alignas1));
 }
+
+#endif
 
 #pragma pack(pop)

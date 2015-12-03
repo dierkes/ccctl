@@ -13,7 +13,7 @@
 namespace ccc
 {
 
-#pragma pack(push, CCC_MAX_ALIGNMENT)
+#pragma pack(push, 16)
 
 template <typename T, typename SizeType, SizeType Capacity>
 struct ContainerPlain
@@ -22,12 +22,16 @@ struct ContainerPlain
     T m_Storage[Capacity];
 };
 
+#if CCC_ALIGNAS_AVAILABLE
+
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
 struct ContainerAlignas
 {
     alignas(Alignment) SizeType m_End;
     alignas(Alignment) T m_Storage[Capacity];
 };
+
+#endif
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
 struct ContainerAligned

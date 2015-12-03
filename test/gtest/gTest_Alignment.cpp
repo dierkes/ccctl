@@ -38,6 +38,8 @@ struct ArrayOf5Int16Plain
     int16_t m[5];
 };
 
+#if CCC_ALIGNAS_AVAILABLE
+
 struct Int16Alignas1
 {
     alignas(1) int16_t m;
@@ -57,6 +59,8 @@ struct ArrayOf5Int16Alignas4
 {
     alignas(4) int16_t m[5];
 };
+
+#endif
 
 struct Int16Aligned1
 {
@@ -120,44 +124,52 @@ struct ArrayOf5Int16Padded4
 
 TEST(Alignment, Modifiers)
 {
-    EXPECT_EQ(2, alignof(Int16Plain));
-    EXPECT_EQ(2, alignof(Int16Alignas1));
-    EXPECT_EQ(4, alignof(Int16Alignas4));
-    EXPECT_EQ(2, alignof(Int16Aligned1));
-    EXPECT_EQ(4, alignof(Int16Aligned4));
-#if defined __GNUC__
-    EXPECT_EQ(1, alignof(Int16TypedefAligned1));
-#elif defined _MSC_VER
-    EXPECT_EQ(2, alignof(Int16TypedefAligned1));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16Plain));
+#if CCC_ALIGNAS_AVAILABLE
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16Alignas1));
+    EXPECT_EQ(4, CCC_ALIGNOF(Int16Alignas4));
 #endif
-    EXPECT_EQ(4, alignof(Int16TypedefAligned4));
-    EXPECT_EQ(2, alignof(Int16Padded1));
-    EXPECT_EQ(2, alignof(Int16Padded4));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16Aligned1));
+    EXPECT_EQ(4, CCC_ALIGNOF(Int16Aligned4));
+#if defined __GNUC__
+    EXPECT_EQ(1, CCC_ALIGNOF(Int16TypedefAligned1));
+#elif defined _MSC_VER
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16TypedefAligned1));
+#endif
+    EXPECT_EQ(4, CCC_ALIGNOF(Int16TypedefAligned4));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16Padded1));
+    EXPECT_EQ(2, CCC_ALIGNOF(Int16Padded4));
     EXPECT_EQ(2, sizeof(Int16Plain));
+#if CCC_ALIGNAS_AVAILABLE
     EXPECT_EQ(2, sizeof(Int16Alignas1));
     EXPECT_EQ(4, sizeof(Int16Alignas4));
+#endif
     EXPECT_EQ(2, sizeof(Int16Aligned1));
     EXPECT_EQ(4, sizeof(Int16Aligned4));
     EXPECT_EQ(2, sizeof(Int16TypedefAligned1));
     EXPECT_EQ(4, sizeof(Int16TypedefAligned4));
     EXPECT_EQ(2, sizeof(Int16Padded1));
     EXPECT_EQ(4, sizeof(Int16Padded4));
-    EXPECT_EQ(2, alignof(ArrayOf5Int16Plain));
-    EXPECT_EQ(2, alignof(ArrayOf5Int16Alignas1));
-    EXPECT_EQ(4, alignof(ArrayOf5Int16Alignas4));
-    EXPECT_EQ(2, alignof(ArrayOf5Int16Aligned1));
-    EXPECT_EQ(4, alignof(ArrayOf5Int16Aligned4));
-#if defined __GNUC__
-    EXPECT_EQ(1, alignof(ArrayOf5Int16TypedefAligned1));
-#elif defined _MSC_VER
-    EXPECT_EQ(2, alignof(ArrayOf5Int16TypedefAligned1));
+    EXPECT_EQ(2, CCC_ALIGNOF(ArrayOf5Int16Plain));
+#if CCC_ALIGNAS_AVAILABLE
+    EXPECT_EQ(2, CCC_ALIGNOF(ArrayOf5Int16Alignas1));
+    EXPECT_EQ(4, CCC_ALIGNOF(ArrayOf5Int16Alignas4));
 #endif
-    EXPECT_EQ(4, alignof(ArrayOf5Int16TypedefAligned4));
-    EXPECT_EQ(2, alignof(ArrayOf5Int16Padded1));
-    EXPECT_EQ(2, alignof(ArrayOf5Int16Padded4));
+    EXPECT_EQ(2, CCC_ALIGNOF(ArrayOf5Int16Aligned1));
+    EXPECT_EQ(4, CCC_ALIGNOF(ArrayOf5Int16Aligned4));
+#if defined __GNUC__
+    EXPECT_EQ(1, CCC_ALIGNOF(ArrayOf5Int16TypedefAligned1));
+#elif defined _MSC_VER
+    EXPECT_EQ(2, CCC_ALIGNOF(ArrayOf5Int16TypedefAligned1));
+#endif
+    EXPECT_EQ(4, CCC_ALIGNOF(ArrayOf5Int16TypedefAligned4));
+    EXPECT_EQ(2, CCC_ALIGNOF(ArrayOf5Int16Padded1));
+    EXPECT_EQ(2, CCC_ALIGNOF(ArrayOf5Int16Padded4));
     EXPECT_EQ(10, sizeof(ArrayOf5Int16Plain));
+#if CCC_ALIGNAS_AVAILABLE
     EXPECT_EQ(10, sizeof(ArrayOf5Int16Alignas1));
     EXPECT_EQ(12, sizeof(ArrayOf5Int16Alignas4));
+#endif
     EXPECT_EQ(10, sizeof(ArrayOf5Int16Aligned1));
     EXPECT_EQ(12, sizeof(ArrayOf5Int16Aligned4));
     EXPECT_EQ(10, sizeof(ArrayOf5Int16TypedefAligned1));
@@ -236,6 +248,8 @@ TEST(Alignment, PaddedArray)
 
 
 
+#if CCC_ALIGNAS_AVAILABLE
+
 #pragma pack(1)
 
 struct PackedAlignas1
@@ -297,6 +311,8 @@ TEST(PragmaPackAndAlignas, Pack8)
     EXPECT_EQ(16, CCC_ALIGNOF(NonPackedAlignas16));
 #endif
 }
+
+#endif // CCC_ALIGNAS_AVAILABLE
 
 #pragma pack(1)
 struct Int16Packed1Aligned1a
@@ -388,6 +404,8 @@ TEST(PragmaPack, Position1)
     EXPECT_EQ(8, CCC_OFFSETOF(TestPragmaPackPosition1, m2));
 }
 
+#if CCC_ALIGNAS_AVAILABLE
+
 struct Int64Alignas1
 {
     alignas(1) int64_t m;
@@ -407,6 +425,8 @@ TEST(AlignmentModifiers, Alignas)
 //    EXPECT_EQ(8, alignof(Int64Alignas1b));
 }
 
+#endif // CCC_ALIGNAS_AVAILABLE
+
 #pragma pack(8)
 struct Int64TypedefAligned1
 {
@@ -423,12 +443,12 @@ TEST(AlignmentModifiers, Aligned)
 {
     EXPECT_EQ(8, sizeof(Int64TypedefAligned1));
 #if defined __GNUC__
-    EXPECT_EQ(1, alignof(Int64TypedefAligned1));
+    EXPECT_EQ(1, CCC_ALIGNOF(Int64TypedefAligned1));
 #elif defined _MSC_VER
-    EXPECT_EQ(8, alignof(Int64TypedefAligned1));
+    EXPECT_EQ(8, CCC_ALIGNOF(Int64TypedefAligned1));
 #endif
     EXPECT_EQ(8, sizeof(Int64Aligned1));
-    EXPECT_EQ(8, alignof(Int64Aligned1));
+    EXPECT_EQ(8, CCC_ALIGNOF(Int64Aligned1));
 }
 
 struct Size16Align8
@@ -461,10 +481,10 @@ TEST(TestTypes, Size)
 
 TEST(TestTypes, Alignment)
 {
-    EXPECT_EQ(1, alignof(Size1Align1));
-    EXPECT_EQ(1, alignof(Size2Align1));
-    EXPECT_EQ(2, alignof(Size2Align2));
-    EXPECT_EQ(8, alignof(Size16Align8));
+    EXPECT_EQ(1, CCC_ALIGNOF(Size1Align1));
+    EXPECT_EQ(1, CCC_ALIGNOF(Size2Align1));
+    EXPECT_EQ(2, CCC_ALIGNOF(Size2Align2));
+    EXPECT_EQ(8, CCC_ALIGNOF(Size16Align8));
 }
 
 #pragma pack(8)
@@ -486,6 +506,8 @@ TEST(Alignment, Bytes16_a8)
     EXPECT_EQ(16, CCC_OFFSETOF(S, a[1]));
 }
 
+#if CCC_ALIGNAS_AVAILABLE
+
 #pragma pack(8)
 struct Bytes16_a8b
 {
@@ -498,6 +520,8 @@ TEST(Alignment, Bytes16_a8b)
     EXPECT_EQ(16, sizeof(Bytes16_a8b));
     EXPECT_EQ(8, CCC_ALIGNOF(Bytes16_a8b));
 }
+
+#endif // CCC_ALIGNAS_AVAILABLE
 
 #pragma pack(1)
 struct Bytes9_a1
@@ -551,21 +575,27 @@ TEST(Alignment, MisalignedByPadding18_p8_a1)
 TEST(Alignment, ContainerPrototypes)
 {
     EXPECT_EQ(24, sizeof(ccc::ContainerPlain<int32_t, uint16_t, 5>));
+#if CCC_ALIGNAS_AVAILABLE
     EXPECT_EQ(24, sizeof(ccc::ContainerAlignas<int32_t, uint16_t, 5, 1>));
+#endif // CCC_ALIGNAS_AVAILABLE
 #if defined __GNUC__
     EXPECT_EQ(22, sizeof(ccc::ContainerAligned<int32_t, uint16_t, 5, 1>)); // violation of alignment rule: 1 < alignof(int32_t)
 #elif defined _MSC_VER
     EXPECT_EQ(24, sizeof(ccc::ContainerAligned<int32_t, uint16_t, 5, 1>)); // violation of alignment rule: 1 < alignof(int32_t)
-#endif
+#endif // __GNUC__ vs. _MSC_VER
     EXPECT_EQ(24, sizeof(ccc::ContainerPadded<int32_t, uint16_t, 5, 1>));
+#if CCC_ALIGNAS_AVAILABLE
     EXPECT_EQ(24, sizeof(ccc::ContainerAlignas<int32_t, uint16_t, 5, 2>));
+#endif // CCC_ALIGNAS_AVAILABLE
 #if defined __GNUC__
     EXPECT_EQ(22, sizeof(ccc::ContainerAligned<int32_t, uint16_t, 5, 2>)); // violation of alignment rule: 1 < alignof(int32_t)
 #elif defined _MSC_VER
     EXPECT_EQ(24, sizeof(ccc::ContainerAligned<int32_t, uint16_t, 5, 2>)); // violation of alignment rule: 1 < alignof(int32_t)
-#endif
+#endif // __GNUC__ vs. _MSC_VER
     EXPECT_EQ(24, sizeof(ccc::ContainerPadded<int32_t, uint16_t, 5, 2>));
+#if CCC_ALIGNAS_AVAILABLE
     EXPECT_EQ(24, sizeof(ccc::ContainerAlignas<int32_t, uint16_t, 5, 4>));
+#endif // CCC_ALIGNAS_AVAILABLE
     EXPECT_EQ(24, sizeof(ccc::ContainerAligned<int32_t, uint16_t, 5, 4>)); // no violation of alignment rule anymore
     EXPECT_EQ(24, sizeof(ccc::ContainerPadded<int32_t, uint16_t, 5, 4>));
 }
