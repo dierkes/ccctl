@@ -625,7 +625,7 @@ struct PodDeque
         }
         else if (Count <= max_size() - size())
         {
-            m_Storage.construct_default(end(), Count);
+            m_Storage.construct_default(end(), static_cast<size_type>(Count));
             std::copy_backward(Position, end(), end() + Count);
             std::copy(First, Last, Position);
             m_End = next(end(), Count).m_PhysicalIndex;
