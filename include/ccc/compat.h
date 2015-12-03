@@ -18,11 +18,11 @@
 #define CCC_NOEXCEPT
 #define CCC_CONSTEXPR
 #define CCC_DEFAULT {}
-#define CCC_IS_TRIVIALLY_COPYABLE_AVAILABLE false
-#define CCC_IS_POD_AVAILABLE false
-#define CCC_ALIGNED_AVAILABLE false
-#define CCC_ALIGNAS_AVAILABLE false
-#define CCC_ALIGNOF_AVAILABLE false
+#define CCC_IS_TRIVIALLY_COPYABLE_AVAILABLE 0
+#define CCC_IS_POD_AVAILABLE 0
+#define CCC_ALIGNED_AVAILABLE 0
+#define CCC_ALIGNAS_AVAILABLE 0
+#define CCC_ALIGNOF_AVAILABLE 0
 
 /*
  * Compiler-specific definitions:
@@ -34,9 +34,9 @@
 
 #define CCC_ALIGNED(T, Alignment) T __attribute__((aligned((Alignment))))
 #undef CCC_ALIGNED_AVAILABLE
-#define CCC_ALIGNED_AVAILABLE true
+#define CCC_ALIGNED_AVAILABLE 1
 #undef CCC_ALIGNOF_AVAILABLE
-#define CCC_ALIGNOF_AVAILABLE true
+#define CCC_ALIGNOF_AVAILABLE 1
 
 #if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 7) && (__cplusplus >= 201103L)
 
@@ -56,11 +56,11 @@
 
 #elif defined(_MSC_VER)
 
-#define CCC_ALIGNED(T, Alignment) __declspec(align((Alignment))) T
+#define CCC_ALIGNED(T, Alignment) __declspec(align(Alignment)) T
 #undef CCC_ALIGNED_AVAILABLE
-#define CCC_ALIGNED_AVAILABLE true
+#define CCC_ALIGNED_AVAILABLE 1
 #undef CCC_ALIGNOF_AVAILABLE
-#define CCC_ALIGNOF_AVAILABLE true
+#define CCC_ALIGNOF_AVAILABLE 1
 
 /*
  * Version numbers of Microsoft compilers:
@@ -82,7 +82,7 @@
 #undef CCC_DEFAULT
 #define CCC_DEFAULT = default;
 #undef CCC_ALIGNAS_AVAILABLE
-#define CCC_ALIGNAS_AVAILABLE true
+#define CCC_ALIGNAS_AVAILABLE 1
 #define CCC_ALIGNOF(expression) alignof(expression)
 
 #else
