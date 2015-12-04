@@ -37,7 +37,7 @@ namespace ccc
  * Linear time: Inserting and erasing elements elsewhere.
  * Noncompliance: No swap method, ...
  */
-template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps = false, bool StaticStorage = true>
+template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps = false, bool Uninitialized = false, bool Runtime = false>
 struct PodDeque
 {
     typedef T value_type;
@@ -48,7 +48,7 @@ struct PodDeque
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage> container_type; // necessary for random access iterator
+    typedef PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, Uninitialized, Runtime> container_type; // necessary for random access iterator
 
     /**
      * Assumption: divisor is a positive number
@@ -364,7 +364,7 @@ struct PodDeque
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    typedef typename Storage<T, SizeType, Capacity + 1, Alignment, StaticStorage, true>::type storage_type;
+    typedef typename Storage<T, SizeType, Capacity + 1, Alignment, Uninitialized, Runtime>::type storage_type;
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Begin; // points at the first element

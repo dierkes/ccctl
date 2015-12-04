@@ -18,17 +18,17 @@ namespace ccc
 
 #pragma pack(push, 16)
 
-template<class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool StaticStorage = true>
-class ConsistentList: public PodList<T, SizeType, Capacity, Alignment, StaticStorage>
+template<class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool Uninitialized = false, bool Runtime = false>
+class ConsistentList: public PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>
 {
 public:
     ConsistentList()
     {
         this->m_Size = 0;
-        this->m_Deallocated = typename PodList<T, SizeType, Capacity, Alignment, StaticStorage>::deallocated_storage_type();
-        if (StaticStorage)
+        this->m_Deallocated = typename PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>::deallocated_storage_type();
+        if (not Runtime)
         {
-            this->m_Nodes[this->m_Anchor] = typename PodList<T, SizeType, Capacity, Alignment, StaticStorage>::node_type();
+            this->m_Nodes[this->m_Anchor] = typename PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>::node_type();
         }
     }
 
@@ -38,11 +38,11 @@ public:
     }
 
 protected:
-    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Size;
-    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Nodes;
-    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Values;
-    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Deallocated;
-    using PodList<T, SizeType, Capacity, Alignment, StaticStorage>::m_Anchor;
+    using PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>::m_Size;
+    using PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>::m_Nodes;
+    using PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>::m_Values;
+    using PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>::m_Deallocated;
+    using PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>::m_Anchor;
 };
 
 #pragma pack(pop)

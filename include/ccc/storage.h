@@ -431,14 +431,14 @@ struct FixedUninitializedStorage
     }
 };
 
-template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment, bool StaticStorage, bool InitializedStorage>
+template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment, bool Uninitialized, bool Dynamic>
 struct Storage
 {
     typedef void type;
 };
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
-struct Storage<T, SizeType, Capacity, Alignment, true, true>
+struct Storage<T, SizeType, Capacity, Alignment, false, false>
 {
     typedef StaticInitializedStorage<T, SizeType, Capacity, Alignment> type;
 };
@@ -456,7 +456,7 @@ struct Storage<T, SizeType, Capacity, Alignment, false, true>
 };
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment>
-struct Storage<T, SizeType, Capacity, Alignment, false, false>
+struct Storage<T, SizeType, Capacity, Alignment, true, true>
 {
     typedef FixedUninitializedStorage<T, SizeType, Alignment> type;
 };

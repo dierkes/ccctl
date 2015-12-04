@@ -19,8 +19,8 @@ namespace ccc
 #pragma pack(push, 16)
 
 template<class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps =
-        false, bool StaticStorage = true>
-struct ConsistentDeque: public PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>
+        false, bool Uninitialized = false, bool Runtime = false>
+struct ConsistentDeque: public PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, Uninitialized, Runtime>
 {
     ConsistentDeque()
     {
@@ -34,9 +34,9 @@ struct ConsistentDeque: public PodDeque<T, SizeType, Capacity, Alignment, UseRaw
     }
 
 protected:
-    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Begin;
-    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_End;
-    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, StaticStorage>::m_Storage;
+    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, Uninitialized, Runtime>::m_Begin;
+    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, Uninitialized, Runtime>::m_End;
+    using PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, Uninitialized, Runtime>::m_Storage;
 };
 
 #pragma pack(pop)

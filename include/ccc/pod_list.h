@@ -20,7 +20,7 @@ namespace ccc
 
 #pragma pack(push, 16)
 
-template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool StaticStorage = true>
+template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8, bool Uninitialized = false, bool Runtime = false>
 struct PodList
 {
     typedef T value_type;
@@ -31,7 +31,7 @@ struct PodList
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PodList<T, SizeType, Capacity, Alignment, StaticStorage> container_type; // necessary for iterator
+    typedef PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime> container_type; // necessary for iterator
 
     typedef size_type node_index_type;
 
@@ -43,7 +43,7 @@ struct PodList
 
     typedef ListNode node_type;
 
-    typedef PodVector<node_index_type, size_type, Capacity + 1, Alignment, false, StaticStorage> deallocated_storage_type;
+    typedef PodVector<node_index_type, size_type, Capacity + 1, Alignment, false, false, Runtime> deallocated_storage_type;
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Size;
@@ -52,8 +52,8 @@ struct PodList
 #else
     PaddedValue<size_type, Alignment> m_Size;
 #endif
-    typename Storage<node_type, size_type, Capacity + 1, Alignment, StaticStorage, true>::type m_Nodes;
-    typename Storage<value_type, size_type, Capacity, Alignment, StaticStorage, true>::type m_Values;
+    typename Storage<node_type, size_type, Capacity + 1, Alignment, Uninitialized, Runtime>::type m_Nodes;
+    typename Storage<value_type, size_type, Capacity, Alignment, Uninitialized, Runtime>::type m_Values;
     deallocated_storage_type m_Deallocated;
     static const node_index_type m_Anchor = 0;
 

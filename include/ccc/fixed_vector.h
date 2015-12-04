@@ -17,7 +17,7 @@ namespace ccc
 {
 
 template <typename T, typename SizeType = unsigned int, unsigned int Alignment = 8, bool UseRawMemOps = false>
-class FixedVector : public ConsistentVector<T, SizeType, 0, Alignment, UseRawMemOps, false>
+class FixedVector : public ConsistentVector<T, SizeType, 0, Alignment, UseRawMemOps, false, true>
 {
 public:
     explicit FixedVector(SizeType Capacity)

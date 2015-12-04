@@ -19,7 +19,7 @@ namespace ccc
 #pragma pack(push, 16)
 
 template <typename T, typename SizeType, SizeType Capacity, unsigned int Alignment = 8, bool UseRawMemOps = false>
-class StaticDeque : public ConsistentDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, true>
+class StaticDeque : public ConsistentDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, false, false>
 {
 };
 

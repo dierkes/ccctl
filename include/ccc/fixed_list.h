@@ -17,13 +17,13 @@ namespace ccc
 {
 
 template <typename T, typename SizeType = unsigned int, unsigned int Alignment = 8>
-class FixedList : public ConsistentList<T, SizeType, 0, Alignment, false>
+class FixedList : public ConsistentList<T, SizeType, 0, Alignment, false, true>
 {
 public:
     explicit FixedList(SizeType Capacity)
     {
         this->m_Nodes.allocate(Capacity + 1);
-        this->m_Nodes[this->m_Anchor] = typename PodList<T, SizeType, 0, Alignment, false>::node_type();
+        this->m_Nodes[this->m_Anchor] = typename PodList<T, SizeType, 0, Alignment, false, true>::node_type();
         this->m_Values.allocate(Capacity);
         this->m_Deallocated.m_Storage.allocate(Capacity);
     }
