@@ -11,9 +11,12 @@ include_directories(
 
 set(source_files
 	celero_main.cpp
-	celero_test.cpp
-	celero_fill.cpp
+#	celero_test.cpp
+#	celero_fill.cpp
+	celero_vector.cpp
 )
+
+add_definitions(-DNDEBUG)
 
 add_executable(ccctl_celero ${source_files})
 

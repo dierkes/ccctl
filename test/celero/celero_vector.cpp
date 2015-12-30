@@ -17,6 +17,7 @@
 #include <random>
 
 const int N = 10000;
+int g_prev = 0;
 
 class ArrayFixture: public celero::TestFixture
 {
@@ -24,6 +25,17 @@ public:
     ArrayFixture()
             : Gen(RandomDevice()), RandomBool(0.5), RandomInt(-100, 100)
     {
+    }
+
+    inline bool FillArray(int* a, int N)
+    {
+        int prev = 0;
+        for (int i = 0; i < N; ++i)
+        {
+            a[i] = i * prev + prev * prev;
+            prev = a[i];
+        }
+        return true;
     }
 
     inline bool FillArrayWithMultiplication(int* a, int N)
@@ -77,45 +89,51 @@ public:
     std::uniform_int_distribution<int> RandomInt;
 };
 
-BASELINE_F(FillWithMultiplication, std_vector, ArrayFixture, 30, 100)
+BENCHMARK_F(FillWithMultiplication, std_vector, ArrayFixture, 300, 100)
 {
     std::vector<int> v;
     v.reserve(N);
     celero::DoNotOptimizeAway(FillVectorWithMultiplication(v, N));
 }
 
-BENCHMARK_F(FillWithMultiplication, ccc_PodVector, ArrayFixture, 30, 100)
+BENCHMARK_F(FillWithMultiplication, ccc_PodVector, ArrayFixture, 300, 100)
 {
     ccc::PodVector<int, std::size_t, N> v = ccc::PodVector<int, std::size_t, N>();
     celero::DoNotOptimizeAway(FillVectorWithMultiplication(v, N));
 }
 
-BENCHMARK_F(FillWithMultiplication, ccc_StaticVector, ArrayFixture, 30, 100)
+BENCHMARK_F(FillWithMultiplication, ccc_StaticVector, ArrayFixture, 300, 100)
 {
-    ccc::StaticVector<int, std::size_t, N> v;
+    ccc::StaticVector<int, std::size_t, N, true> v;
     celero::DoNotOptimizeAway(FillVectorWithMultiplication(v, N));
 }
 
-BENCHMARK_F(FillWithMultiplication, ccc_FixedVector, ArrayFixture, 30, 100)
+BENCHMARK_F(FillWithMultiplication, ccc_FixedVector, ArrayFixture, 300, 100)
 {
     ccc::FixedVector<int> v(N);
     celero::DoNotOptimizeAway(FillVectorWithMultiplication(v, N));
 }
 
-BENCHMARK_F(FillWithMultiplication, stack_array, ArrayFixture, 30, 100)
+BASELINE_F(FillWithMultiplication, stack_array, ArrayFixture, 300, 100)
 {
     int a[N];
     celero::DoNotOptimizeAway(FillArrayWithMultiplication(&a[0], N));
 }
 
-BENCHMARK_F(FillWithMultiplication, heap_array, ArrayFixture, 30, 100)
+BENCHMARK_F(FillWithMultiplication, stack_array_fill, ArrayFixture, 300, 100)
+{
+    int a[N];
+    celero::DoNotOptimizeAway(FillArray(&a[0], N));
+}
+
+BENCHMARK_F(FillWithMultiplication, heap_array, ArrayFixture, 300, 100)
 {
     int* a = new int[N];
     celero::DoNotOptimizeAway(FillArrayWithMultiplication(&a[0], N));
     delete[] a;
 }
 
-BENCHMARK_F(FillWithMultiplication, std_array, ArrayFixture, 30, 100)
+BENCHMARK_F(FillWithMultiplication, std_array, ArrayFixture, 300, 100)
 {
     std::array<int, N> a;
     celero::DoNotOptimizeAway(FillArrayWithMultiplication(&a[0], N));
