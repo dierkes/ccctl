@@ -31,7 +31,6 @@ struct PodList
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-
     typedef size_type node_index_type;
 
     struct ListNode
@@ -484,7 +483,7 @@ struct PodList
         {
             return Position;
         }
-        else if (std::distance(First, Last) <= max_size() - size())
+        else if (std::distance(First, Last) <= static_cast<difference_type>(max_size() - size()))
         {
             iterator Result = insert(Position, *First);
             ++First;

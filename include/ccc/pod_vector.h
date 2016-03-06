@@ -267,7 +267,7 @@ struct PodVector
     iterator insert(iterator Position, IteratorType First, IteratorType Last)
     {
         difference_type Count = std::distance(First, Last);
-        if (Count <= max_size() - size())
+        if (Count <= static_cast<difference_type>(max_size() - size()))
         {
             m_Storage.construct_default(end(), Count);
             if (UseRawMemOps)

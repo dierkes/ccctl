@@ -621,11 +621,11 @@ struct PodDeque
     iterator insert(iterator Position, IteratorType First, IteratorType Last)
     {
         difference_type Count = std::distance(First, Last);
-        if (Count == 0)
+        if (Count <= 0)
         {
             return Position;
         }
-        else if (Count <= max_size() - size())
+        else if (Count <= static_cast<difference_type>(max_size() - size()))
         {
             m_Storage.construct_default(end(), static_cast<size_type>(Count));
             std::copy_backward(Position, end(), end() + Count);
