@@ -48,7 +48,6 @@ struct PodDeque
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PodDeque<T, SizeType, Capacity, Alignment, UseRawMemOps, Uninitialized, Runtime> container_type; // necessary for random access iterator
 
     /**
      * Assumption: divisor is a positive number
@@ -75,7 +74,7 @@ struct PodDeque
         typedef RandomAccessIterator<T_> iterator_type;
         typedef std::random_access_iterator_tag iterator_category;
 
-        container_type* m_Container;
+        PodDeque* m_Container;
         size_type m_PhysicalIndex;
 
         RandomAccessIterator()
@@ -83,7 +82,7 @@ struct PodDeque
         {
         }
 
-        RandomAccessIterator(container_type* Container, size_type PhysicalIndex)
+        RandomAccessIterator(PodDeque* Container, size_type PhysicalIndex)
                 : m_Container(Container), m_PhysicalIndex(PhysicalIndex)
         {
         }
@@ -219,7 +218,7 @@ struct PodDeque
         typedef RandomAccessConstIterator<T_> iterator_type;
         typedef std::random_access_iterator_tag iterator_category;
 
-        const container_type* m_Container;
+        const PodDeque* m_Container;
         size_type m_PhysicalIndex;
 
         RandomAccessConstIterator()
@@ -227,7 +226,7 @@ struct PodDeque
         {
         }
 
-        RandomAccessConstIterator(const container_type* Container, size_type PhysicalIndex)
+        RandomAccessConstIterator(const PodDeque* Container, size_type PhysicalIndex)
                 : m_Container(Container), m_PhysicalIndex(PhysicalIndex)
         {
         }

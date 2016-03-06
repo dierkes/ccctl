@@ -31,7 +31,6 @@ struct PodList
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    typedef PodList<T, SizeType, Capacity, Alignment, Uninitialized, Runtime> container_type; // necessary for iterator
 
     typedef size_type node_index_type;
 
@@ -67,7 +66,7 @@ struct PodList
         typedef BidirectionalIterator<T_> iterator_type;
         typedef std::bidirectional_iterator_tag iterator_category;
 
-        container_type* m_Container;
+        PodList* m_Container;
         node_index_type m_Node;
 
         BidirectionalIterator()
@@ -75,7 +74,7 @@ struct PodList
         {
         }
 
-        explicit BidirectionalIterator(container_type* Container, node_index_type Node)
+        explicit BidirectionalIterator(PodList* Container, node_index_type Node)
                 : m_Container(Container), m_Node(Node)
         {
         }
@@ -138,7 +137,7 @@ struct PodList
         typedef BidirectionalConstIterator<T_> iterator_type;
         typedef std::bidirectional_iterator_tag iterator_category;
 
-        const container_type* m_Container;
+        const PodList* m_Container;
         node_index_type m_Node;
 
         BidirectionalConstIterator()
@@ -146,7 +145,7 @@ struct PodList
         {
         }
 
-        explicit BidirectionalConstIterator(const container_type* Container, node_index_type Node)
+        explicit BidirectionalConstIterator(const PodList* Container, node_index_type Node)
                 : m_Container(Container), m_Node(Node)
         {
         }
