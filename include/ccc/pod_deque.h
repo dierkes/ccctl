@@ -24,6 +24,7 @@
 #include <ccc/type_traits.h>
 #include <ccc/alignment.h>
 #include <ccc/storage.h>
+#include <ccc/algorithm.h>
 
 namespace ccc
 {
@@ -48,6 +49,7 @@ struct PodDeque
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
+    static const typename ccc::integral_constant<bool, UseRawMemOps>::type RawMemOps;
 
     /**
      * Assumption: divisor is a positive number
@@ -581,15 +583,7 @@ struct PodDeque
             m_Storage.construct_default(begin() - 1);
             if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
             {
-                if (UseRawMemOps)
-                {
-                    // ccc::addressof(*(begin() - 1)) should not be necessary, since ccc::addressof should return a pointer of type value_type*
-                    std::memmove(ccc::addressof(*begin()) - 1, ccc::addressof(*begin()), (Position - begin()) * sizeof(value_type));
-                }
-                else
-                {
-                    std::copy(begin(), Position, begin() - 1);
-                }
+                ccc::move(begin(), Position, begin() - 1, RawMemOps);
                 m_Begin = (0 == m_Begin) ? max_size() : (m_Begin - 1);
                 *(Position - 1) = Value;
                 return (Position - 1);
@@ -598,14 +592,7 @@ struct PodDeque
                  // or Position is in range [LogicalBegin, LogicalEnd], if PhysicalBegin <= LogicalBegin < LogicalEnd <= PhysicalEnd
             {
                 m_Storage.construct_default(end());
-                if (UseRawMemOps)
-                {
-                    std::memmove(ccc::addressof(*Position) + 1, ccc::addressof(*Position), (end() - Position) * sizeof(value_type));
-                }
-                else
-                {
-                    std::copy_backward(Position, end(), end() + 1);
-                }
+                ccc::move_backward(Position, end(), end() + 1, RawMemOps);
                 m_End = (max_size() == m_End) ? 0 : (m_End + 1);
                 *Position = Value;
                 return Position;
@@ -628,7 +615,7 @@ struct PodDeque
         else if (Count <= static_cast<difference_type>(max_size() - size()))
         {
             m_Storage.construct_default(end(), static_cast<size_type>(Count));
-            std::copy_backward(Position, end(), end() + Count);
+            ccc::move_backward(Position, end(), end() + Count, RawMemOps);
             std::copy(First, Last, Position);
             m_End = next(end(), Count).m_PhysicalIndex;
             return Position;
@@ -648,7 +635,7 @@ struct PodDeque
         else if (Count <= max_size() - size())
         {
             m_Storage.construct_default(end(), Count);
-            std::copy_backward(Position, end(), end() + Count);
+            ccc::move_backward(Position, end(), end() + Count, RawMemOps);
             std::fill(Position, Position + Count, Value);
             m_End = next(end(), Count).m_PhysicalIndex;
             return Position;
@@ -663,28 +650,14 @@ struct PodDeque
     {
         if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
         {
-            if (UseRawMemOps)
-            {
-                std::memmove(ccc::addressof(*begin()) + 1, ccc::addressof(*begin()), (Position - begin()) * sizeof(value_type));
-            }
-            else
-            {
-                std::copy_backward(begin(), Position, Position + 1);
-            }
+            ccc::move_backward(begin(), Position, Position + 1, RawMemOps);
             m_Storage.destroy(begin());
             m_Begin = (max_size() == m_Begin) ? 0 : (m_Begin + 1);
             return Position + 1;
         }
         else
         {
-            if (UseRawMemOps)
-            {
-                std::memmove(ccc::addressof(*Position), ccc::addressof(*Position) + 1, ((end() - 1) - Position) * sizeof(value_type));
-            }
-            else
-            {
-                std::copy(Position + 1, end(), Position);
-            }
+            ccc::move(Position + 1, end(), Position, RawMemOps);
             m_End = (0 == m_End) ? max_size() : (m_End - 1);
             m_Storage.destroy(end());
             return Position;

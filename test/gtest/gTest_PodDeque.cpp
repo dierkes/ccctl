@@ -57,7 +57,23 @@ typedef ::testing::Types<
         RefPair<ccc::PodDeque<ccc_test::Pod<2, 1>, uint8_t, 10, 1>, std::deque<ccc_test::Pod<2, 1> > >,
         RefPair<ccc::PodDeque<ccc_test::Pod<4, 1>, uint8_t, 10, 1>, std::deque<ccc_test::Pod<4, 1> > >,
         RefPair<ccc::PodDeque<ccc_test::Pod<8, 1>, uint8_t, 10, 1>, std::deque<ccc_test::Pod<8, 1> > >,
-        RefPair<ccc::PodDeque<ccc_test::Pod<16, 1>, uint8_t, 10, 1>, std::deque<ccc_test::Pod<16, 1> > >
+        RefPair<ccc::PodDeque<ccc_test::Pod<16, 1>, uint8_t, 10, 1>, std::deque<ccc_test::Pod<16, 1> > >,
+        // Using raw mem ops:
+        RefPair<ccc::PodDeque<ccc_test::Pod<1, 1>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<1, 1>, uint8_t, 10, 2, true>, std::deque<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<1, 1>, uint8_t, 10, 4, true>, std::deque<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<1, 1>, uint8_t, 10, 8, true>, std::deque<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<1, 1>, uint8_t, 10, 16, true>, std::deque<ccc_test::Pod<1, 1> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<2, 2>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<2, 2> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<4, 4>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<4, 4> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<8, 8>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<8, 8> > >,
+#if !(defined _MSC_VER && defined CCC_X86)
+        RefPair<ccc::PodDeque<ccc_test::Pod<16, 16>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<16, 16> > >,
+#endif
+        RefPair<ccc::PodDeque<ccc_test::Pod<2, 1>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<2, 1> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<4, 1>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<4, 1> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<8, 1>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<8, 1> > >,
+        RefPair<ccc::PodDeque<ccc_test::Pod<16, 1>, uint8_t, 10, 1, true>, std::deque<ccc_test::Pod<16, 1> > >
 > RefPairTypes;
 INSTANTIATE_TYPED_TEST_CASE_P(PodDeque, TestOfSequenceContainer, RefPairTypes);
 
