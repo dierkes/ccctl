@@ -49,7 +49,7 @@ struct PodDeque
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    static const typename ccc::integral_constant<bool, UseRawMemOps>::type RawMemOps;
+    typedef typename ccc::integral_constant<bool, UseRawMemOps>::type UseRawMemOpsType;
 
     /**
      * Assumption: divisor is a positive number
@@ -583,7 +583,7 @@ struct PodDeque
             m_Storage.construct_default(begin() - 1);
             if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
             {
-                ccc::move(begin(), Position, begin() - 1, RawMemOps);
+                ccc::move(begin(), Position, begin() - 1, UseRawMemOpsType());
                 m_Begin = (0 == m_Begin) ? max_size() : (m_Begin - 1);
                 *(Position - 1) = Value;
                 return (Position - 1);
@@ -592,7 +592,7 @@ struct PodDeque
                  // or Position is in range [LogicalBegin, LogicalEnd], if PhysicalBegin <= LogicalBegin < LogicalEnd <= PhysicalEnd
             {
                 m_Storage.construct_default(end());
-                ccc::move_backward(Position, end(), end() + 1, RawMemOps);
+                ccc::move_backward(Position, end(), end() + 1, UseRawMemOpsType());
                 m_End = (max_size() == m_End) ? 0 : (m_End + 1);
                 *Position = Value;
                 return Position;
@@ -615,7 +615,7 @@ struct PodDeque
         else if (Count <= static_cast<difference_type>(max_size() - size()))
         {
             m_Storage.construct_default(end(), static_cast<size_type>(Count));
-            ccc::move_backward(Position, end(), end() + Count, RawMemOps);
+            ccc::move_backward(Position, end(), end() + Count, UseRawMemOpsType());
             std::copy(First, Last, Position);
             m_End = next(end(), Count).m_PhysicalIndex;
             return Position;
@@ -635,7 +635,7 @@ struct PodDeque
         else if (Count <= max_size() - size())
         {
             m_Storage.construct_default(end(), Count);
-            ccc::move_backward(Position, end(), end() + Count, RawMemOps);
+            ccc::move_backward(Position, end(), end() + Count, UseRawMemOpsType());
             std::fill(Position, Position + Count, Value);
             m_End = next(end(), Count).m_PhysicalIndex;
             return Position;
@@ -650,14 +650,14 @@ struct PodDeque
     {
         if (ccc::addressof(*Position) > ccc::addressof(*end())) // == Position is in range [LogicalBegin, PhysicalEnd], if PhysicalBegin <= LogicalEnd < LogicalBegin <= PhysicalEnd
         {
-            ccc::move_backward(begin(), Position, Position + 1, RawMemOps);
+            ccc::move_backward(begin(), Position, Position + 1, UseRawMemOpsType());
             m_Storage.destroy(begin());
             m_Begin = (max_size() == m_Begin) ? 0 : (m_Begin + 1);
             return Position + 1;
         }
         else
         {
-            ccc::move(Position + 1, end(), Position, RawMemOps);
+            ccc::move(Position + 1, end(), Position, UseRawMemOpsType());
             m_End = (0 == m_End) ? max_size() : (m_End - 1);
             m_Storage.destroy(end());
             return Position;

@@ -29,16 +29,17 @@ OutputIt move_backward(InputIt First, InputIt Last, OutputIt DestLast,
         ccc::integral_constant<bool, true>::type)
 {
     const typename std::iterator_traits<InputIt>::difference_type Distance = std::distance(First, Last);
-    std::memmove(ccc::addressof(*DestLast) - Distance, ccc::addressof(*First),
+    const OutputIt DestFirst = DestLast - Distance;
+    std::memmove(ccc::addressof(*DestFirst), ccc::addressof(*First),
             Distance * sizeof(typename std::iterator_traits<InputIt>::value_type));
-
+    return DestFirst;
 }
 
 template<class InputIt, class OutputIt>
 OutputIt move_backward(InputIt First, InputIt Last, OutputIt DestLast,
         ccc::integral_constant<bool, false>::type)
 {
-    std::copy_backward(First, Last, DestLast);
+    return std::copy_backward(First, Last, DestLast);
 
 }
 
@@ -46,15 +47,17 @@ template<class InputIt, class OutputIt>
 OutputIt move(InputIt First, InputIt Last, OutputIt DestFirst,
         ccc::integral_constant<bool, true>::type)
 {
+    const typename std::iterator_traits<InputIt>::difference_type Distance = std::distance(First, Last);
     std::memmove(ccc::addressof(*DestFirst), ccc::addressof(*First),
-            std::distance(First, Last) * sizeof(typename std::iterator_traits<InputIt>::value_type));
+            Distance * sizeof(typename std::iterator_traits<InputIt>::value_type));
+    return DestFirst + Distance;
 }
 
 template<class InputIt, class OutputIt>
 OutputIt move(InputIt First, InputIt Last, OutputIt DestFirst,
         ccc::integral_constant<bool, false>::type)
 {
-    std::copy(First, Last, DestFirst);
+    return std::copy(First, Last, DestFirst);
 }
 
 }

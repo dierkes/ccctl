@@ -50,10 +50,10 @@ struct PodVector
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
 
-    static const typename ccc::integral_constant<bool, UseRawMemOps>::type RawMemOps;
-
     typedef std::reverse_iterator<iterator> reverse_iterator; // ToDo: what does this mean in case of a pointer, in general it's a class derivation
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator; // ToDo: see above
+
+    typedef typename ccc::integral_constant<bool, UseRawMemOps>::type UseRawMemOpsType;
 
     typedef typename Storage<T, SizeType, Capacity, Alignment, Uninitialized, Runtime>::type storage_type;
 
@@ -247,7 +247,7 @@ struct PodVector
         if (size() < max_size())
         {
             m_Storage.construct_default(end());
-            ccc::move_backward(Position, end(), end() + 1, RawMemOps);
+            ccc::move_backward(Position, end(), end() + 1, UseRawMemOpsType());
             m_End = m_End + 1;
             *Position = Value;
             return Position;
@@ -265,7 +265,7 @@ struct PodVector
         if (Count <= static_cast<difference_type>(max_size() - size()))
         {
             m_Storage.construct_default(end(), Count);
-            ccc::move_backward(Position, end(), end() + Count, RawMemOps);
+            ccc::move_backward(Position, end(), end() + Count, UseRawMemOpsType());
             std::copy(First, Last, Position);
             m_End = m_End + Count;
             return Position;
@@ -281,7 +281,7 @@ struct PodVector
         if (Count <= max_size() - size())
         {
             m_Storage.construct_default(end(), Count);
-            ccc::move_backward(Position, end(), end() + Count, RawMemOps);
+            ccc::move_backward(Position, end(), end() + Count, UseRawMemOpsType());
             std::fill(Position, Position + Count, Value);
             m_End = m_End + Count;
             return Position;
@@ -296,7 +296,7 @@ struct PodVector
     {
         if (Position < end())
         {
-            ccc::move(Position + 1, end(), Position, RawMemOps);
+            ccc::move(Position + 1, end(), Position, UseRawMemOpsType());
             m_End = m_End - 1;
             m_Storage.destroy(end());
             return Position;
@@ -309,7 +309,7 @@ struct PodVector
 
     iterator erase(iterator First, iterator Last)
     {
-        ccc::move(Last, end(), First, RawMemOps);
+        ccc::move(Last, end(), First, UseRawMemOpsType());
         m_End = static_cast<size_type>(m_End - std::distance(First, Last));
         m_Storage.destroy(end(), end() + std::distance(First, Last));
         return First;
