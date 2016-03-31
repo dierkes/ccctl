@@ -6,3 +6,6 @@
 	path = celero
 	url = https://github.com/DigitalInBlue/Celero.git
 	branch = master
+[submodule "gbenchmark"]
+	path = gbenchmark
+	url = https://github.com/google/benchmark

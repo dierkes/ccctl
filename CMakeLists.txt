@@ -8,6 +8,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 
 add_subdirectory("gtest")
 
+add_subdirectory("gbenchmark")
+
 add_subdirectory("test")
 
 set(CMAKE_BINARY_DIR "bin")
