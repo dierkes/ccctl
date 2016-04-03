@@ -315,6 +315,34 @@ struct PodVector
         return First;
     }
 
+    void resize(size_type const Count)
+    {
+        if (Count < size())
+        {
+            m_End = Count;
+            m_Storage.destroy(end(), end() + Count);
+        }
+        else if (Count > size())
+        {
+            m_Storage.construct_default(end(), Count - size());
+            m_End = Count;
+        }
+    }
+
+    void resize(size_type const Count, value_type const& Value)
+    {
+        if (Count < size())
+        {
+            m_End = Count;
+            m_Storage.destroy(end(), end() + Count);
+        }
+        else if (Count > size())
+        {
+            m_Storage.construct_and_assign(end(), Count - size(), Value);
+            m_End = Count;
+        }
+    }
+
 };
 
 #pragma pack(pop)
