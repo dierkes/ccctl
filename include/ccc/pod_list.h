@@ -42,6 +42,8 @@ struct PodList
     typedef ListNode node_type;
 
     typedef PodVector<node_index_type, size_type, Capacity + 1, Alignment, false, false, Runtime> deallocated_storage_type;
+    typedef typename Storage<node_type, size_type, Capacity + 1, Alignment, Uninitialized, Runtime>::type nodes_storage_type;
+    typedef typename Storage<value_type, size_type, Capacity, Alignment, Uninitialized, Runtime>::type values_storage_type;
 
 #if (CCC_ALIGNAS_AVAILABLE)
     alignas(Alignment) size_type m_Size;
@@ -50,8 +52,8 @@ struct PodList
 #else
     PaddedValue<size_type, Alignment> m_Size;
 #endif
-    typename Storage<node_type, size_type, Capacity + 1, Alignment, Uninitialized, Runtime>::type m_Nodes;
-    typename Storage<value_type, size_type, Capacity, Alignment, Uninitialized, Runtime>::type m_Values;
+    nodes_storage_type m_Nodes;
+    values_storage_type m_Values;
     deallocated_storage_type m_Deallocated;
     static const node_index_type m_Anchor = 0;
 
