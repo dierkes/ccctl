@@ -343,6 +343,18 @@ struct PodVector
         }
     }
 
+    void reserve(size_type const Capacity)
+    {
+        if (Capacity > max_size())
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    size_type capacity()
+    {
+        return m_Storage.max_size();
+    }
 };
 
 #pragma pack(pop)
