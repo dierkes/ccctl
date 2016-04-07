@@ -230,6 +230,20 @@ struct FixedInitializedStorage
     PaddedValue<value_type*, Alignment> m_FixedInitializedStorage;
 #endif
 
+    FixedInitializedStorage() : m_Capacity(0), m_FixedInitializedStorage(0)
+    {
+    }
+
+    FixedInitializedStorage(size_type Capacity) : m_Capacity(0), m_FixedInitializedStorage(0)
+    {
+        allocate(Capacity);
+    }
+
+    ~FixedInitializedStorage()
+    {
+        deallocate();
+    }
+
     void allocate(size_type Capacity)
     {
         m_FixedInitializedStorage = new value_type[Capacity];
@@ -238,11 +252,9 @@ struct FixedInitializedStorage
 
     void deallocate()
     {
-        if (m_FixedInitializedStorage)
-        {
-            delete[] static_cast<pointer>(m_FixedInitializedStorage);
-            m_FixedInitializedStorage = 0;
-        }
+        m_Capacity = 0;
+        delete[] static_cast<pointer>(m_FixedInitializedStorage);
+        m_FixedInitializedStorage = 0;
     }
 
     pointer address(reference Object) const
@@ -310,6 +322,26 @@ struct FixedInitializedStorage
     {
         return m_FixedInitializedStorage[Index];
     }
+
+    const_pointer const& data() const
+    {
+        return m_FixedInitializedStorage;
+    }
+
+    pointer& data()
+    {
+        return m_FixedInitializedStorage;
+    }
+
+    size_type const& capacity() const
+    {
+        return m_Capacity;
+    }
+
+    size_type& capacity()
+    {
+        return m_Capacity;
+    }
 };
 
 template<typename T, typename SizeType, unsigned int Alignment = 8>
@@ -336,6 +368,21 @@ struct FixedUninitializedStorage
     PaddedValue<byte_type*, Alignment> m_FixedUninitializedStorage;
 #endif
 
+    FixedUninitializedStorage() : m_Capacity(0), m_FixedUninitializedStorage(0)
+    {
+    }
+
+    FixedUninitializedStorage(size_type Capacity) : m_Capacity(0), m_FixedUninitializedStorage(0)
+    {
+        allocate(Capacity);
+    }
+
+    ~FixedUninitializedStorage()
+    {
+        deallocate();
+    }
+
+
     void allocate(size_type Capacity)
     {
         m_FixedUninitializedStorage = new byte_type[Capacity * sizeof(value_type)];
@@ -344,11 +391,9 @@ struct FixedUninitializedStorage
 
     void deallocate()
     {
-        if (m_FixedUninitializedStorage)
-        {
-            delete[] static_cast<byte_type*>(m_FixedUninitializedStorage);
-            m_FixedUninitializedStorage = 0;
-        }
+        m_Capacity = 0;
+        delete[] static_cast<byte_type*>(m_FixedUninitializedStorage);
+        m_FixedUninitializedStorage = 0;
     }
 
     pointer address(reference Object) const
@@ -428,6 +473,26 @@ struct FixedUninitializedStorage
     const_reference operator[](size_type Index) const
     {
         return (reinterpret_cast<const_pointer>(&m_FixedUninitializedStorage[0])[Index]);
+    }
+
+    const_pointer const& data() const
+    {
+        return m_FixedUninitializedStorage;
+    }
+
+    pointer& data()
+    {
+        return m_FixedUninitializedStorage;
+    }
+
+    size_type const& capacity() const
+    {
+        return m_Capacity;
+    }
+
+    size_type& capacity()
+    {
+        return m_Capacity;
     }
 };
 
