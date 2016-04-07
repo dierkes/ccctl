@@ -22,10 +22,33 @@ public:
         this->m_Storage.allocate(Capacity + 1);
     }
 
+    FixedDeque(FixedDeque const& Other)
+    {
+        this->m_Storage.allocate(Other.m_Storage.m_Capacity);
+        this->assign(Other.begin(), Other.end());
+    }
+
+    void operator=(FixedDeque const& Other)
+    {
+        if (this->m_Storage.m_Capacity != Other.m_Storage.m_Capacity)
+        {
+            FixedDeque Tmp(Other.m_Storage.m_Capacity);
+            this->swap(Tmp);
+        }
+        this->assign(Other.begin(), Other.end());
+    }
+
     ~FixedDeque()
     {
         this->clear();
-        this->m_Storage.deallocate();
+    }
+
+    void swap(FixedDeque& Other)
+    {
+        std::swap(this->m_Storage.data(), Other.m_Storage.data());
+        std::swap(this->m_Storage.capacity(), Other.m_Storage.capacity());
+        std::swap(this->m_Begin, Other.m_Begin);
+        std::swap(this->m_End, Other.m_End);
     }
 };
 

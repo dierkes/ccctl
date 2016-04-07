@@ -25,10 +25,32 @@ public:
         this->m_Storage.allocate(Capacity);
     }
 
+    FixedVector(FixedVector const& Other)
+    {
+        this->m_Storage.allocate(Other.m_Storage.m_Capacity);
+        this->assign(Other.begin(), Other.end());
+    }
+
+    void operator=(FixedVector const& Other)
+    {
+        if (this->m_Storage.m_Capacity != Other.m_Storage.m_Capacity)
+        {
+            FixedVector Tmp(Other.m_Storage.m_Capacity);
+            this->swap(Tmp);
+        }
+        this->assign(Other.begin(), Other.end());
+    }
+
     ~FixedVector()
     {
         this->clear();
-        this->m_Storage.deallocate();
+    }
+
+    void swap(FixedVector& Other)
+    {
+        std::swap(this->m_Storage.data(), Other.m_Storage.data());
+        std::swap(this->m_Storage.capacity(), Other.m_Storage.capacity());
+        std::swap(this->m_End, Other.m_End);
     }
 };
 

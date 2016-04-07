@@ -23,17 +23,44 @@ public:
     explicit FixedList(SizeType Capacity)
     {
         this->m_Nodes.allocate(Capacity + 1);
-        this->m_Nodes[this->m_Anchor] = typename PodList<T, SizeType, 0, Alignment, false, true>::node_type();
+        this->m_Nodes[this->m_Anchor] = typename FixedList::node_type();
         this->m_Values.allocate(Capacity);
         this->m_Deallocated.m_Storage.allocate(Capacity);
+    }
+
+    FixedList(FixedList const& Other)
+    {
+        this->m_Nodes.allocate(Other.m_Nodes.m_Capacity);
+        this->m_Nodes[this->m_Anchor] = typename FixedList::node_type();
+        this->m_Values.allocate(Other.m_Values.m_Capacity);
+        this->m_Deallocated.m_Storage.allocate(Other.m_Deallocated.m_Storage.m_Capacity);
+        this->assign(Other.begin(), Other.end());
     }
 
     ~FixedList()
     {
         this->clear();
-        this->m_Nodes.deallocate();
-        this->m_Values.deallocate();
-        this->m_Deallocated.m_Storage.deallocate();
+    }
+
+    void operator=(FixedList const& Other)
+    {
+        if (this->m_Storage.m_Capacity != Other.m_Storage.m_Capacity)
+        {
+            FixedList Tmp(Other.m_Values.m_Capacity);
+            this->swap(Tmp);
+        }
+        this->assign(Other.begin(), Other.end());
+    }
+
+    void swap(FixedList& Other)
+    {
+        std::swap(this->m_Nodes.data(), Other.m_Nodes.data());
+        std::swap(this->m_Nodes.capacity(), Other.m_Nodes.capacity());
+        std::swap(this->m_Values.data(), Other.m_Values.data());
+        std::swap(this->m_Values.capacity(), Other.m_Values.capacity());
+        std::swap(this->m_Deallocated.m_Storage.data(), Other.m_Deallocated.m_Storage.data());
+        std::swap(this->m_Deallocated.m_Storage.capacity(), Other.m_Deallocated.m_Storage.capacity());
+        std::swap(this->m_Size, Other.m_Size);
     }
 };
 
