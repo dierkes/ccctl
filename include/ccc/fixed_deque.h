@@ -8,6 +8,8 @@
 #ifndef CCC_FIXED_DEQUE_H_
 #define CCC_FIXED_DEQUE_H_
 
+#include <algorithm>
+
 #include <ccc/consistent_deque.h>
 
 namespace ccc
@@ -45,10 +47,11 @@ public:
 
     void swap(FixedDeque& Other)
     {
-        std::swap(this->m_Storage.data(), Other.m_Storage.data());
-        std::swap(this->m_Storage.capacity(), Other.m_Storage.capacity());
-        std::swap(this->m_Begin, Other.m_Begin);
-        std::swap(this->m_End, Other.m_End);
+        using std::swap;
+        swap(this->m_Storage.data(), Other.m_Storage.data());
+        swap(this->m_Storage.capacity(), Other.m_Storage.capacity());
+        swap(this->m_Begin, Other.m_Begin);
+        swap(this->m_End, Other.m_End);
     }
 };
 

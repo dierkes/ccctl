@@ -11,6 +11,8 @@
 #ifndef CCC_FIXED_LIST_H_
 #define CCC_FIXED_LIST_H_
 
+#include <algorithm>
+
 #include<ccc/consistent_list.h>
 
 namespace ccc
@@ -54,13 +56,14 @@ public:
 
     void swap(FixedList& Other)
     {
-        std::swap(this->m_Nodes.data(), Other.m_Nodes.data());
-        std::swap(this->m_Nodes.capacity(), Other.m_Nodes.capacity());
-        std::swap(this->m_Values.data(), Other.m_Values.data());
-        std::swap(this->m_Values.capacity(), Other.m_Values.capacity());
-        std::swap(this->m_Deallocated.m_Storage.data(), Other.m_Deallocated.m_Storage.data());
-        std::swap(this->m_Deallocated.m_Storage.capacity(), Other.m_Deallocated.m_Storage.capacity());
-        std::swap(this->m_Size, Other.m_Size);
+        using std::swap;
+        swap(this->m_Nodes.data(), Other.m_Nodes.data());
+        swap(this->m_Nodes.capacity(), Other.m_Nodes.capacity());
+        swap(this->m_Values.data(), Other.m_Values.data());
+        swap(this->m_Values.capacity(), Other.m_Values.capacity());
+        swap(this->m_Deallocated.m_Storage.data(), Other.m_Deallocated.m_Storage.data());
+        swap(this->m_Deallocated.m_Storage.capacity(), Other.m_Deallocated.m_Storage.capacity());
+        swap(this->m_Size, Other.m_Size);
     }
 };
 
