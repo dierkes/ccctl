@@ -343,9 +343,9 @@ struct PodVector
         }
     }
 
-    void reserve(size_type const Capacity)
+    void reserve(size_type const DummyCapacity)
     {
-        if (Capacity > max_size())
+        if (DummyCapacity > max_size())
         {
             throw std::bad_alloc();
         }
