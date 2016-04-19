@@ -100,7 +100,7 @@ struct PodVector
     {
         clear();
         m_Storage.construct_and_assign(begin(), First, Last);
-        m_End = m_End + std::distance(First, Last);
+        m_End = m_End + static_cast<size_type>(std::distance(First, Last));
     }
 
     // Iterators:
@@ -212,7 +212,7 @@ struct PodVector
     void clear() CCC_NOEXCEPT
     {
         m_Storage.destroy(begin(), end());
-        m_End = size_type();
+        m_End = 0;
     }
 
     void push_back(const_reference Value)
