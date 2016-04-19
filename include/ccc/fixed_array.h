@@ -22,7 +22,7 @@ namespace ccc
 {
 
 /**
- * @brief Consistent, static-capacity array.
+ * @brief Consistent, fixed-capacity array.
  *
  * Analogous to std::array.
  */
@@ -141,7 +141,7 @@ struct FixedArray
     {
         if (Index >= m_Capacity)
         {
-            throw std::out_of_range("ConsistentArray::at"), m_Array[0];
+            throw std::out_of_range("FixedArray::at"), m_Array[0];
         }
         return m_Array[Index];
     }
@@ -149,7 +149,7 @@ struct FixedArray
     CCC_CONSTEXPR
     const_reference at(size_type Index) const
     {
-        return Index < m_Capacity ? m_Array[Index] : (throw std::out_of_range("ConsistentArray::at"), m_Array[0]);
+        return Index < m_Capacity ? m_Array[Index] : (throw std::out_of_range("FixedArray::at"), m_Array[0]);
     }
 
     reference front()
