@@ -73,6 +73,12 @@ struct Aligned
 };
 
 template <typename T>
+struct Aligned<T, 0>
+{
+    typedef T type;
+};
+
+template <typename T>
 struct Aligned<T, 1>
 {
     typedef CCC_ALIGNED(T, 1) type;
