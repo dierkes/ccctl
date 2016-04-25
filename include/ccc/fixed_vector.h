@@ -47,14 +47,6 @@ public:
     {
         this->clear();
     }
-
-    void swap(FixedVector& Other)
-    {
-        using std::swap;
-        swap(this->m_Storage.data(), Other.m_Storage.data());
-        swap(this->m_Storage.capacity(), Other.m_Storage.capacity());
-        swap(this->m_End, Other.m_End);
-    }
 };
 
 }

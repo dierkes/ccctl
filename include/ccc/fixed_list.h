@@ -53,18 +53,6 @@ public:
         }
         this->assign(Other.begin(), Other.end());
     }
-
-    void swap(FixedList& Other)
-    {
-        using std::swap;
-        swap(this->m_Nodes.data(), Other.m_Nodes.data());
-        swap(this->m_Nodes.capacity(), Other.m_Nodes.capacity());
-        swap(this->m_Values.data(), Other.m_Values.data());
-        swap(this->m_Values.capacity(), Other.m_Values.capacity());
-        swap(this->m_Deallocated.m_Storage.data(), Other.m_Deallocated.m_Storage.data());
-        swap(this->m_Deallocated.m_Storage.capacity(), Other.m_Deallocated.m_Storage.capacity());
-        swap(this->m_Size, Other.m_Size);
-    }
 };
 
 }

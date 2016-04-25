@@ -515,7 +515,7 @@ struct PodDeque
     CCC_CONSTEXPR
     size_type max_size() const CCC_NOEXCEPT
     {
-        return m_Storage.max_size() - 1;
+        return m_Storage.capacity() - 1;
     }
 
     // Modifiers:
@@ -672,6 +672,13 @@ struct PodDeque
         return First;
     }
 
+    void swap(PodDeque& Other)
+    {
+        using std::swap;
+        this->m_Storage.swap(Other.m_Storage);
+        swap(this->m_Begin, Other.m_Begin);
+        swap(this->m_End, Other.m_End);
+    }
 };
 
 #pragma pack(pop)

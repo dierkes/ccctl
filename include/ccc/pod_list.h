@@ -282,7 +282,7 @@ struct PodList
     CCC_CONSTEXPR
     size_type max_size() const CCC_NOEXCEPT
     {
-        return m_Values.max_size();
+        return m_Values.capacity();
     }
 
     CCC_CONSTEXPR
@@ -572,6 +572,14 @@ struct PodList
         return First;
     }
 
+    void swap(PodList& Other)
+    {
+        using std::swap;
+        this->m_Deallocated.swap(Other.m_Deallocated);
+        this->m_Nodes.swap(Other.m_Nodes);
+        this->m_Values.swap(Other.m_Values);
+        swap(this->m_Size, Other.m_Size);
+    }
 };
 
 #pragma pack(pop)

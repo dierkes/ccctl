@@ -49,7 +49,7 @@ struct StaticInitializedStorage
         return addressof(Object);
     }
 
-    size_type max_size() const
+    size_type capacity() const
     {
         return Capacity;
     }
@@ -105,6 +105,21 @@ struct StaticInitializedStorage
     {
         return m_StaticInitializedStorage[Index];
     }
+
+    pointer data()
+    {
+        return &m_StaticInitializedStorage[0];
+    }
+
+    const_pointer data() const
+    {
+        return &m_StaticInitializedStorage[0];
+    }
+
+    void swap(StaticInitializedStorage& Other)
+    {
+        std::swap_ranges(this->data(), this->data() + capacity(), Other.data());
+    }
 };
 
 template<typename T, typename SizeType, SizeType Capacity, unsigned int Alignment = 8>
@@ -138,7 +153,7 @@ struct StaticUninitializedStorage
         return addressof(Object);
     }
 
-    size_type max_size() const
+    size_type capacity() const
     {
         return Capacity;
     }
@@ -206,6 +221,21 @@ struct StaticUninitializedStorage
     {
         return (reinterpret_cast<const_pointer>(&m_StaticUninitializedStorage[0])[Index]);
     }
+
+    byte_type const* data() const
+    {
+        return &m_StaticUninitializedStorage[0];
+    }
+
+    byte_type* data()
+    {
+        return &m_StaticUninitializedStorage[0];
+    }
+
+    void swap(StaticUninitializedStorage& Other)
+    {
+        std::swap_ranges(this->data(), this->data() + (sizeof(value_type) * capacity()), Other.data());
+    }
 };
 
 template<typename T, typename SizeType, unsigned int Alignment = 8>
@@ -267,7 +297,7 @@ struct FixedInitializedStorage
         return addressof(Object);
     }
 
-    size_type max_size() const
+    size_type capacity() const
     {
         return m_Capacity;
     }
@@ -333,14 +363,11 @@ struct FixedInitializedStorage
         return m_FixedInitializedStorage;
     }
 
-    size_type const& capacity() const
+    void swap(FixedInitializedStorage& Other)
     {
-        return m_Capacity;
-    }
-
-    size_type& capacity()
-    {
-        return m_Capacity;
+        using std::swap;
+        swap(this->m_FixedInitializedStorage, Other.m_FixedInitializedStorage);
+        swap(this->m_Capacity, Other.m_Capacity);
     }
 };
 
@@ -475,24 +502,21 @@ struct FixedUninitializedStorage
         return (reinterpret_cast<const_pointer>(&m_FixedUninitializedStorage[0])[Index]);
     }
 
-    const_pointer const& data() const
+    const_pointer data() const
     {
         return m_FixedUninitializedStorage;
     }
 
-    pointer& data()
+    pointer data()
     {
         return m_FixedUninitializedStorage;
     }
 
-    size_type const& capacity() const
+    void swap(FixedUninitializedStorage& Other)
     {
-        return m_Capacity;
-    }
-
-    size_type& capacity()
-    {
-        return m_Capacity;
+        using std::swap;
+        swap(this->m_FixedUninitializedStorage, Other.m_FixedUninitializedStorage);
+        swap(this->m_Capacity, Other.m_Capacity);
     }
 };
 

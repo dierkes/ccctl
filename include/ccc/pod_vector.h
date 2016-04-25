@@ -41,17 +41,16 @@ template <class T, class SizeType, SizeType Capacity, unsigned int Alignment = 8
 struct PodVector
 {
     typedef T value_type;
-    typedef value_type* pointer;
-    typedef const value_type* const_pointer;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef value_type* iterator;
-    typedef const value_type* const_iterator;
     typedef SizeType size_type;
     typedef std::ptrdiff_t difference_type;
-
-    typedef std::reverse_iterator<iterator> reverse_iterator; // ToDo: what does this mean in case of a pointer, in general it's a class derivation
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator; // ToDo: see above
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+    typedef value_type* pointer;
+    typedef const value_type* const_pointer;
+    typedef value_type* iterator;
+    typedef const value_type* const_iterator;
+    typedef std::reverse_iterator<iterator> reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     typedef typename ccc::integral_constant<bool, UseRawMemOps>::type UseRawMemOpsType;
 
@@ -66,29 +65,9 @@ struct PodVector
 #endif
     storage_type m_Storage;
 
-    pointer data(size_type Index) CCC_NOEXCEPT
-    {
-        return ccc::addressof(m_Storage[Index]);
-    }
-
-    const_pointer data(size_type Index) const CCC_NOEXCEPT
-    {
-        return ccc::addressof(m_Storage[Index]);
-    }
-
-    pointer data() CCC_NOEXCEPT
-    {
-        return data(0);
-    }
-
-    const_pointer data() const CCC_NOEXCEPT
-    {
-        return data(0);
-    }
-
     // Assign:
 
-    void assign(size_type Count, const value_type& Value)
+    void assign(size_type Count, value_type const& Value)
     {
         clear();
         m_Storage.construct_and_assign(begin(), Count, Value);
@@ -103,90 +82,32 @@ struct PodVector
         m_End = m_End + static_cast<size_type>(std::distance(First, Last));
     }
 
-    // Iterators:
-
-    iterator begin() CCC_NOEXCEPT
+    reference operator[](size_type Position)
     {
-        return iterator(data(0));
+        return m_Storage[Position];
     }
 
-    const_iterator begin() const CCC_NOEXCEPT
+    const_reference operator[](size_type Position) const
     {
-        return const_iterator(data(0));
+        return m_Storage[Position];
     }
 
-    iterator end() CCC_NOEXCEPT
+    reference at(size_type Position)
     {
-        return iterator(data(m_End));
-    }
-
-    const_iterator end() const CCC_NOEXCEPT
-    {
-        return const_iterator(data(m_End));
-    }
-
-    reverse_iterator rbegin() CCC_NOEXCEPT
-    {
-        return reverse_iterator(end());
-    }
-
-    const_reverse_iterator rbegin() const CCC_NOEXCEPT
-    {
-        return const_reverse_iterator(end());
-    }
-
-    reverse_iterator rend() CCC_NOEXCEPT
-    {
-        return reverse_iterator(begin());
-    }
-
-    const_reverse_iterator rend() const CCC_NOEXCEPT
-    {
-        return const_reverse_iterator(begin());
-    }
-
-    CCC_CONSTEXPR
-    size_type size() const CCC_NOEXCEPT
-    {
-        return m_End - 0;
-    }
-
-    CCC_CONSTEXPR
-    size_type max_size() const CCC_NOEXCEPT
-    {
-        return m_Storage.max_size();
-    }
-
-    CCC_CONSTEXPR
-    bool empty() const CCC_NOEXCEPT
-    {
-        return 0 == m_End;
-    }
-
-    reference operator[](size_type Index)
-    {
-        return m_Storage[Index];
-    }
-
-    CCC_CONSTEXPR
-    const_reference operator[](size_type Index) const CCC_NOEXCEPT
-    {
-        return m_Storage[Index];
-    }
-
-    reference at(size_type Index)
-    {
-        if (Index >= size())
+        if (Position >= size())
         {
-            throw std::out_of_range("ConsistentArray::at"), m_Storage[0];
+            throw std::out_of_range("PodVector::at");
         }
-        return m_Storage[Index];
+        return m_Storage[Position];
     }
 
-    CCC_CONSTEXPR
-    const_reference at(size_type Index) const
+    const_reference at(size_type Position) const
     {
-        return Index < size() ? m_Storage[Index] : (throw std::out_of_range("ConsistentArray::at"), m_Storage[0]);
+        if (Position >= size())
+        {
+            throw std::out_of_range("PodVector::at");
+        }
+        return m_Storage[Position];
     }
 
     reference front()
@@ -209,13 +130,182 @@ struct PodVector
         return *(end() - 1);
     }
 
+    pointer data() CCC_NOEXCEPT
+    {
+        return ccc::addressof(m_Storage[0]);
+    }
+
+    const_pointer data() const CCC_NOEXCEPT
+    {
+        return ccc::addressof(m_Storage[0]);
+    }
+
+    // Iterators:
+
+    iterator begin() CCC_NOEXCEPT
+    {
+        return iterator(data());
+    }
+
+    const_iterator begin() const CCC_NOEXCEPT
+    {
+        return const_iterator(data());
+    }
+
+    const_iterator cbegin() const CCC_NOEXCEPT
+    {
+        return const_iterator(data());
+    }
+
+    iterator end() CCC_NOEXCEPT
+    {
+        return iterator(data() + m_End);
+    }
+
+    const_iterator end() const CCC_NOEXCEPT
+    {
+        return const_iterator(data() + m_End);
+    }
+
+    const_iterator cend() const CCC_NOEXCEPT
+    {
+        return const_iterator(data() + m_End);
+    }
+
+    reverse_iterator rbegin() CCC_NOEXCEPT
+    {
+        return reverse_iterator(end());
+    }
+
+    const_reverse_iterator rbegin() const CCC_NOEXCEPT
+    {
+        return const_reverse_iterator(end());
+    }
+
+    const_reverse_iterator crbegin() const CCC_NOEXCEPT
+    {
+        return const_reverse_iterator(cend());
+    }
+
+    reverse_iterator rend() CCC_NOEXCEPT
+    {
+        return reverse_iterator(begin());
+    }
+
+    const_reverse_iterator rend() const CCC_NOEXCEPT
+    {
+        return const_reverse_iterator(begin());
+    }
+
+    const_reverse_iterator crend() const CCC_NOEXCEPT
+    {
+        return const_reverse_iterator(cbegin());
+    }
+
+    bool empty() const CCC_NOEXCEPT
+    {
+        return 0 == m_End;
+    }
+
+    size_type size() const CCC_NOEXCEPT
+    {
+        return m_End - 0;
+    }
+
+    size_type max_size() const CCC_NOEXCEPT
+    {
+        return m_Storage.capacity();
+    }
+
+    void reserve(size_type NewCapacity)
+    {
+        if (NewCapacity > max_size())
+        {
+            throw std::length_error("ccc::PodVector::reserve()");
+        }
+    }
+
+    size_type capacity() const CCC_NOEXCEPT
+    {
+        return m_Storage.max_size();
+    }
+
     void clear() CCC_NOEXCEPT
     {
         m_Storage.destroy(begin(), end());
         m_End = 0;
     }
 
-    void push_back(const_reference Value)
+    iterator insert(const_iterator Position, value_type const& Value)
+    {
+        if (size() < max_size())
+        {
+            m_Storage.construct_default(end());
+            ccc::move_backward(const_cast<pointer>(Position), end(), end() + 1, UseRawMemOpsType());
+            m_End = m_End + 1;
+            *const_cast<pointer>(Position) = Value;
+            return iterator(const_cast<pointer>(Position));
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    template <typename IteratorType>
+    iterator insert(const_iterator Position, IteratorType First, IteratorType Last)
+    {
+        difference_type Count = std::distance(First, Last);
+        if (Count <= static_cast<difference_type>(max_size() - size()))
+        {
+            m_Storage.construct_default(end(), Count);
+            ccc::move_backward(const_cast<pointer>(Position), end(), end() + Count, UseRawMemOpsType());
+            std::copy(First, Last, const_cast<pointer>(Position));
+            m_End = m_End + Count;
+            return iterator(const_cast<pointer>(Position));
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    iterator insert(const_iterator Position, size_type Count, value_type const& Value)
+    {
+        if (Count <= max_size() - size())
+        {
+            m_Storage.construct_default(end(), Count);
+            ccc::move_backward(const_cast<pointer>(Position), end(), end() + Count, UseRawMemOpsType());
+            std::fill(const_cast<pointer>(Position), const_cast<pointer>(Position) + Count, Value);
+            m_End = m_End + Count;
+            return iterator(const_cast<pointer>(Position));
+        }
+        else
+        {
+            throw std::bad_alloc();
+        }
+    }
+
+    iterator erase(const_iterator Position)
+    {
+        ccc::move(const_cast<pointer>(Position) + 1, end(), const_cast<pointer>(Position), UseRawMemOpsType());
+        m_End = m_End - 1;
+        m_Storage.destroy(end());
+        return const_cast<pointer>(Position);
+    }
+
+    iterator erase(const_iterator First, const_iterator Last)
+    {
+        if (First != Last)
+        {
+            ccc::move(const_cast<pointer>(Last), end(), const_cast<pointer>(First), UseRawMemOpsType());
+            m_End = static_cast<size_type>(m_End - std::distance(First, Last));
+            m_Storage.destroy(end(), end() + std::distance(First, Last));
+        }
+        return const_cast<pointer>(First);
+    }
+
+    void push_back(value_type const& Value)
     {
         if (size() < max_size())
         {
@@ -237,85 +327,7 @@ struct PodVector
         }
     }
 
-    iterator insert(size_type Position, const_reference Value)
-    {
-        return insert(iterator(ccc::addressof(m_Storage[Position])), Value);
-    }
-
-    iterator insert(iterator Position, const_reference Value)
-    {
-        if (size() < max_size())
-        {
-            m_Storage.construct_default(end());
-            ccc::move_backward(Position, end(), end() + 1, UseRawMemOpsType());
-            m_End = m_End + 1;
-            *Position = Value;
-            return Position;
-        }
-        else
-        {
-            throw std::bad_alloc();
-        }
-    }
-
-    template <typename IteratorType>
-    iterator insert(iterator Position, IteratorType First, IteratorType Last)
-    {
-        difference_type Count = std::distance(First, Last);
-        if (Count <= static_cast<difference_type>(max_size() - size()))
-        {
-            m_Storage.construct_default(end(), Count);
-            ccc::move_backward(Position, end(), end() + Count, UseRawMemOpsType());
-            std::copy(First, Last, Position);
-            m_End = m_End + Count;
-            return Position;
-        }
-        else
-        {
-            throw std::bad_alloc();
-        }
-    }
-
-    iterator insert(iterator Position, size_type Count, const value_type& Value)
-    {
-        if (Count <= max_size() - size())
-        {
-            m_Storage.construct_default(end(), Count);
-            ccc::move_backward(Position, end(), end() + Count, UseRawMemOpsType());
-            std::fill(Position, Position + Count, Value);
-            m_End = m_End + Count;
-            return Position;
-        }
-        else
-        {
-            throw std::bad_alloc();
-        }
-    }
-
-    iterator erase(iterator Position)
-    {
-        if (Position < end())
-        {
-            ccc::move(Position + 1, end(), Position, UseRawMemOpsType());
-            m_End = m_End - 1;
-            m_Storage.destroy(end());
-            return Position;
-        }
-        else
-        {
-            return end();
-        }
-    }
-
-    iterator erase(iterator First, iterator Last)
-    {
-        ccc::move(Last, end(), First, UseRawMemOpsType());
-        m_End = static_cast<size_type>(m_End - std::distance(First, Last));
-        m_Storage.destroy(end(), end() + std::distance(First, Last));
-        return First;
-    }
-
-    void resize(size_type const Count)
+    void resize(size_type Count)
     {
         if (Count < size())
         {
@@ -324,6 +336,10 @@ struct PodVector
         }
         else if (Count > size())
         {
+            if (Count > max_size())
+            {
+                throw std::bad_alloc();
+            }
             m_Storage.construct_default(end(), Count - size());
             m_End = Count;
         }
@@ -338,22 +354,20 @@ struct PodVector
         }
         else if (Count > size())
         {
+            if (Count > max_size())
+            {
+                throw std::bad_alloc();
+            }
             m_Storage.construct_and_assign(end(), Count - size(), Value);
             m_End = Count;
         }
     }
 
-    void reserve(size_type const DummyCapacity)
+    void swap(PodVector& Other)
     {
-        if (DummyCapacity > max_size())
-        {
-            throw std::bad_alloc();
-        }
-    }
-
-    size_type capacity()
-    {
-        return m_Storage.max_size();
+        using std::swap;
+        this->m_Storage.swap(Other.m_Storage);
+        swap(this->m_End, Other.m_End);
     }
 };
 
