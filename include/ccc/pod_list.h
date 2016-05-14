@@ -57,17 +57,20 @@ struct PodList
     deallocated_storage_type m_Deallocated;
     static const node_index_type m_Anchor = 0;
 
-    template <class T_>
+    /**
+     * Uses the template-variant to implement const and non-const iterator. For the
+     * inheritance-variant see PodDeque::RandomAccessIterator.
+     */
+    template <class IteratedType, class ContainerType>
     struct BidirectionalIterator
     {
-        typedef T_ value_type;
-        typedef value_type* pointer;
-        typedef value_type& reference;
+        typedef typename ccc::remove_const<IteratedType>::type value_type;
+        typedef IteratedType* pointer;
+        typedef IteratedType& reference;
         typedef std::ptrdiff_t difference_type;
-        typedef BidirectionalIterator<T_> iterator_type;
         typedef std::bidirectional_iterator_tag iterator_category;
 
-        PodList* m_Container;
+        ContainerType* m_Container;
         node_index_type m_Node;
 
         BidirectionalIterator()
@@ -75,9 +78,15 @@ struct PodList
         {
         }
 
-        explicit BidirectionalIterator(PodList* Container, node_index_type Node)
+        BidirectionalIterator(ContainerType* Container, node_index_type Node)
                 : m_Container(Container), m_Node(Node)
         {
+        }
+
+        BidirectionalIterator(BidirectionalIterator<T, PodList> const& Other)
+        {
+            this->m_Container = Other.m_Container;
+            this->m_Node = Other.m_Node;
         }
 
         reference operator*() const
@@ -90,122 +99,46 @@ struct PodList
             return ccc::addressof<pointer>(m_Container->m_Values[m_Node - 1]);
         }
 
-        iterator_type& operator++()
+        BidirectionalIterator& operator++()
         {
             m_Node = m_Container->m_Nodes[m_Node].m_Next;
             return *this;
         }
 
-        iterator_type operator++(int)
+        BidirectionalIterator operator++(int)
         {
-            iterator_type tmp = *this;
+            BidirectionalIterator tmp = *this;
             m_Node = m_Container->m_Nodes[m_Node].m_Next;
             return tmp;
         }
 
-        iterator_type&
+        BidirectionalIterator&
         operator--()
         {
             m_Node = m_Container->m_Nodes[m_Node].m_Prev;
             return *this;
         }
 
-        iterator_type operator--(int)
+        BidirectionalIterator operator--(int)
         {
-            iterator_type tmp = *this;
+            BidirectionalIterator tmp = *this;
             m_Node = m_Container->m_Nodes[m_Node].m_Prev;
             return tmp;
         }
 
-        bool operator==(const iterator_type& rhs) const
+        bool operator==(const BidirectionalIterator& rhs) const
         {
             return (m_Container == rhs.m_Container) and (m_Node == rhs.m_Node);
         }
 
-        bool operator!=(const iterator_type& rhs) const
+        bool operator!=(const BidirectionalIterator& rhs) const
         {
             return (m_Container != rhs.m_Container) or (m_Node != rhs.m_Node);
         }
     };
 
-    template <class T_>
-    struct BidirectionalConstIterator
-    {
-        typedef T_ value_type;
-        typedef const value_type* pointer;
-        typedef const value_type& reference;
-        typedef std::ptrdiff_t difference_type;
-        typedef BidirectionalConstIterator<T_> iterator_type;
-        typedef std::bidirectional_iterator_tag iterator_category;
-
-        const PodList* m_Container;
-        node_index_type m_Node;
-
-        BidirectionalConstIterator()
-                : m_Container(), m_Node()
-        {
-        }
-
-        explicit BidirectionalConstIterator(const PodList* Container, node_index_type Node)
-                : m_Container(Container), m_Node(Node)
-        {
-        }
-
-        BidirectionalConstIterator(const BidirectionalIterator<T_>& NonConst)
-                : m_Container(NonConst.m_Container), m_Node(NonConst.m_Node)
-        {
-        }
-
-        reference operator*() const
-        {
-            return m_Container->m_Values[m_Node - 1];
-        }
-
-        pointer operator->() const
-        {
-            return ccc::addressof<pointer>(m_Container->m_Values[m_Node - 1]);
-        }
-
-        iterator_type& operator++()
-        {
-            m_Node = m_Container->m_Nodes[m_Node].m_Next;
-            return *this;
-        }
-
-        iterator_type operator++(int)
-        {
-            iterator_type tmp = *this;
-            m_Node = m_Container->m_Nodes[m_Node].m_Next;
-            return tmp;
-        }
-
-        iterator_type&
-        operator--()
-        {
-            m_Node = m_Container->m_Nodes[m_Node].m_Prev;
-            return *this;
-        }
-
-        iterator_type operator--(int)
-        {
-            iterator_type tmp = *this;
-            m_Node = m_Container->m_Nodes[m_Node].m_Prev;
-            return tmp;
-        }
-
-        bool operator==(const iterator_type& rhs) const
-        {
-            return (m_Container == rhs.m_Container) and (m_Node == rhs.m_Node);
-        }
-
-        bool operator!=(const iterator_type& rhs) const
-        {
-            return (m_Container != rhs.m_Container) or (m_Node != rhs.m_Node);
-        }
-    };
-
-    typedef BidirectionalIterator<value_type> iterator;
-    typedef BidirectionalConstIterator<value_type> const_iterator;
+    typedef BidirectionalIterator<value_type, PodList> iterator;
+    typedef BidirectionalIterator<const value_type, const PodList> const_iterator;
 
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
